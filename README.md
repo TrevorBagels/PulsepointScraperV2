@@ -20,4 +20,4 @@ For push notifications, you'll need [pushover](https://pushover.net/). Set the "
 [old configuration](https://github.com/TrevorBagels/PulsepointScraper/wiki/Configuration)
 
 ## Usage
-Simply run `python3 main.py` and everything should work.
+Run `python3 -m dev`, and it should work.
