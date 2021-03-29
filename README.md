@@ -12,7 +12,7 @@ Scrapes pulsepoint.org for emergency incidents and notifies you if certain condi
 
 ## Configuration
 
-To use google maps API, you'll need to supply an api key to "api_key" in the config. Otherwise, it'll do it's best to use other options for geocoding addresses. 
+To use google maps API, you'll need to supply an api key to "api_key" in the config. Otherwise, it'll do its best to use other options for geocoding addresses. 
 
 For push notifications, you'll need [pushover](https://pushover.net/). Set the "pushover_token" and "pushover_user" to the application token and user token for your pushover account.
 
