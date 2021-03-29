@@ -1,0 +1,13 @@
+{
+    "api_key": "",
+    "pushover_token": "pushover application token",
+    "pushover_user": "pushover user token",
+    "scan_interval": "1m",
+    "radius_default": "100m",
+    "agencies": [
+
+    ],
+    "locations": [
+        
+    ]
+}
