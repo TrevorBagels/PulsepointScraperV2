@@ -89,6 +89,8 @@ class Main:
 
 		for a in self.data.queue:
 			i = self.scraper.get_incidents(a)
+			if i.active == None: i.active = []
+			if i.recent == None: i.recent = []
 			incidents1 = i.active + i.recent
 			for x in incidents1:
 				if x.uid not in self.data.analyzed:
@@ -152,8 +154,8 @@ class Main:
 		p = f"{colors[t]}{colorama.Style.BRIGHT}"
 		sys.stdout.write("\033[K") #clear line
 		print(p, *args, colorama.Style.RESET_ALL)
-		if end == '\r':
-			sys.stdout.write("\033[F") #back to previous line 
+		#if end == '\r':
+		#	sys.stdout.write("\033[F") #back to previous line 
 
 	def load_config(self, config_file):
 		j4j = JSON4JSON()
