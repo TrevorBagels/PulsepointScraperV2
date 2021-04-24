@@ -90,7 +90,13 @@ class Scraper:
 			options = ["id", "agency_initials", "agencyname", "short_agencyname"]
 			for o in options:
 				if o in x and x[o] == str(name): return x
-		print(f"FAILED TO FIND AGENCY \"{name}\"")
+		print(f"FAILED TO FIND AGENCY \"{name}\". Looking for the closest match!")
+		for i, x in self.agencies.items():
+			options = ["id", "agency_initials", "agencyname", "short_agencyname"]
+			for o in options:
+				if o in x and (x[o] in str(name) or str(name) in x[o]): 
+					print(f"Using \"{x['agencyname']}\" instead!")
+					return x
 		return None
 
 

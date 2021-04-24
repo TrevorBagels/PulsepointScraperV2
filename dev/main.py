@@ -64,7 +64,7 @@ class Main:
 		DEVMODE = True
 		while True:
 			if DEVMODE:
-				self.main_loop()
+				self.main_loop() #show any errors and crash
 			else:
 				try:
 					self.main_loop()
