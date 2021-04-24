@@ -7,7 +7,7 @@ from geopy.distance import geodesic
 class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
-		self.main.print(f"Incident found at {incident.FullDisplayAddress}.", end='\r')
+		self.main.print(f"{incident.incident_type} found at {incident.FullDisplayAddress}.", end='\r')
 		pass
 	#called when an agency is put into the queue.
 	def agency_queue_enter(self, agency:str):
