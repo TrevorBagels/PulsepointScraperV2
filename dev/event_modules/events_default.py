@@ -7,7 +7,7 @@ from geopy.distance import geodesic
 class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
-		self.main.print(f"{incident.incident_type} found at {incident.FullDisplayAddress}.", end='\r')
+		self.main.print(f"{incident.incident_type} found at {incident.FullDisplayAddress}.", incident.coords, end='\r')
 		pass
 	#called when an agency is put into the queue.
 	def agency_queue_enter(self, agency:str):
@@ -18,6 +18,15 @@ class Events(events.Events):
 	
 	
 	def important_incident_found(self, incident:D.Incident, location:CfgLocation, importance:int):
+		#------------quick hack for incident filtering because i'm tired------------
+		if hasattr(self, "incident_filters") == False:
+			with open("incidentfilters.txt", "r") as f:
+				self.incident_filters = f.read().lower().split("\n")
+		
+		if incident.incident_type.lower() not in self.incident_filters and "*" not in self.incident_filters:
+			return #not important!
+		#---------------------------------------------------------------------------
+
 		p = get_notifier("pushover")
 		address = ""
 		if location.address != None: address = location.address

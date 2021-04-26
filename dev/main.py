@@ -62,6 +62,7 @@ class Main:
 
 	def loop_control(self):
 		DEVMODE = True
+		print(self.config.locations)
 		while True:
 			if DEVMODE:
 				self.main_loop() #show any errors and crash

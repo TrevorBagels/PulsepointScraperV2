@@ -31,3 +31,20 @@ Not that there are many people that ask me questions about this, but I'll go hea
   * A: The incidents you see in the console are ALL of the incidents for the agencies you are monitoring. To get notified, there needs to be a location properly configured. If an incident happens near that location, you'll be notified. If you'd like to monitor an entire city, create a location, setting the `"coords"` property of it to be the center of the city. Then, set the `"radius"` property to something like `"50mi"` (50 miles). Units, such as meters (`m`), kilometers (`km`), and feet (`ft`) work as well. The default radius, if none is set, defaults to 100 meters.
 * Q: The program isn't finding the agency, how do I fix this?
   * A: Chances are, the agency doesn't exist, or you mistyped something. Check `agencies.txt` for a list of agencies. You can do a search in there to find the exact name for the agency you want to monitor.
+
+
+
+Note: I just added incidentfilters.txt to the repository. By removing the `*`, PulsepointScraper will no longer notify you of incidents unless the incident type is listed in the file (line by line)
+
+For example, if you wanted fire related incidents, you'd change incidentfilters.txt to 
+```
+Illegal Fire
+Marine Fire
+Outside Fire
+Residential Fire
+Vehicle Fire
+Commercial Fire
+```
+(these aren't all the fire related incidents. Currently, this method is just a quick hack until I implement something better.)
+
+Incident types can be found under `/dev/core/incident_types.json`.
