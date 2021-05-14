@@ -33,7 +33,10 @@ class CfgLocation(Prodict):
 	coords:				tuple[float, float]
 	radius:				float #in meters
 	importance:			int
-	match:				str
+	match:				str #regex expression
+	filters:			D.Filter
+	def init(self):
+		self.filters = D.Filter()
 
 class Cfg(Prodict):
 	importance_checks:	list[str]
@@ -107,9 +110,12 @@ class Main:
 	def analyze(self, incident:D.Incident):
 		incident.significant_locations = []
 		for x in self.config.locations:
+			checktotal = 0
 			for c in self.checks:
-				important = c(self, incident, x)
-				if important: incident.significant_locations.append(x.name)
+				checktotal += c(self, incident, x)
+			
+			if checktotal > 0: incident.significant_locations.append(x.name)
+
 		if len(incident.significant_locations) == 0: return
 		# one or more significant locations. Find the most important one
 		importantLocation = self.get_location(incident.significant_locations[0])

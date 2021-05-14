@@ -1,5 +1,5 @@
 {
-	"importance_checks": {"t": "array", "d": ["textbased", "locationbased"], "rule": {"t": "string"}},
+	"importance_checks": {"t": "array", "d": ["textbased", "locationbased", "filterincidenttype"], "rule": {"t": "string"}},
 	"events": {"t": "array", "d": ["events_default"], "rule": {"t": "string"}},
 	"radius_default": {"t": "distance", "d": "50m", "varSet": "radiusDefault", "desc": "The default radius to use."},
 	"api_key" : {"t": "string", "d": "YOUR_KEY_HERE", "r": true, "desc": "Your google maps API key."},

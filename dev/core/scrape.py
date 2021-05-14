@@ -47,14 +47,19 @@ class Scraper:
 				if "Latitude" in x:
 					x['coords'] = (float(x['Latitude']), float(x['Longitude']))
 					x['uid'] = x['ID']
+		raw = None
+		try:
+			raw = self._agency_raw_data(a_id)['incidents']
+			convert_incidents(raw['active'])
+			convert_incidents(raw['recent'])
+			fix_dict(raw)
+		except Exception as e:
+			print(e)
+			return D.Incidents()
 		
-		raw = self._agency_raw_data(a_id)['incidents']
-		convert_incidents(raw['active'])
-		convert_incidents(raw['recent'])
-		fix_dict(raw)
 		return D.Incidents.from_dict(raw)
 
-
+	
 	def _agency_raw_data(self, a_id):
 		data = json.loads(request.urlopen(f"https://web.pulsepoint.org/DB/giba.php?agency_id={a_id}").read().decode())
 		ct = base64.b64decode(data.get("ct"))

@@ -18,15 +18,6 @@ class Events(events.Events):
 	
 	
 	def important_incident_found(self, incident:D.Incident, location:CfgLocation, importance:int):
-		#------------quick hack for incident filtering because i'm tired------------
-		if hasattr(self, "incident_filters") == False:
-			with open("incidentfilters.txt", "r") as f:
-				self.incident_filters = f.read().lower().split("\n")
-		
-		if incident.incident_type.lower() not in self.incident_filters and "*" not in self.incident_filters:
-			return #not important!
-		#---------------------------------------------------------------------------
-
 		p = get_notifier("pushover")
 		address = ""
 		if location.address != None: address = location.address
@@ -40,6 +31,7 @@ class Events(events.Events):
 	Distance:			{"%03d" % distance} meters""".upper()
 
 		self.main.print(message, t='important')
+		return
 		p.notify(user=self.main.config.pushover_user, token=self.main.config.pushover_token, message=message)
 		pass
 

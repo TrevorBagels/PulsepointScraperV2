@@ -5,6 +5,32 @@ class Unit(Prodict):
 	PulsePointDispatchStatus:		str
 	UnitClearedDateTime:			datetime
 
+class Filter(Prodict):
+	allowed:		list[str]
+	blocked:		list[str] #a "*" will apply to all items
+	def init(self):
+		self.allowed = []
+		self.blocked = []
+	
+	def is_allowed(self, item):
+		if len(self.blocked) == 0 and len(self.allowed) == 0: return True
+
+		if len(self.blocked) == 0:
+			return item in self.allowed
+		elif len(self.allowed) == 0:
+			return item not in self.blocked
+		else:
+			return item in self.allowed and item not in self.blocked
+		print("hmmm", item, self.allowed, self.blocked)
+	
+	
+	
+	
+
+
+
+
+
 class Incident(Prodict):
 	ID:								int
 	AgencyID:						int
