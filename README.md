@@ -52,7 +52,7 @@ Incident types can be found under `/dev/core/incident_types.json`.
 
 # PPDB
 
-PulsePoint DB is a "sub project" where instead of monitoring specific locations, I monitor every single agency, scanning each one every twelve hours. It doesn't scan and scrape from them all at once, instead it generates a schedule so that its API call are distributed evenly throughout each day. After scanning an agency, it collects all the information about each incident and inserts it into a MongoDB database collection. 
+PulsePoint DB is a "sub project" where instead of monitoring specific locations, I monitor every single agency, scanning each one every twelve hours. It doesn't scan and scrape from them all at once, instead it generates a schedule so that its API calls are distributed evenly throughout each day. After scanning an agency, it collects all the information about each incident and inserts it into a MongoDB database collection. 
 
 To use the program, create a mongoDB database called "pulsepoint", and then run 
 `python3 -m dev.ppdb`
