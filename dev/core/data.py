@@ -21,7 +21,6 @@ class Filter(Prodict):
 			return item not in self.blocked
 		else:
 			return item in self.allowed and item not in self.blocked
-		print("hmmm", item, self.allowed, self.blocked)
 	
 	
 	

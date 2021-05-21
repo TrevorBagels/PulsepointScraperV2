@@ -1,13 +1,22 @@
 {
-    "api_key": "",
-    "pushover_token": "pushover application token",
-    "pushover_user": "pushover user token",
+    "api_key": "an actual api key but I removed it from discord cuz why not",
+    "pushover_token": "actual api",
+    "pushover_user": "actual api",
     "scan_interval": "1m",
-    "radius_default": "100m",
+    "radius_default": "12.2mi",
     "agencies": [
-
+        {    
+            "name": "Los Angeles Fire Department (Valley Bureau)"
+        }
     ],
     "locations": [
-        
+        {   "name": "LAFD - Valley",
+            "address": "Porter Ranch, CA 91326",
+            "coords": [34.28287455269486, -118.55214611989018],
+            "filters": {
+                "allowed": ["Vehicle Fire"],
+                "blocked": []
+            }
+        }
     ]
 }
