@@ -46,43 +46,50 @@ class PPDB:
 
 	def log_incidents(self, a_id):
 		a = self.db["agencies"].find_one({"_id": a_id})
+		failed = False
 		print("Getting incidents from ", a["agencyname"])
-		incidents = self.scraper._agency_raw_data(a["agencyid"])["incidents"]
-		if incidents["active"] == None: incidents["active"] = []
-		if incidents["recent"] == None: incidents["recent"] = []
-		for i in incidents["active"] + incidents["recent"]:
-			i['_id'] = i["AgencyID"] + "-" + i['ID']
-			for k, v in i.items():
-				if v == "null": i[k] == None
-			
-			to_datetime = ["CallReceivedDateTime", "ClosedDateTime"]
-			toint = ["PublicLocation", "IsShareable"]
-			tofloat = ["Latitude", "Longitude"]
-			remove = []
-			if "PulsePointIncidentCallType" in i:
-				i["Type"] = self.scraper.incident_types[i["PulsePointIncidentCallType"]]
-			if "Latitude" in i:
-				i['coordinates'] = {"type": "Point", "coordinates": [float(i['Longitude']), float(i['Latitude'])] }
-			for k in to_datetime:
-				if k in i and i[k] != "null":
-					i[k] = utils.from_iso8601(i[k])
-			for k in toint:
-				if k in i and i[k] != "null":
-					i[k] = int(i[k])
-			for k in tofloat:
-				if k in i and i[k] != "null":
-					i[k] = float(i[k])
-			for k in remove:
-				if k in i:
-					del i[k]
-			if "Unit" in i:
-				for u in i["Unit"]:
-					if "UnitClearedDateTime" in u:
-						u["UnitClearedDateTime"] = utils.from_iso8601(u["UnitClearedDateTime"])
-			
-			self.db["incidents"].update({"_id": i["_id"]}, i, upsert=True)
-		self.db["schedule"].find_and_modify({"_id": a_id}, {"$set": {"last_update": datetime.datetime.now()}})
-		
+		try:
+			incidents = self.scraper._agency_raw_data(a["agencyid"])["incidents"]
+		except:
+			failed = True
+			print("Something went wrong, taking a short break...")
+		if failed == False:
+			if incidents["active"] == None: incidents["active"] = []
+			if incidents["recent"] == None: incidents["recent"] = []
+			for i in incidents["active"] + incidents["recent"]:
+				i['_id'] = i["AgencyID"] + "-" + i['ID']
+				for k, v in i.items():
+					if v == "null": i[k] == None
+				
+				to_datetime = ["CallReceivedDateTime", "ClosedDateTime"]
+				toint = ["PublicLocation", "IsShareable"]
+				tofloat = ["Latitude", "Longitude"]
+				remove = []
+				if "PulsePointIncidentCallType" in i:
+					i["Type"] = self.scraper.incident_types[i["PulsePointIncidentCallType"]]
+				if "Latitude" in i:
+					i['coordinates'] = {"type": "Point", "coordinates": [float(i['Longitude']), float(i['Latitude'])] }
+				for k in to_datetime:
+					if k in i and i[k] != "null":
+						i[k] = utils.from_iso8601(i[k])
+				for k in toint:
+					if k in i and i[k] != "null":
+						i[k] = int(i[k])
+				for k in tofloat:
+					if k in i and i[k] != "null":
+						i[k] = float(i[k])
+				for k in remove:
+					if k in i:
+						del i[k]
+				if "Unit" in i:
+					for u in i["Unit"]:
+						if "UnitClearedDateTime" in u:
+							u["UnitClearedDateTime"] = utils.from_iso8601(u["UnitClearedDateTime"])
+				
+				self.db["incidents"].update({"_id": i["_id"]}, i, upsert=True)
+			self.db["schedule"].find_and_modify({"_id": a_id}, {"$set": {"last_update": datetime.datetime.now()}})
+		else:
+			sleep(10)
 
 
 
