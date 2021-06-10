@@ -32,7 +32,7 @@ class Filter(Prodict):
 
 class Incident(Prodict):
 	ID:								int
-	AgencyID:						int
+	AgencyID:						str
 	Latitude:						float
 	Longitude:						float
 	PublicLocaiton:					int
