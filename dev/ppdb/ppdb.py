@@ -167,8 +167,12 @@ class PPDB:
 		do_update = False
 		for _t in a['times']: #go through scheduled update times
 			t = datetime.datetime.combine(datetime.date.min, datetime.time(hour=_t.hour, minute=_t.minute, second=_t.second)) #the time today we should update
-			if abs(( datetime.datetime.combine(datetime.date.min, now.time()) - t).total_seconds()) <= self.config.margin: #if now - update time is within +/- 10 minutes of right now. if so, we should update.
+			timetoupdate = ( datetime.datetime.combine(datetime.date.min, now.time()) - t).total_seconds()
+			if abs(timetoupdate) <= self.config.margin: #if now - update time is within +/- 10 minutes of right now. if so, we should update.
 				do_update = True
+			if timetoupdate > 0 and timetoupdate < 60 * 60 * 4: #do update if this should've been updated in the last 4 hours or so, but do a little bit of sleeping to ratelimit.
+				do_update = True 
+				sleep(5)
 		if do_update: print(*info)
 		elif hours_since_update >= 24 * 2:
 			print(*info)
