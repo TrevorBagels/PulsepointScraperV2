@@ -86,7 +86,9 @@ def time_elapsed(seconds):
 	return hms(seconds)
 
 def pluralize(word, value, plural=None, include_value=True):
-	if include_value: word = str(value) + " " + word
+	if include_value:
+		word = str(value) + " " + word
+		if plural != None: plural = str(value) + " " + word
 	if plural == None: plural = word + "s"
 	if float(value) == 1.0: return word
 	return plural

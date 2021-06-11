@@ -64,6 +64,8 @@ class PPDB:
 		if failed == False:
 			if incidents["active"] == None: incidents["active"] = []
 			if incidents["recent"] == None: incidents["recent"] = []
+			scan_log = {"new": 0, "total": 0, "scanned": datetime.datetime.now()}
+			
 			for i in incidents["active"] + incidents["recent"]:
 				i['_id'] = i["AgencyID"] + "-" + i['ID']
 				for k, v in i.items():
@@ -93,9 +95,14 @@ class PPDB:
 					for u in i["Unit"]:
 						if "UnitClearedDateTime" in u:
 							u["UnitClearedDateTime"] = utils.from_iso8601(u["UnitClearedDateTime"])
+				if self.db["incidents"].find_one({"_id": i["_id"]}) == None:
+					scan_log["new"] += 1
 				
+				scan_log["total"] += 1
+
 				self.db["incidents"].update({"_id": i["_id"]}, i, upsert=True)
 			self.db["schedule"].find_and_modify({"_id": a_id}, {"$set": {"last_update": datetime.datetime.now()}})
+			self.db["schedule"].find_one_and_update({"_id": a_id}, {"$push": {"update_logs": scan_log}})
 		else:
 			sleep(10)
 
@@ -140,7 +147,7 @@ class PPDB:
 			lastupdate = datetime.datetime(year=1990, month=1, day=1)
 			foundself = self.db["schedule"].find_one({"_id": a["_id"]})
 			if foundself != None: lastupdate = foundself['last_update']
-			schedule = {"_id": a["_id"], "name": a["agencyname"], "times": [time_1, time_2], "last_update": lastupdate}
+			schedule = {"_id": a["_id"], "name": a["agencyname"], "times": [time_1, time_2], "last_update": lastupdate, "update_logs": []}
 			self.db["schedule"].update_one({"_id": schedule["_id"]}, {"$set": schedule}, upsert=True)
 			index += 1
 		print(index, "agencies scanned. ")
