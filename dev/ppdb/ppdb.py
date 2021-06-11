@@ -14,7 +14,7 @@ class Config(Prodict):
 		self.mongodb_client = "mongodb://localhost:27017/"
 		self.dbname = "pulsepoint"
 		self.check_interval = 12 * 60 * 60 #every 12 hours
-		self.margin = 60*45 # 45 minute check margin
+		self.margin = 60*5 # 15 minute check margin
 
 def to_time(seconds):
 	seconds = int(seconds)
@@ -32,16 +32,24 @@ class PPDB:
 		self.scraper = scrape.Scraper()
 		if self.db["agencies"].find_one() == None:
 			self.scan_agency_info()
+		self.scan_new_agencies()
 		while True:
 			self.main_loop()
 			sleep(30)
-			
+	
+	def scan_new_agencies(self):
+		newcount = len(requests.get("https://web.pulsepoint.org/DB/GeolocationAgency.php").json()["agencies"])
+		nowcount = self.db["agencies"].count_documents({})
+		if newcount != nowcount:
+			print(utils.pluralize("new agency was", newcount - nowcount, plural="new agencies were"), "found. Scanning now and updating the schedule.")
+			self.scan_agency_info()
 	
 	def get_time_query(self):
+		#we want anything that wasnt scanned in the past 11 hours
 		q = {}
 		before = datetime.datetime.now() - datetime.timedelta(seconds=60*60*11)
-		after = datetime.datetime.now() - datetime.timedelta(seconds=60*60*11)
-		q = {"$not": {"$gt": before, "$lt": after}}
+		#after = datetime.datetime.now() - datetime.timedelta(seconds=60*60*11)
+		q = {"$not": {"$gt": before}} #basically, last scan should not have happened in the past 11 hours.
 		return q
 
 	def log_incidents(self, a_id):
@@ -96,6 +104,7 @@ class PPDB:
 
 	def main_loop(self):
 		for a in self.db['schedule'].find({"last_update": self.get_time_query()}):
+			#print(a["_id"], a["last_update"])
 			if self.should_update(a):
 				self.log_incidents(a["_id"])
 			
@@ -109,11 +118,11 @@ class PPDB:
 				self.db.create_collection(collection_name)
 	
 	def scan_agency_info(self):
+		print("SCANNING...")
 		agenciesjson = requests.get("https://web.pulsepoint.org/DB/GeolocationAgency.php").json()["agencies"]
 		index = 0
 		per_agency_interval = (12*60*60) / len(agenciesjson)
 		for a in agenciesjson:
-			
 			a["_id"] = int(a["id"])
 			a["coordinates"] = {"type": "Point", "coordinates": [float(a["agency_longitude"]), float(a["agency_latitude"])]}
 			a["agency_latitude"] = float(a["agency_latitude"])
@@ -128,20 +137,32 @@ class PPDB:
 
 			time_1 = to_time(per_agency_interval * index)
 			time_2 = to_time(per_agency_interval * index + (12*60*60))
-
-			schedule = {"_id": a["_id"], "name": a["agencyname"], "times": [time_1, time_2], "last_update": datetime.datetime(year=1990, month=1, day=1)}
+			lastupdate = datetime.datetime(year=1990, month=1, day=1)
+			foundself = self.db["schedule"].find_one({"_id": a["_id"]})
+			if foundself != None: lastupdate = foundself['last_update']
+			schedule = {"_id": a["_id"], "name": a["agencyname"], "times": [time_1, time_2], "last_update": lastupdate}
 			self.db["schedule"].update_one({"_id": schedule["_id"]}, {"$set": schedule}, upsert=True)
 			index += 1
+		print(index, "agencies scanned. ")
 	
 	def should_update(self, a):
+		#just return whether or not this place has been updated in the past 12 hours. if not, then yes, we should probably update. unless it's been longer than a couple days, because that probably means the server had some extended downtime, and lots of agencies will need an update. which is a lot of network traffic.
+		last_update = a["last_update"]
+		now = datetime.datetime.now()	#.time()
+		hours_since_update = ((now - last_update).total_seconds() / 60 / 60)
+		info = [f"[{a['_id']}]\t", "\tHours since last update:", round(hours_since_update, 3), "\tScheduled times:", [x.strftime("%H:%M") for x in a["times"]]]
+		if hours_since_update > 11.99 and hours_since_update < 24 * 2:
+			print(*info)
+			return True
+		#ok, so it's been a very long time since we've updated, which means we'll want to only update if we're in margin to its scheduled update time
+
 		#a = self.db['schedule'].find({"_id": _id})
-		now = datetime.datetime.now().time()
 		do_update = False
-		if (datetime.datetime.now() - a["last_update"]).total_seconds() < self.config.margin * 2:
-			return False
-		for _t in a['times']:
-			t = datetime.datetime.combine(datetime.date.min, datetime.time(hour=_t.hour, minute=_t.minute, second=_t.second))
-			if abs(( datetime.datetime.combine(datetime.date.min, now) - t).total_seconds()) <= self.config.margin:
+		for _t in a['times']: #go through scheduled update times
+			t = datetime.datetime.combine(datetime.date.min, datetime.time(hour=_t.hour, minute=_t.minute, second=_t.second)) #the time today we should update
+			if abs(( datetime.datetime.combine(datetime.date.min, now.time()) - t).total_seconds()) <= self.config.margin: #if now - update time is within +/- 10 minutes of right now. if so, we should update.
 				do_update = True
-		
+		if do_update: print(*info)
+		elif hours_since_update >= 24 * 2:
+			print(*info)
 		return do_update
