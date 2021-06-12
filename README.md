@@ -32,20 +32,14 @@ Not that there are many people that ask me questions about this, but I'll go hea
 * Q: The program isn't finding the agency, how do I fix this?
   * A: Chances are, the agency doesn't exist, or you mistyped something. Check `agencies.txt` for a list of agencies. You can do a search in there to find the exact name for the agency you want to monitor.
 
-
-
-Note: I just added incidentfilters.txt to the repository. By removing the `*`, PulsepointScraper will no longer notify you of incidents unless the incident type is listed in the file (line by line)
-
-For example, if you wanted fire related incidents, you'd change incidentfilters.txt to 
+I recently implemented incident filtering for *specific locations*. By adding the "filters" attribute, you can add allowed *or* blocked incident types. Example:
 ```
-Illegal Fire
-Marine Fire
-Outside Fire
-Residential Fire
-Vehicle Fire
-Commercial Fire
-```
-(these aren't all the fire related incidents. Currently, this method is just a quick hack until I implement something better.)
+            "filters": {
+                "allowed": ["Vehicle Fire"],
+                "blocked": []
+            }
+```   
+This will only notify you when the incident is a vehicle fire. If you were to move `"Vehicle Fire"` to `blocked`, it would notify you about everything *but* vehicle fires. 
 
 Incident types can be found under `/dev/core/incident_types.json`.
 
@@ -59,3 +53,4 @@ To use the program, create a mongoDB database called "pulsepoint", and then run
 
 Additional configuration options are available in `dbconfig.json`
 
+4
