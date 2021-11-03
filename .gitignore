@@ -1,3 +1,5 @@
 myconfig.json
+mykeys.json
+apptest.py
 *.pyc
 */__pycache__

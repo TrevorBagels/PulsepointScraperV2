@@ -2,6 +2,8 @@ import json, time, os, re
 from bson import json_util
 from datetime import date, datetime, timezone, timedelta
 import traceback
+from math import prod
+from . import prodict
 
 
 def to_iso8601(dt:datetime):
@@ -10,13 +12,16 @@ def from_iso8601(dt:str) -> datetime:
 	if type(dt) == datetime: return dt
 	return datetime.strptime(dt, '%Y-%m-%dT%H:%M:%SZ').astimezone(timezone.utc)
 
-def save_json(file, data:dict):
-	write_to(file, json.dumps(data, indent=4, default=json_util.default))
 
-def load_json(file) -> dict:
-	if os.path.exists(file) == False:
-		write_to(file, "{}") #make that file exist, and give it nothing.
-	return json.loads(read(file), object_hook=json_util.object_hook)
+def load_json(path) -> dict:
+	d = None
+	with open(path, "r") as f:
+		d = json.loads(f.read(), object_hook=json_util.object_hook)
+	return d
+
+def save_json(path, data:prodict.Prodict):
+	with open(path, "w+") as f:
+		f.write(json.dumps(data.to_dict(is_recursive=True), indent=4, default=json_util.default))
 
 def write_to(file, content):
 	with open(file, "w+") as f:

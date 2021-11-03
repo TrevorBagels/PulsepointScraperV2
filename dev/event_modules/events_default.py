@@ -1,6 +1,5 @@
 from .. import events
 from ..core import data as D
-from ..main import CfgLocation
 from notifiers import get_notifier
 from geopy.distance import geodesic
 
@@ -17,7 +16,7 @@ class Events(events.Events):
 		pass
 	
 	
-	def important_incident_found(self, incident:D.Incident, location:CfgLocation, importance:int):
+	def important_incident_found(self, incident:D.Incident, location:D.CfgLocation, importance:int):
 		p = get_notifier("pushover")
 		address = ""
 		if location.address != None: address = location.address
@@ -31,8 +30,7 @@ class Events(events.Events):
 	Distance:			{"%03d" % distance} meters""".upper()
 
 		self.main.print(message, t='important')
-		return
-		p.notify(user=self.main.config.pushover_user, token=self.main.config.pushover_token, message=message)
+		p.notify(user=self.main.keys["pushover_user"], token=self.main.keys["pushover_token"], message=message)
 		pass
 
 

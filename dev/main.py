@@ -5,57 +5,35 @@ import os, time, json, datetime, googlemaps, sys, importlib, colorama
 from .core import data as D
 from geopy.geocoders import Nominatim
 from colorama.ansi import Fore
+from bson import json_util
+from . import utils
 
-class AgencyData(Prodict):
-	name:				str
-	frequency:			int
-	last_scanned:		int
-	ID:					str
 
 class Data(Prodict):
-	agencies:			list[AgencyData]
-	queue:				list[str] # agency names
+	agencies:			list[str] #agency names
+	last_scanned:		int
 	last_incidents:		list
 	analyzed:			list
 	def init(self):
 		self.agencies = []
-		self.queue = []
 		self.last_incidents = []
 		self.analyzed = []
-
-class CfgAgency(Prodict):
-	name:				str
-	scan_interval:		int #seconds, overrides scan_interval
-
-class CfgLocation(Prodict):
-	name:				str
-	address:			str
-	coords:				tuple[float, float]
-	radius:				float #in meters
-	importance:			int
-	match:				str #regex expression
-	filters:			D.Filter
-	def init(self):
-		self.filters = D.Filter()
-
-class Cfg(Prodict):
-	importance_checks:	list[str]
-	events:				list[str]
-	api_key:			str #google maps API key
-	pushover_token:		str #pushover token
-	pushover_user:		str #pushover USER token
-	scan_interval:		int #seconds, how long to wait in between scans
-	agencies:			list[CfgAgency]
-	locations:			list[CfgLocation]
+		self.last_scanned = 0
 
 
 class Main:
-	def __init__(self, config_file="config.json"):
+	def __init__(self, config_file="config.json", keys_file="keys.json"):
 		from . import events
+		self.keys_file = keys_file
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
 		self.api_calls = 0
-		self.config = None
+
+		self.config:D.Cfg = None
+		self.keys = None
+		with open(keys_file, "r") as f:
+			self.keys = json.loads(f.read())
+		
 		self.checks:list[function] = []
 		self.events:list[events.Events] = []
 		self.data = Data()
@@ -80,22 +58,15 @@ class Main:
 
 	def main_loop(self):
 		self.call_event("main_loop_start") #! EVENT !#
-		# reset the queue
-		self.data.queue = []
-		for a in self.data.agencies:
-			if a.last_scanned < time.time() - a.frequency:
-				self.data.queue.append(a.ID)
-				self.call_event("agency_queue_enter", a.name) #! EVENT !#
-				a.last_scanned = time.time()
-		if len(self.data.queue) == 0: return # return if the queue is empty (nothing to do)
 		
+		self.data.last_scanned = time.time() 
 		incidents:list[D.Incident] = [] #incidents to analyze
 
-		for a in self.data.queue:
+		for a in self.data.agencies:
 			i = self.scraper.get_incidents(a)
 			if i.active == None: i.active = []
 			if i.recent == None: i.recent = []
-			incidents1 = i.active + i.recent
+			incidents1 = i.active + i.recent #basically just all of the incidents for this agency, both active and recent
 			for x in incidents1:
 				if x.uid not in self.data.analyzed:
 					self.call_event("incident_found", x) #! EVENT !#
@@ -109,11 +80,13 @@ class Main:
 	
 	def analyze(self, incident:D.Incident):
 		incident.significant_locations = []
+		if self.config.incident_filters.allowed(incident.incident_type) == False: return #if this incident is blocked or not allowed (global), skip analysis
+
 		for x in self.config.locations:
+			if x.filters.allowed(incident.incident_type) == False: continue #if this incident is blocked or not allowed (per location), skip analysis for this location.
 			checktotal = 0
 			for c in self.checks:
 				checktotal += c(self, incident, x)
-			
 			if checktotal > 0: incident.significant_locations.append(x.name)
 
 		if len(incident.significant_locations) == 0: return
@@ -129,9 +102,6 @@ class Main:
 		for x in self.config.locations:
 			if x.name == name: return x
 		return None
-		
-	
-
 
 
 	def call_event(self, event_name, *args):
@@ -165,16 +135,12 @@ class Main:
 		#	sys.stdout.write("\033[F") #back to previous line 
 
 	def load_config(self, config_file):
-		j4j = JSON4JSON()
-		j4j.load(config_file, "./dev/rules.json")
-		self.config = Cfg.from_dict(j4j.data)
+		#removed json4json because that library (the one that i made) kinda sucks.
+		self.config = D.Cfg.from_dict(utils.load_json(config_file))
 		self.init_maps()
-		for x in self.config.agencies:
-			a_id = self.scraper.get_agency(x.name)['agencyid']
-			self.data.agencies.append(AgencyData(name=x.name, frequency=x.scan_interval, last_scanned=0, ID=a_id))
-		for x in self.config.locations:
-			if self.validate_location(x) == False:
-				self.print(f"Could not geocode address for \"{x.name}\"", t='warn')
+		
+		for a_id in self.config.agencies:
+			self.data.agencies.append(a_id) #add agencies to the list of agencies we run through every scan.
 		
 		for x in self.config.events:
 			self.load_event_script(x)
@@ -185,16 +151,16 @@ class Main:
 		
 
 	def init_maps(self):
-		if self.config.api_key == "":
+		if self.keys["gmaps"]:
 			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper")
 			return
 		try:
-			self.gmaps = googlemaps.Client(key=self.config.api_key)
+			self.gmaps = googlemaps.Client(key=self.keys['gmaps'])
 		except:
 			self.print("Could not load google maps. Probably an invallid api key.", t='bad')
 
 
-	def validate_location(self, l:CfgLocation):
+	def validate_location(self, l:D.CfgLocation):
 		if l.coords != None: return True
 		if l.address != None and l.coords == None:
 			try:
@@ -204,11 +170,11 @@ class Main:
 				return False
 	
 	def get_coords(self, address) -> tuple[float, float]:
-		if self.api_calls >= self.GEOCODE_LIMIT:
+		if self.api_calls >= self.GEOCODE_LIMIT and self.keys['gmaps'] != "":
 			print("GEOCODE CALL LIMIT REACHED!!!", t='warn')
 			return (0, 0)
 		self.api_calls += 1
-		if self.config.api_key == "":
+		if self.keys['gmaps'] == "":
 			location = self.gmaps.geocode(address)
 			time.sleep(.5) #rate limiting
 			return (location.latitude, location.longitude)

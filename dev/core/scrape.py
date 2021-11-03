@@ -92,12 +92,12 @@ class Scraper:
 	
 	def get_agency(self, name) -> dict:
 		for i, x in self.agencies.items():
-			options = ["id", "agency_initials", "agencyname", "short_agencyname"]
+			options = ["ID", "agency_initials", "agencyname", "short_agencyname"]
 			for o in options:
 				if o in x and str(x[o]).lower() == str(name).lower(): return x
 		print(f"FAILED TO FIND AGENCY \"{name}\". Looking for the closest match!")
 		for i, x in self.agencies.items():
-			options = ["id", "agency_initials", "agencyname", "short_agencyname"]
+			options = ["ID", "agency_initials", "agencyname", "short_agencyname"]
 			for o in options:
 				if o in x and (str(x[o]).lower() in str(name).lower() or str(name).lower() in str(x[o]).lower()): 
 					print(f"Using \"{x['agencyname']}\" instead!")

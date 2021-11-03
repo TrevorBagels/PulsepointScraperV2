@@ -1,9 +1,9 @@
 import argparse
 from .main import Main
 parser = argparse.ArgumentParser(description='Enter the name of a custom config file')
-parser.add_argument('--config', type=str, nargs='+', help="custom config file location")
-cfg = "config.json"
+parser.add_argument('--config', type=str, default="config.json", help="custom config file location")
+parser.add_argument('--keys', type=str, default="keys.json", help="custom key file location")
+
 parsed = parser.parse_args()
-if parsed.config != None:
-	cfg = parsed.config[0]
-Main(config_file=cfg)
+
+Main(config_file=parsed.config, keys_file=parsed.keys)
