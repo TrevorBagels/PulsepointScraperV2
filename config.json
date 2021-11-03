@@ -1,5 +1,5 @@
 {
-    "api_key": "an actual api key but I removed it from discord cuz why not",
+    "api_key": "an actual api key",
     "pushover_token": "actual api",
     "pushover_user": "actual api",
     "scan_interval": "1m",
