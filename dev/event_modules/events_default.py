@@ -14,7 +14,8 @@ class Events(events.Events):
 		pass
 	def analysis_start(self):
 		pass
-	
+	def analysis_end(self):
+		pass
 	
 	def important_incident_found(self, incident:D.Incident, location:D.CfgLocation, importance:int):
 		p = get_notifier("pushover")

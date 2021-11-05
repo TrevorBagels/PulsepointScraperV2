@@ -30,6 +30,7 @@ class Events(events.Events):
 		self.recents = [] #list of events, max size = 100
 		self.data:SaveData = None
 		self.load_data()
+		self.agency_data = utils.load_json("allagencydata.json")
 		super().__init__()
 	
 

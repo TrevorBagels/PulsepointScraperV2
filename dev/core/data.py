@@ -93,8 +93,9 @@ class Cfg(Prodict):
 	locations:			list[CfgLocation]
 	default_radius:		int
 	incident_filters:	Filter #global filters
-
+	agency_to_location_distance:	int #how far away an agency can be from a location to be considered needed for scanning (meters). default: 40km
 	def init(self):
+		self.agency_to_location_distance = 40000
 		self.importance_checks = ["textbased", "locationbased"]
 		self.events = ["events_default", "events_dashboard"]
 		self.default_radius = 50 #in meters

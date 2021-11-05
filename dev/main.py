@@ -1,6 +1,5 @@
 from .core import scrape
 from .prodict import Prodict
-from JSON4JSON import JSON4JSON
 import os, time, json, datetime, googlemaps, sys, importlib, colorama
 from .core import data as D
 from geopy.geocoders import Nominatim
@@ -24,6 +23,7 @@ class Data(Prodict):
 class Main:
 	def __init__(self, config_file="config.json", keys_file="keys.json"):
 		from . import events
+		self.config_file = config_file
 		self.keys_file = keys_file
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
@@ -38,7 +38,7 @@ class Main:
 		self.events:list[events.Events] = []
 		self.data = Data()
 		self.scraper = scrape.Scraper()
-		self.load_config(config_file)
+		self.load_config(self.config_file)
 		self.loop_control()
 
 	def loop_control(self):
@@ -76,6 +76,8 @@ class Main:
 		for x in incidents:
 			self.analyze(x)
 			self.data.analyzed.append(x.uid)
+			self.call_event("incident_analyzed", x)
+		self.call_event("main_loop_end")
 
 	
 	def analyze(self, incident:D.Incident):
@@ -88,8 +90,9 @@ class Main:
 			for c in self.checks:
 				checktotal += c(self, incident, x)
 			if checktotal > 0: incident.significant_locations.append(x.name)
-
-		if len(incident.significant_locations) == 0: return
+		
+		if len(incident.significant_locations) == 0:
+			return
 		# one or more significant locations. Find the most important one
 		importantLocation = self.get_location(incident.significant_locations[0])
 		for x in incident.significant_locations:
@@ -116,6 +119,7 @@ class Main:
 		module_instance = script()
 		module_instance.main = self
 		self.events.append(module_instance)
+		module_instance.__getattribute__("post_init")()
 		return module_instance
 	
 	def load_check_script(self, scriptname):
@@ -151,8 +155,9 @@ class Main:
 		
 
 	def init_maps(self):
-		if "gmaps" not in self.keys or self.keys["gmaps"] != "":
+		if "gmaps" not in self.keys or self.keys["gmaps"] == "":
 			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper")
+			self.print("maps loaded using nominatim", t="good")
 			return
 		try:
 			self.gmaps = googlemaps.Client(key=self.keys['gmaps'])
@@ -171,7 +176,7 @@ class Main:
 	
 	def get_coords(self, address) -> tuple[float, float]:
 		if self.api_calls >= self.GEOCODE_LIMIT and self.keys['gmaps'] != "":
-			print("GEOCODE CALL LIMIT REACHED!!!", t='warn')
+			self.print("GEOCODE CALL LIMIT REACHED!!!", t='warn')
 			return (0, 0)
 		self.api_calls += 1
 		if self.keys['gmaps'] == "":

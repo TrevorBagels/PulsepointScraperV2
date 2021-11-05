@@ -2,6 +2,7 @@ from copy import deepcopy
 from flask import Flask
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource, Api, reqparse
+from geopy.distance import geodesic
 
 from dev.events import Events as E
 
@@ -103,6 +104,35 @@ class Locations(Resource):
 		if self.app.verify() == False:
 			return "Unauthorized"
 		return self.events.main.config.locations
+	def post(self):
+		parser = reqparse.RequestParser()
+		parser.add_argument('name', type=str, required=True)
+		parser.add_argument('address', type=str, required=True)
+		parser.add_argument('lat', type=float, required=False) 
+		parser.add_argument('long', type=float, required=False) 
+		parser.add_argument('radius', type=float, required=False, default=self.events.main.config.default_radius)
+		args = parser.parse_args()
+		new_location = D.CfgLocation()
+		new_location.name = args.name
+		new_location.radius = args.radius
+		new_location.address = args.address
+		if args.lat != None:
+			new_location.coords = [args.lat, args.long] #set coords
+		else:
+			new_location.coords = self.events.main.get_coords(new_location.address) #set coords
+		if new_location.coords != None: #find nearby agencies and add them
+			for i, a in self.events.agency_data.items():
+				if a == None or a["agency"] == None: continue
+				coords = (float(a["agency"]["agency_latitude"]), float(a["agency"]["agency_longitude"]))
+				if geodesic(coords, new_location.coords).meters < self.events.main.config.agency_to_location_distance:
+					if a["agency"]["agencyid"] not in self.events.main.config.agencies:
+						self.events.main.config.agencies.append(a["agency"]["agencyid"])
+		self.events.main.config.locations.append(new_location)
+		self.app.events.save_config()
+		return new_location
+
+
+
 
 
 HOST = "0.0.0.0"

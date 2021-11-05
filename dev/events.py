@@ -10,7 +10,8 @@ class Events:
 	main:	Main
 	def __init__(self):
 		pass
-	
+	def post_init(self):
+		pass
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
 		pass
