@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #2d3142;
+  color: #ffffff; }
+
+::-webkit-scrollbar {
+  width: 0px; }
+
+.center {
+  text-align: center;
+  margin: auto; }
+
+hr.sep {
+  margin: 45px 9px 45px 9px; }
+
+.invisible {
+  visibility: hidden; }
+
+.title, a.title {
+  font-size: 150%;
+  text-align: center;
+  display: block;
+  margin: auto;
+  font-weight: 700; }
+
+.card {
+  display: block;
+  border-radius: 6px;
+  padding: 5px 9px 7px 9px;
+  margin: 25px; }
+
+.mobile-only {
+  display: none; }
+
+button {
+  background: #363C4F;
+  color: #e23c20;
+  font-weight: 600;
+  border-radius: 4px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 85%;
+  border: #E3170A 3.5px solid;
+  padding: 7px 16px;
+  text-decoration: none;
+  outline: none;
+  transition: 0.2s; }
+  button:hover {
+    transition: 0.5s;
+    color: #E3170A; }
+  button:active {
+    border: #E3170A 3.5px solid;
+    filter: brightness(120%); }
+
+#content {
+  z-index: 1; }
+  #content p {
+    font-size: 150%;
+    margin: 2px 8px 2px 8px; }
+    #content p .half-size {
+      font-size: 50%; }
+  #content article {
+    margin: 10px 24% 10px 24%; }
+  #content h2 {
+    font-size: 210%;
+    font-weight: 600;
+    text-shadow: 1px 2px #1c1c1f; }
+  #content h2, #content h3, #content h4 {
+    text-align: center; }
+  #content #incidentinfo {
+    display: grid;
+    grid-template-columns: 40% 60%; }
+    #content #incidentinfo #incidentlog table {
+      font-size: 0.6em; }
+      #content #incidentinfo #incidentlog table tr td:nth-child(6) {
+        font-size: 0.3em; }
+    #content #incidentinfo #grapharea {
+      top: 0;
+      width: 70%;
+      display: block; }
+      #content #incidentinfo #grapharea canvas {
+        margin: 0px 0px 0px 0px !important;
+        position: fixed;
+        display: inline-block; }
+
+nav {
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  margin: 0;
+  display: block;
+  background: #363C4F;
+  font-family: roboto;
+  width: 100%;
+  min-height: var(--navheight);
+  box-shadow: 0px 5px 20px black; }
+  nav a {
+    float: left;
+    position: relative;
+    text-decoration: none;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-size: 170%;
+    color: #e23c20;
+    transition: 0.2s; }
+    nav a:hover {
+      color: #E3170A;
+      transition: 0.2s; }

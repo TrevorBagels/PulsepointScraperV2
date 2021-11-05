@@ -1,21 +1,27 @@
 {
-    "api_key": "an actual api key",
-    "pushover_token": "actual api",
-    "pushover_user": "actual api",
-    "scan_interval": "1m",
-    "radius_default": "12.2mi",
+    "scan_interval": 60,
+    "radius_default": 50,
+    "events": [
+        "events_default"
+    ],
     "agencies": [
-        {    
-            "name": "Los Angeles Fire Department (Valley Bureau)"
-        }
+        "00291",
+        "00015"
     ],
     "locations": [
-        {   "name": "LAFD - Valley",
-            "address": "Porter Ranch, CA 91326",
-            "coords": [34.28287455269486, -118.55214611989018],
+        {
+            "name": "airport",
+            "address": "7000 NE Airport Way",
+            "match": "",
+            "coords": [
+                45.5898202,
+                -122.591343
+            ],
+            "radius": 5000.0,
+            "importance": 1,
             "filters": {
-                "allowed": ["Vehicle Fire"],
-                "blocked": []
+                "allow_list": [],
+                "block_list": []
             }
         }
     ]

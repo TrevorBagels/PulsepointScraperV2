@@ -1,0 +1,7 @@
+collections_dir: collections
+collections:
+  projects:
+    output: true
+url: "https://somesite.com"
+sass:
+  sass_dir: _sass

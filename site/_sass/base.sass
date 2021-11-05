@@ -1,0 +1,57 @@
+
+body
+	margin: 0
+	padding: 0
+	background: $bgc
+	color: $text2
+
+::-webkit-scrollbar
+	width: 0px
+
+.center
+	text-align: center
+	margin: auto
+
+hr.sep
+	margin: 45px 9px 45px 9px
+
+.invisible
+	visibility: hidden
+
+.title, a.title
+	font-size: 150%
+	text-align: center
+	display: block
+	margin: auto
+	font-weight: 700
+
+
+.card
+	display: block
+	border-radius: 6px
+	padding: 5px 9px 7px 9px
+	margin: 25px
+
+
+.mobile-only
+	display: none
+
+button
+	background: $navbgc
+	color: $navlink
+	font-weight: 600
+	border-radius: 4px
+	display: inline-block
+	cursor: pointer
+	font-size: 85%
+	border: $border 3.5px solid
+	padding: 7px 16px
+	text-decoration: none
+	outline: none
+	transition: .2s
+	&:hover
+		transition: .5s
+		color: $linkhov
+	&:active
+		border: $border 3.5px solid
+		filter: brightness(120%)

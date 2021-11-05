@@ -1,0 +1,30 @@
+---
+layout: default
+title: Home
+permalink: /
+---
+<script type='text/javascript' src="/assets/js/lib/grid.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+
+
+
+
+<div id="logs" class="ag-theme-alpine" style="height: 600px; width:500px;"></div>
+
+<script>
+	//create incident log table
+
+	$.get("http://0.0.0.0:5001/incidents", {token: "null.dSDxupxBKnM1ZMpQVeFkz7MFBl0", count: 15, page: 0}, function(resp){
+		var columnDefs = [
+		{field: "date", cellRenderer: 'agSparklineCellRenderer'},
+		
+		{field: "time"},
+		{field: "type"},
+		{field: "address"}];
+		var gridOptions = {columnDefs:columnDefs, rowData:resp};
+		console.log(resp)
+		const gridDiv = document.querySelector('#logs');
+    	new agGrid.Grid(gridDiv, gridOptions);
+	})
+</script>

@@ -18,6 +18,9 @@ def load_json(path) -> dict:
 	with open(path, "r") as f:
 		d = json.loads(f.read(), object_hook=json_util.object_hook)
 	return d
+def load_json_s(s) -> dict:
+	d = json.loads(s, object_hook=json_util.object_hook)
+	return d
 
 def save_json(path, data:prodict.Prodict):
 	with open(path, "w+") as f:

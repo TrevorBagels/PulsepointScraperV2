@@ -151,7 +151,7 @@ class Main:
 		
 
 	def init_maps(self):
-		if self.keys["gmaps"]:
+		if "gmaps" not in self.keys or self.keys["gmaps"] != "":
 			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper")
 			return
 		try:
