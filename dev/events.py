@@ -31,5 +31,7 @@ class Events:
 		pass
 	def important_incident_found(self, incident:D.Incident, location:str, importance:int):
 		pass
+	def get_custom_incidents(self) -> list[D.Incident]:
+		return []
 
 

@@ -85,12 +85,12 @@ class Events(events.Events):
 			closest = 0
 			closestDist = 100000 #meters
 			for l, i in zip(self.main.config.locations, range(len(self.main.config.locations))):
-				if l.coords != None:
+				if l.coords != None and incident.coords != None:
 					dist = hs.haversine(l.coords, incident.coords, unit=hs.Unit.METERS)
 					if dist < closestDist:
 						closest = i
 						closestDist = dist
-			if closestDist > 3000:
+			if closestDist > 12000:
 				return
 			points = [tuple(p1), tuple(self.main.config.locations[closest].coords)]
 			folium.PolyLine(points, color="red", weight=2.5, opacity=.3).add_to(self.map)

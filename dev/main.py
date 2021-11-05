@@ -6,7 +6,7 @@ from geopy.geocoders import Nominatim
 from colorama.ansi import Fore
 from bson import json_util
 from . import utils
-
+import geopy
 
 class Data(Prodict):
 	agencies:			list[str] #agency names
@@ -53,7 +53,7 @@ class Main:
 				except Exception as e:
 					print(e)
 			
-			time.sleep(5)
+			time.sleep(self.config.scan_interval)
 
 
 	def main_loop(self):
@@ -61,23 +61,28 @@ class Main:
 		
 		self.data.last_scanned = time.time() 
 		incidents:list[D.Incident] = [] #incidents to analyze
-
+		
 		for a in self.data.agencies:
 			i = self.scraper.get_incidents(a)
 			if i.active == None: i.active = []
 			if i.recent == None: i.recent = []
-			incidents1 = i.active + i.recent #basically just all of the incidents for this agency, both active and recent
+			incidents1 = i.active + i.recent#basically just all of the incidents for this agency, both active and recent
 			for x in incidents1:
 				if x.uid not in self.data.analyzed:
 					self.call_event("incident_found", x) #! EVENT !#
 					incidents.append(x)
-
+		
+		for x in self.call_event("get_custom_incidents"): #! EVENT !#
+			if x.uid not in self.data.analyzed:
+				self.call_event("incident_found", x) #! EVENT !#
+				incidents.append(x)
+		
 		self.call_event("analysis_start") #! EVENT !#
 		for x in incidents:
 			self.analyze(x)
 			self.data.analyzed.append(x.uid)
-			self.call_event("incident_analyzed", x)
-		self.call_event("main_loop_end")
+			self.call_event("incident_analyzed", x) #! EVENT #!
+		self.call_event("main_loop_end") #! EVENT #!
 
 	
 	def analyze(self, incident:D.Incident):
@@ -108,10 +113,12 @@ class Main:
 
 
 	def call_event(self, event_name, *args):
-		#ret = None
+		ret = None
 		for x in self.events:
-			x.__getattribute__(event_name)(*args)
-		#return ret
+			r = x.__getattribute__(event_name)(*args)
+			if r != None:
+				ret = r
+		return ret
 		
 
 	def load_event_script(self, scriptname):
@@ -156,7 +163,7 @@ class Main:
 
 	def init_maps(self):
 		if "gmaps" not in self.keys or self.keys["gmaps"] == "":
-			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper")
+			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper", timeout=self.config.geocoder_timeout)
 			self.print("maps loaded using nominatim", t="good")
 			return
 		try:
@@ -175,15 +182,23 @@ class Main:
 				return False
 	
 	def get_coords(self, address) -> tuple[float, float]:
-		if self.api_calls >= self.GEOCODE_LIMIT and self.keys['gmaps'] != "":
+		if self.api_calls >= self.GEOCODE_LIMIT and ("gmaps" in self.keys and self.keys['gmaps'] != ""):
 			self.print("GEOCODE CALL LIMIT REACHED!!!", t='warn')
 			return (0, 0)
 		self.api_calls += 1
-		if self.keys['gmaps'] == "":
-			location = self.gmaps.geocode(address)
+		if self.keys['gmaps'] == "" or "gmaps" not in self.keys: #using nominatim
+			location = None
+			try:
+				location = self.gmaps.geocode(address)
+			except:
+				location = None
+				
 			time.sleep(.5) #rate limiting
+			if location == None:
+				self.print(f"error getting coordinates for {address}!", t='warn')
+				return None
 			return (location.latitude, location.longitude)
 		else:
-			#! MAKES API CALLS. I AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED BY THIS. Set api_key to "" to avoid using google maps.
-			l = self.gmaps.geocode(address)[0]['geometry']['location'] 
+			#! MAKES API CALLS. I AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED BY THIS. Set gmaps to "" to avoid using google maps.
+			l = self.gmaps.geocode(address)[0]['geometry']['location']
 			return (float(l["lat"]), float(l["lng"]))

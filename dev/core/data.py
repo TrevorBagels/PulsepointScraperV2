@@ -93,6 +93,7 @@ class Cfg(Prodict):
 	locations:			list[CfgLocation]
 	default_radius:		int
 	incident_filters:	Filter #global filters
+	geocoder_timeout:	int #how long to wait before timing out when trying to geocode a location.
 	agency_to_location_distance:	int #how far away an agency can be from a location to be considered needed for scanning (meters). default: 40km
 	def init(self):
 		self.agency_to_location_distance = 40000
@@ -104,6 +105,7 @@ class Cfg(Prodict):
 		self.incident_filters = Filter()
 		self.locations = []
 		self.units = "m"
+		self.geocoder_timeout = 9
 
 
 
@@ -127,7 +129,7 @@ class Incident(Prodict):
 	CallReceivedDateTime:			datetime
 	ClosedDateTime:					datetime
 	FullDisplayAddress:				str
-	MedicalEmergencyDisplayAddress:	str
+	MedicalEmergencyDisplayAddress:	str #is often null, NOT RELIABLE. Use full display address instead
 	AddressTruncated:				int
 	Unit:							list[Unit]
 	StreetNumber:					int

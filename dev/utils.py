@@ -1,4 +1,4 @@
-import json, time, os, re
+import json, time, os, re, pytz
 from bson import json_util
 from datetime import date, datetime, timezone, timedelta
 import traceback
@@ -23,8 +23,12 @@ def load_json_s(s) -> dict:
 	return d
 
 def save_json(path, data:prodict.Prodict):
+	if type(data) == list:
+		data2 = [x.to_dict(is_recursive=True) for x in data]
+	else:
+		data2 = data.to_dict(is_recursive=True)
 	with open(path, "w+") as f:
-		f.write(json.dumps(data.to_dict(is_recursive=True), indent=4, default=json_util.default))
+		f.write(json.dumps(data2, indent=4, default=json_util.default))
 
 def write_to(file, content):
 	with open(file, "w+") as f:
@@ -60,6 +64,10 @@ def local(t:datetime) -> datetime:
     offset = datetime.fromtimestamp(now_timestamp) - datetime.utcfromtimestamp(now_timestamp)
     return t + offset
 
+def local_to_utc(t:datetime, tz:str="America/Los_Angeles") -> datetime:
+	local = pytz.timezone(tz)
+	local_time = local.localize(t, is_dst=None)
+	return local_time.astimezone(pytz.utc)
 
 def long_ago() -> datetime:
 	return datetime(1990, 1, 1).astimezone(timezone.utc)

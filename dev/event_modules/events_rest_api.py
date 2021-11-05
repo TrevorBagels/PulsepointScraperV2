@@ -57,8 +57,8 @@ class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
 		a = {
-			"date": incident.CallReceivedDateTime.strftime("%m/%d"),
-			"time": incident.CallReceivedDateTime.strftime("%H:%M"),
+			"date": incident.CallReceivedDateTime.strftime("%M/%d"),
+			"time": incident.CallReceivedDateTime.strftime("%H:%m"),
 			"epoch": incident.CallReceivedDateTime.timestamp(),
 			"agency": incident.agency_name,
 			"type": incident.incident_type,

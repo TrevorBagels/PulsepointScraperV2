@@ -1,0 +1,302 @@
+[
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.5372094,
+        "Longitude": -122.619724,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636146300000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149609000
+        },
+        "FullDisplayAddress": "2000 NE 42ND AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456743160994877441",
+        "incident_type": "VANDALISM - PRIORITY",
+        "significant_locations": null,
+        "coords": [
+            45.5372094,
+            -122.619724
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.527838,
+        "Longitude": -122.649326,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636145520000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149489000
+        },
+        "FullDisplayAddress": "1600 NE IRVING ST, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456742659674963971",
+        "incident_type": "SUSPICIOUS - PRIORITY",
+        "significant_locations": null,
+        "coords": [
+            45.527838,
+            -122.649326
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 25.768999,
+        "Longitude": -80.199292,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636143000000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149309000
+        },
+        "FullDisplayAddress": "500 SW 3RD AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456741903798444034",
+        "incident_type": "VANDALISM - PRIORITY",
+        "significant_locations": null,
+        "coords": [
+            25.768999,
+            -80.199292
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.5101876,
+        "Longitude": -122.5786832,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636148100000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149249000
+        },
+        "FullDisplayAddress": "4800 SE 82ND AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456741653004230657",
+        "incident_type": "DISTURBANCE - PRIORITY",
+        "significant_locations": null,
+        "coords": [
+            45.5101876,
+            -122.5786832
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": null,
+        "Longitude": null,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636148340000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149129000
+        },
+        "FullDisplayAddress": "NE 99TH AVE & NE MULTNOMAH ST, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456741148198727686",
+        "incident_type": "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE",
+        "significant_locations": null,
+        "coords": [
+            0,
+            0
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.50602212039993,
+        "Longitude": -122.49752618755701,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636144380000
+        },
+        "ClosedDateTime": {
+            "$date": 1636149009000
+        },
+        "FullDisplayAddress": "16100 SE SHERMAN ST, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456740647377985537",
+        "incident_type": "UNWANTED PERSON",
+        "significant_locations": null,
+        "coords": [
+            45.50602212039993,
+            -122.49752618755701
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.559462764960735,
+        "Longitude": -122.4831101597528,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636144020000
+        },
+        "ClosedDateTime": {
+            "$date": 1636148769000
+        },
+        "FullDisplayAddress": "17500 NE MARINE DR, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456739639385985027",
+        "incident_type": "UNWANTED PERSON",
+        "significant_locations": null,
+        "coords": [
+            45.559462764960735,
+            -122.4831101597528
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.536596,
+        "Longitude": -122.595505,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636146120000
+        },
+        "ClosedDateTime": {
+            "$date": 1636148468000
+        },
+        "FullDisplayAddress": "6600 NE HANCOCK CT, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456738377785511942",
+        "incident_type": "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE",
+        "significant_locations": null,
+        "coords": [
+            45.536596,
+            -122.595505
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 41.746447,
+        "Longitude": -93.570262,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636147620000
+        },
+        "ClosedDateTime": {
+            "$date": 1636148409000
+        },
+        "FullDisplayAddress": "2600 NE 102ND AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456738127641333762",
+        "incident_type": "VANDALISM - COLD",
+        "significant_locations": null,
+        "coords": [
+            41.746447,
+            -93.570262
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": null,
+        "Longitude": null,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636146060000
+        },
+        "ClosedDateTime": {
+            "$date": 1636148289000
+        },
+        "FullDisplayAddress": "SW NAITO PKWY & S HARRISON ST, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1456737626648506370",
+        "incident_type": "ACCIDENT - INJURY",
+        "significant_locations": null,
+        "coords": [
+            0,
+            0
+        ],
+        "agency_name": null
+    }
+]

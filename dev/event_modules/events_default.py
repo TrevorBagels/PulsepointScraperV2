@@ -1,8 +1,7 @@
-from .. import events
+from .. import events, utils
 from ..core import data as D
 from notifiers import get_notifier
 from geopy.distance import geodesic
-
 class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
@@ -24,7 +23,7 @@ class Events(events.Events):
 		distance = "N/A"
 		if incident.dists != None and location.name in incident.dists: distance = incident.dists[location.name]
 		message = f"""{incident.incident_type.upper()} AT {location.name.upper()}
-	Time:				{incident.CallReceivedDateTime.strftime("%a, AT %H:%M")}
+	Time:				{utils.local(incident.CallReceivedDateTime).strftime("%a, AT %H:%M")}
 	Incident Address:		{incident.FullDisplayAddress.upper()}
 	Monitored address:		{address.upper()}
 	Incident coords:		{incident.coords}
