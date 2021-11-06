@@ -27,7 +27,7 @@ class Main:
 		self.keys_file = keys_file
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
-		self.api_calls = 0
+		self.api_calls = 0 #maybe some day i'll throw in some code that makes this reset every day.
 
 		self.config:D.Cfg = None
 		self.keys = None
@@ -83,6 +83,7 @@ class Main:
 			self.data.analyzed.append(x.uid)
 			self.call_event("incident_analyzed", x) #! EVENT #!
 		self.call_event("main_loop_end") #! EVENT #!
+		utils.save_json("geocoding_results.json", self.geocoding_results)
 
 	
 	def analyze(self, incident:D.Incident):
@@ -162,14 +163,17 @@ class Main:
 		
 
 	def init_maps(self):
+		self.geocoding_results = utils.load_json("geocoding_results.json") or {} #if loading json results in None, just use a new dictionary
+
+		self.nominatim = Nominatim(user_agent="Pulsepoint Scraper", timeout=self.config.geocoder_timeout) #use this before attempting to use google maps
+
 		if "gmaps" not in self.keys or self.keys["gmaps"] == "":
-			self.gmaps = Nominatim(user_agent="Pulsepoint Scraper", timeout=self.config.geocoder_timeout)
-			self.print("maps loaded using nominatim", t="good")
+			self.gmaps = None
+			self.print("google maps failed to load. Geocoding will be more prone to failiure.", t="warn")
 			return
-		try:
-			self.gmaps = googlemaps.Client(key=self.keys['gmaps'])
-		except:
-			self.print("Could not load google maps. Probably an invallid api key.", t='bad')
+		else:
+			try: self.gmaps = googlemaps.Client(key=self.keys['gmaps']) #works better than nominatim but is more expensive
+			except: self.print("Could not load google maps. Probably an invallid api key.", t='bad')
 
 
 	def validate_location(self, l:D.CfgLocation):
@@ -182,23 +186,36 @@ class Main:
 				return False
 	
 	def get_coords(self, address) -> tuple[float, float]:
-		if self.api_calls >= self.GEOCODE_LIMIT and ("gmaps" in self.keys and self.keys['gmaps'] != ""):
-			self.print("GEOCODE CALL LIMIT REACHED!!!", t='warn')
-			return (0, 0)
-		self.api_calls += 1
-		if self.keys['gmaps'] == "" or "gmaps" not in self.keys: #using nominatim
-			location = None
-			try:
-				location = self.gmaps.geocode(address)
-			except:
-				location = None
-				
-			time.sleep(.5) #rate limiting
-			if location == None:
+		if address.upper() in self.geocoding_results:
+			self.print(f"Api calls were saved because the address {address} was previously geocoded!", t='good')
+			return self.geocoding_results[address.upper()]
+		
+		coords = None
+		location = None
+		#first try using nominatim
+		try: location = self.nominatim.geocode(address)
+		except: pass
+		if location == None:
+			#nominatim doesn't work, so try using google maps
+			if self.gmaps != None:
+				self.api_calls += 1
+				if self.api_calls < self.GEOCODE_LIMIT:
+					try:
+						#! MAKING GOOGLE MAPS API CALLS. TOO MANY OF THESE CAN COST REAL MONEY !#
+						#! ONLY ENABLE GMAPS IF YOU'RE AWARE OF THE RISKS AND KNOW WHAT YOU'RE DOING #!
+						self.print(f"MAKING AN API CALL! {self.GEOCODE_LIMIT - self.api_calls} CALL(S) LEFT!", t='warn')
+						l = self.gmaps.geocode(address)[0]['geometry']['location']
+						coords = (float(l["lat"]), float(l["lng"])) #google maps worked after nominatim failed, define the coordinates
+						self.print("API CALL MADE!", coords, t='good')
+					except: self.print("API CALL FAILED!", t='bad')
+				else:
+					self.print("GEOCODE CALL LIMIT REACHED! Error getting coordinates for {address}!", t='bad')
+			else: #neither of these work.
 				self.print(f"error getting coordinates for {address}!", t='warn')
-				return None
-			return (location.latitude, location.longitude)
-		else:
-			#! MAKES API CALLS. I AM NOT RESPONSIBLE FOR ANY DAMAGES CAUSED BY THIS. Set gmaps to "" to avoid using google maps.
-			l = self.gmaps.geocode(address)[0]['geometry']['location']
-			return (float(l["lat"]), float(l["lng"]))
+		else: #nominatim worked, define the coordinates
+			coords = (location.latitude, location.longitude)
+		if coords != None:
+			self.geocoding_results[address.upper()] = coords
+		
+		time.sleep(.4) #rate limiting
+		return coords 

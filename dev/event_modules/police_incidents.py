@@ -1,4 +1,5 @@
 
+from typing import NewType
 from .. import events
 from ..core import data as D
 from notifiers import get_notifier
@@ -25,14 +26,17 @@ class Events(events.Events):
 		incidents = []
 		for user in self.accounts:
 			new_tweet_count = None
-			if self.most_recent[user] != None: 
+			if self.most_recent[user] != None:
+				print("Most Recent:", self.most_recent[user])
 				new_tweet_count = requests.get(f"https://api.twitter.com/2/tweets/counts/recent?query=from:{user}&since_id={self.most_recent[user]}", headers=self.headers).json()['data'][0]['tweet_count']
 			if self.most_recent[user] == None or new_tweet_count > 0:
 				if new_tweet_count != None: self.main.print(f"{new_tweet_count} tweet(s) found for user {user}.", t='good')
-				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at,geo,attachments"
+				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at"
 				if self.most_recent[user] != None:
-					tweets_request_url += f"?since_id={self.most_recent[user]}"
+					tweets_request_url += f"&since_id={self.most_recent[user]}"
 				tweets = requests.get(tweets_request_url, headers=self.headers).json()
+				if "data" not in tweets:
+					self.main.print(tweets, t='bad')
 				print(len(tweets['data']), "tweets recieved")
 				for x in tweets['data']:
 					x['id'] = int(x['id'])
@@ -53,7 +57,7 @@ class Events(events.Events):
 		#dept could also be "Fire", for parsing incidents from @pdxfirelog. pdx fire log includes more data (like when police are requested, or when someone is jumping from a bridge, etc.)
 		i = D.Incident()
 		txt = x['text']
-		cities = {"PORT": "Portland", "GRSM": "Gresham"} #, PORT [Portland Police #... or GRSM [Gresham Police #...
+		cities = {"PORT": "Portland", "GRSM": "Gresham", "BEAV": "Portland", "WASH": "Portland", "MULT": "Portland"} #, PORT [Portland Police #... or GRSM [Gresham Police #...
 		city = None #either "PORT" or "GRSM"
 		for c in cities:
 			if f"{c} [{cities[c]} {dept} #" in txt:
@@ -93,7 +97,6 @@ class Events(events.Events):
 			i.coords = coords #! incident coords assigned
 			i.Latitude = coords[0] #! incident latitude assigned
 			i.Longitude = coords[1] #! incident longitude assigned
-		
 		if i.coords == None: print(i)
 		return i
 

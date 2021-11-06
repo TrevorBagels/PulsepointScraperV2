@@ -15,18 +15,24 @@ def from_iso8601(dt:str) -> datetime:
 
 def load_json(path) -> dict:
 	d = None
-	with open(path, "r") as f:
-		d = json.loads(f.read(), object_hook=json_util.object_hook)
+	try:
+		with open(path, "r") as f:
+			d = json.loads(f.read(), object_hook=json_util.object_hook)
+	except:
+		pass #failed to load some json.
 	return d
 def load_json_s(s) -> dict:
 	d = json.loads(s, object_hook=json_util.object_hook)
 	return d
 
 def save_json(path, data:prodict.Prodict):
-	if type(data) == list:
-		data2 = [x.to_dict(is_recursive=True) for x in data]
-	else:
-		data2 = data.to_dict(is_recursive=True)
+	try:
+		if type(data) == list:
+			data2 = [x.to_dict(is_recursive=True) for x in data]
+		else:
+			data2 = data.to_dict(is_recursive=True)
+	except:
+		data2 = data
 	with open(path, "w+") as f:
 		f.write(json.dumps(data2, indent=4, default=json_util.default))
 

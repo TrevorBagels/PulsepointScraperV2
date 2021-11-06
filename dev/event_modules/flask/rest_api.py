@@ -47,6 +47,21 @@ class Settings(Resource):
 		new_config.update(params)
 		print(new_config)
 
+class Map(Resource):
+	def __init__(self, events, app):
+		self.events = events
+		self.app = app
+	def get(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		else:
+			html = ""
+			with open("map.html", "r") as f:
+				html = f.read()
+				mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
+				html = html.replace(mapID, "MAP")
+				html = html.split("</body>")[1].replace("<script>", "").replace("</script>", "").replace("\n", "")#.replace("<!DOCTYPE html>", "").replace("<head>", "").replace("</head>", "").replace("<body>", "").replace("</body>", "")
+			return html
 
 class GenerateToken(Resource):
 	def __init__(self, events, app):
@@ -105,6 +120,8 @@ class Locations(Resource):
 			return "Unauthorized"
 		return self.events.main.config.locations
 	def post(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
 		parser = reqparse.RequestParser()
 		parser.add_argument('name', type=str, required=True)
 		parser.add_argument('address', type=str, required=True)
@@ -152,6 +169,7 @@ class FlaskAPI:
 		self.app.config['CORS_HEADERS'] = 'Content-Type'
 
 		api.add_resource(Locations, "/locations", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(Map, "/map.html", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Incidents, "/incidents", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(GenerateToken, "/gettoken", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Settings, "/settings", resource_class_kwargs={'events': self.events, 'app': self})
