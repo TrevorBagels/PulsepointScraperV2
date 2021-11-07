@@ -28,7 +28,7 @@ class Events(events.Events):
 			new_tweet_count = None
 			if self.most_recent[user] != None:
 				print("Most Recent:", self.most_recent[user])
-				new_tweet_count = requests.get(f"https://api.twitter.com/2/tweets/counts/recent?query=from:{user}&since_id={self.most_recent[user]}", headers=self.headers).json()['data'][0]['tweet_count']
+				new_tweet_count = requests.get(f"https://api.twitter.com/2/tweets/counts/recent?query=from:{user}&since_id={self.most_recent[user]}", headers=self.headers).json()['meta']['total_tweet_count']
 			if self.most_recent[user] == None or new_tweet_count > 0:
 				if new_tweet_count != None: self.main.print(f"{new_tweet_count} tweet(s) found for user {user}.", t='good')
 				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at"

@@ -15,16 +15,4 @@
 		<!--/div-->
 		<div style='min-height: 100px;'></div>
 	</body>
-
-	<script>
-		document.body.onload = function() {
-			auth = Cookies.get("auth") || "no"
-			$.get("http://0.0.0.0:5001/checkauth", {token: auth}, function(resp){
-			if(resp == "Unauthorized"){
-				window.location = "/login";
-			}
-		});
-		}
-		
-	</script>
 </html>

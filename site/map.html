@@ -1,0 +1,64 @@
+---
+layout: default
+title: Home
+permalink: /map
+---
+<style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+<style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+<meta name="viewport" content="width=device-width,
+initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style>
+#MAP {
+	border-radius: 6px;
+	border: 3px solid #0c0a0a;
+	width: 100.0%;
+	height: 100.0%;
+	float: left;
+}
+</style>
+
+<div class="folium-map" id="MAP" ></div>
+<div>
+<script>
+
+	$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 45, page: 0}, function(resp){
+			inTable = `<tr> <td>
+					<table cellspacing="0" cellpadding="1" width="100%">
+						<tr>
+							<th>Time</th><th>Type</th><th>Address</th>
+						</tr>
+					</table>
+				</td></tr>
+				<tr>
+					<td>
+						<div style='max-height: 400px; overflow:auto;'>
+							<table cellspacing="0" cellpadding="1" width="100%">
+				`;
+			resp.forEach(element => {
+				inTable += "<tr>" + 
+					"<td>" + element.date + ", " + element.time  + "</td>" +
+					"<td>" + element.type + "</td>" +
+					"<td>" + element.address + "</td>" +
+					"</tr>"
+			});
+			inTable += "</table></div></td></tr>"
+			document.getElementById('incidents-log').innerHTML = inTable
+			
+		})
+
+		$.get(baseURL + "/map.html", {token: Cookies.get("auth")}, function(resp){
+			var s = document.createElement('script');
+			s.innerText = resp
+			document.head.appendChild(s);
+		});
+	</script>

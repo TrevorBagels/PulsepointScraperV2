@@ -75,6 +75,7 @@ class CfgLocation(Prodict):
 	importance:			int
 	match:				str #regex string
 	filters:			Filter
+	enabled:			bool #can be turned to false to disable monitoring this location
 	def init(self):
 		self.name = ""
 		self.address = ""
@@ -82,6 +83,7 @@ class CfgLocation(Prodict):
 		self.importance = 1
 		self.match = None
 		self.filters = Filter()
+		self.enabled = True 
 
 
 class Cfg(Prodict):

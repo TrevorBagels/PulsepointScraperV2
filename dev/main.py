@@ -200,6 +200,7 @@ class Main:
 			if self.gmaps != None:
 				self.api_calls += 1
 				if self.api_calls < self.GEOCODE_LIMIT:
+					failed = False
 					try:
 						#! MAKING GOOGLE MAPS API CALLS. TOO MANY OF THESE CAN COST REAL MONEY !#
 						#! ONLY ENABLE GMAPS IF YOU'RE AWARE OF THE RISKS AND KNOW WHAT YOU'RE DOING #!
@@ -207,7 +208,20 @@ class Main:
 						l = self.gmaps.geocode(address)[0]['geometry']['location']
 						coords = (float(l["lat"]), float(l["lng"])) #google maps worked after nominatim failed, define the coordinates
 						self.print("API CALL MADE!", coords, t='good')
-					except: self.print("API CALL FAILED!", t='bad')
+					except:
+						failed = True
+					if failed:
+						#sometimes there'll be a random "[...." in the address, removing this might fix things
+						if "[" in address:
+							self.print(f"API CALL FAILED FOR ADDRESS {address}! TRYING AGAIN...", t='warn')
+							coords = self.get_coords(address.split("[")[0])
+							if coords == [0, 0]:
+								self.print("API CALL FAILED!", t='bad')
+								coords = None
+							else:
+								self.print("SUCCESSFULLY GEOCODED WEIRD LOOKING ADDRESS!", t='good')
+						else:
+							self.print(f"API CALL FAILED FOR ADDRESS {address}!", t="bad")
 				else:
 					self.print("GEOCODE CALL LIMIT REACHED! Error getting coordinates for {address}!", t='bad')
 			else: #neither of these work.

@@ -1,0 +1,29 @@
+---
+layout: default
+title: Home
+permalink: /config
+---
+<style>
+</style>
+<a style='position: relative; bottom: 0; left: 0;' href="/"><button>Back</button></a>
+<div id='config'>
+
+</div>
+
+<script>
+	$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
+		//Object.keys()
+		var ignore = ["events", "importance_checks", "incident_filters", "locations", "units", "agencies"];
+		var units = {
+			"scan_interval": "seconds", "radius_default": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
+		}
+		console.log(settings)
+		Object.keys(settings).forEach(function (e){
+			if(!ignore.includes(e))
+			{
+				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "</b> <input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>  </div>"
+			}
+		});
+		config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button>"
+	});
+</script>

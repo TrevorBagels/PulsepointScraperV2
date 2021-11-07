@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Home</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@300&family=Roboto");
+		</style>
+		<link rel='stylesheet' href="/assets/css/styles.css">
+		<script type='text/javascript' src="/assets/js/lib/jquery.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+<script>
+	baseURL = "http://0.0.0.0:5001"
+	console.log("Base API URL: " + baseURL)
+</script>
+
+<script>
+	String.prototype.hashCode = function(){
+		var hash = 0;
+		for (var i = 0; i < this.length; i++) {
+			var character = this.charCodeAt(i);
+			hash = ((hash<<5)-hash)+character;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	}
+	function makehash(object){
+		return JSON.stringify(object).hashCode();
+	}
+</script>
+	</head>
+	<body>
+		<!--div id='content'-->
+			<div id='content'>
+	<div class='center'>
+		<h3>Please sign in</h3>
+		<input id='password' type='text'>
+		<br>
+		<button style='margin-top: 25px;' onclick='login()'>Sign in</button>
+		<p id='alert' style='color: rgb(255, 74, 74); font-size: .9em;'>
+		</p>
+	</div>
+</div>
+<script>
+	function login()
+	{
+		pwd = document.getElementById("password").value;
+		console.log(pwd);
+		
+		$.get(baseURL + "/gettoken", {password: pwd}, function(resp){
+			if(resp == null){
+				//invallid password
+				document.getElementById('alert').innerHTML = "Error: Invallid password";
+			}
+			else
+			{
+				document.getElementById('alert').innerHTML = "Successfully logged in!";
+				document.getElementById('alert').style.color = "lightgreen";
+				Cookies.set("auth", resp);
+				window.location = "/";
+			}
+		});
+
+	}
+	
+</script>
+		<!--/div-->
+		<div style='min-height: 100px;'></div>
+	</body>
+</html>

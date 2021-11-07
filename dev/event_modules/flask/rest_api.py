@@ -1,11 +1,11 @@
 from copy import deepcopy
-from flask import Flask
+from flask import Flask, Response
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource, Api, reqparse
 from geopy.distance import geodesic
 
 from dev.events import Events as E
-
+import datetime
 from ...core import data as D
 from ... import main as M
 import threading, time
@@ -13,6 +13,9 @@ from itsdangerous import Serializer, TimedJSONWebSignatureSerializer, BadSignatu
 import hashlib
 from ... import utils
 from flask_cors import CORS, cross_origin
+
+
+import logging
 
 
 
@@ -96,10 +99,15 @@ class Incidents(Resource):
 			return "Unauthorized"
 		parser = reqparse.RequestParser()
 		parser.add_argument('count', type=int, required=True)
+		parser.add_argument('importantonly', type=bool, required=False, default=False)
 		parser.add_argument('page', type=int, required=True)
 		parser.add_argument('filter', type=str, required=False) #filter by incident type
 		args = parser.parse_args()
+		self.events.recents.sort(key= lambda x : x['epoch'], reverse=True)
+		self.events.important_incidents.sort(key= lambda x : x['epoch'], reverse=True)
+
 		items = self.events.recents
+		if args.importantonly: items = self.events.important_incidents
 		if args.filter:
 			newItems = []
 			for x in items:
@@ -108,6 +116,30 @@ class Incidents(Resource):
 
 		return items[args.count * args.page:][:args.count]
 
+
+class IncidentsSince(Resource):
+	def __init__(self, events, app):
+		self.events = events
+		self.app:FlaskAPI = app
+	def get(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		parser = reqparse.RequestParser()
+		parser.add_argument('time', type=str, required=True) #time in (local) YYYY-MM-DDTHH:MM:SS
+		args = parser.parse_args()
+		since_date = datetime.datetime.strptime(args.time, "%Y-%m-%dT%H:%M:%S").timestamp()
+		
+		self.events.recents.sort(key= lambda x : x['epoch'], reverse=True)
+
+		incidents_since_time = 0
+		for x in self.events.recents:
+			if x["epochlocal"] >= since_date: #incident happened after this time
+				incidents_since_time += 1
+			else:
+				break
+		return {"count": incidents_since_time}
+		
+		
 
 class Locations(Resource):
 	def __init__(self, events:E, app):
@@ -148,7 +180,16 @@ class Locations(Resource):
 		self.app.events.save_config()
 		return new_location
 
-
+class Authorized(Resource):
+	def __init__(self, events:E, app):
+		self.events = events
+		self.app:FlaskAPI = app
+		pass
+	def get(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		else:
+			return "Authorized"
 
 
 
@@ -167,12 +208,15 @@ class FlaskAPI:
 		api = Api(self.app)
 		cors = CORS(self.app)
 		self.app.config['CORS_HEADERS'] = 'Content-Type'
+		logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 		api.add_resource(Locations, "/locations", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Map, "/map.html", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Incidents, "/incidents", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(GenerateToken, "/gettoken", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Settings, "/settings", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(Authorized, "/checkauth", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(IncidentsSince, "/incidents/since", resource_class_kwargs={'events': self.events, 'app': self})
 		kwargs = {"host": HOST, "port": PORT}
 		if AUTO:
 			kwargs = {}
@@ -183,12 +227,9 @@ class FlaskAPI:
 		parser.add_argument('token', required=True)
 		args = parser.parse_args()
 		token = args.token
-		print(token)
-		print("verifying...")
 		s = Serializer(self.events.flaskapp.app.config["SECRET_KEY"])
 		try:
 			data = s.loads(token)
-			print(data)
 		except SignatureExpired:
 			return False #token is expired
 		except BadSignature:

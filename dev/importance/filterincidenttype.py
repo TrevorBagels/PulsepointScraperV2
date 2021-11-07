@@ -2,7 +2,7 @@ from .. import main as M
 from ..core import data as D
 
 
-def check(main:M.Main, incident:D.Incident, location:M.CfgLocation) -> float:
+def check(main:M.Main, incident:D.Incident, location:D.CfgLocation) -> float:
 	if location.filters.is_allowed(incident.incident_type):
 		return 0 #let it pass
 	else:

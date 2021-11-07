@@ -18,20 +18,112 @@
 	h2, h3, h4
 		text-align: center
 
-	#incidentinfo
-		display: grid
-		grid-template-columns: 40% 60%
-		#incidentlog
-			table
-				font-size: .6em
-				tr
-					td:nth-child(6)
-						font-size: .3em
-		#grapharea
-			top: 0
-			width: 70%
-			display: block
-			canvas
-				margin: 0px 0px 0px 0px !important
-				position: fixed
-				display: inline-block
+
+#incidents-log
+	margin: 5px
+	width: 48.0%
+	cellspacing: 0
+	border-radius: 8px !important
+	border: 3px solid $border
+	float: right
+	//border-collapse: collapse
+	font-size: .9em
+	tr
+		th
+			text-align: center
+		td:nth-child(1), th:nth-child(1)
+			width: 10%
+		td:nth-child(2), th:nth-child(2)
+			width: 30%
+		td:nth-child(3), th:nth-child(3)
+			width: 60%
+	
+	tr:nth-child(even)
+		background-color: $bgc2
+	td, th
+		padding: 2px
+
+#important-incidents
+	margin: 5px
+	width: 48.0%
+	cellspacing: 0
+	border-radius: 6px
+	border: 3px solid $border
+	border-radius: 8px !important
+	height: 80.0%
+	float: right
+	//border-collapse: collapse
+	font-size: .9em
+	tr
+		th
+			text-align: center
+		td:nth-child(1), th:nth-child(1) //time
+			width: 5%
+		td:nth-child(2), th:nth-child(2) //type !LONGISH!
+			width: 20%
+		td:nth-child(2) //type !LONGISH!
+			font-size: .8em
+		td:nth-child(3), th:nth-child(3) //location name
+			width: 10%
+		td:nth-child(4), th:nth-child(4) //address !LONG!
+			width: 25%
+		td:nth-child(5), th:nth-child(5) //address (monitored) !LONG!
+			width: 25%
+		td:nth-child(6), th:nth-child(6) //distance
+			width: 10%
+		
+	
+	tr:nth-child(even)
+		background-color: $bgc2
+	td, th
+		padding: 2px
+
+#extra-info
+	margin-top: 15px
+	border-radius: 6px
+	padding: 20px
+	height: 20%
+	width: 90%
+	float: left
+	border: 2px solid $border
+	p
+		font-size: 1.6em
+		line-height: 2
+		font-weight: 600
+		i
+			padding-left: 24px
+			font-size: 1.7em
+			color: $navlink
+
+#MAP
+	border-color: $border !important
+
+
+#config
+	display: block
+	border: 3px solid $border
+	border-radius: 6px
+	padding: 24px
+	width: 30%
+	margin: auto
+	.setting
+		height: 25px
+
+#extra-info-mobile
+	top: 0
+	position: fixed
+	width: 100%
+	min-height: 50px
+	background-color: $bgc
+	z-index: 100000
+	padding: 2px 9px 2px 9px
+	border-bottom-left-radius: 5px
+	border-bottom-right-radius: 5px
+	p
+		font-size: 1em
+		line-height: 1
+		font-weight: 600
+	i
+		padding-left: 24px
+		font-size: 1.7em
+		color: $navlink

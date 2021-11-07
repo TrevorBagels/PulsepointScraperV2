@@ -3,28 +3,202 @@ layout: default
 title: Home
 permalink: /
 ---
-<script type='text/javascript' src="/assets/js/lib/grid.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
-<link rel="stylesheet" href="https://unpkg.com/ag-grid-community/dist/styles/ag-grid.css">
+<style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+<style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+<meta name="viewport" content="width=device-width,
+initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style>
+#MAP {
+	border-radius: 6px;
+	border: 3px solid #0c0a0a;
+	width: 50.0%;
+	height: 76.0%;
+	float: left;
+}
+</style>
+
+<div class="folium-map" id="MAP" ></div>
+<div>
+	<table id='incidents-log'>
+		<!--.......-->
+	</table>
+</div>
+
+<div>
+	<table id='important-incidents'>
+		<!--.......-->
+	</table>
+</div>
+<div>
+<div id='extra-info' class='no-mobile'>
+
+</div>
+<div id='extra-info-mobile' class='mobile-only'>
 
 
-
-
-<div id="logs" class="ag-theme-alpine" style="height: 600px; width:500px;"></div>
-
+</div>
 <script>
-	//create incident log table
-
-	$.get("http://0.0.0.0:5001/incidents", {token: "null.dSDxupxBKnM1ZMpQVeFkz7MFBl0", count: 15, page: 0}, function(resp){
-		var columnDefs = [
-		{field: "date", cellRenderer: 'agSparklineCellRenderer'},
+	var incidents = [] //list of all the HASHES of incidents we've received. so we know when we get a new one.
+	function updateIncidentLog()
+	{
+		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 85, page: 0}, function(resp){
+			inTable = `<tr> <td>
+					<table cellspacing="0" cellpadding="1" width="100%">
+						<tr>
+							<th>Time</th><th>Type</th><th>Address</th>
+						</tr>
+					</table>
+				</td></tr>
+				<tr>
+					<td>
+						<div style='max-height: 400px; overflow:auto;'>
+							<table cellspacing="0" cellpadding="1" width="100%">
+				`;
+			newincidentcount = 0
+			newIncidents = `
+							<tr>
+								<td>
+									<div style='max-height: 100px; overflow:auto;color: #22ff97;'>
+										<table cellspacing="0" cellpadding="1" width="100%">`
+			resp.forEach(element => {
+				row = "<tr>" + 
+					"<td>" + element.datelocal + ", " + element.timelocal  + "</td>" +
+					"<td>" + element.type + "</td>" +
+					"<td>" + element.address + "</td>" +
+					"</tr>"
+				inTable += row
+				hsh = makehash(element)
+				if(!incidents.includes(hsh)){ //it's a new incident
+					incidents.push(hsh)
+					newincidentcount += 1
+					if(newincidentcount < 3)
+						newIncidents += row
+				}
+			});
+			newIncidents += "</table></div></td></tr>"
+			inTable += "</table></div></td></tr>"
+			inTable += newIncidents
+			document.getElementById('incidents-log').innerHTML = inTable
+		});
+	}
+	function updateImportantIncidentLog()
+	{
+		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 10, page: 0, importantonly: true }, function(resp){
+			inTable = `<tr> <td>
+					<table cellspacing="0" cellpadding="1" width="100%">
+						<tr>
+							<th>Time</th><th>Type</th><th>Location</th><th>Address</th><th>Monitored Address</th><th>Distance</th>
+						</tr>
+					</table>
+				</td></tr>
+				<tr>
+					<td>
+						<div style='max-height: 400px; overflow:auto;'>
+							<table cellspacing="0" cellpadding="1" width="100%">
+				`;
+			resp.forEach(element => {
+				inTable += "<tr>" + 
+					"<td>" + element.datelocal + ", " + element.timelocal  + "</td>" +
+					"<td>" + element.type + "</td>" +
+					"<td>" + element.location_name + "</td>" +
+					"<td>" + element.address + "</td>" +
+					"<td>" + element.monitored_address + "</td>" +
+					"<td>" + math.round(element.distance) + " meters" + "</td>" +
+					"</tr>"
+			});
+			inTable += "</table></div></td></tr>"
+			document.getElementById('important-incidents').innerHTML = inTable
+			
+		});
+	}
+	function updateMap(){
+		document.getElementById("MAP").remove();
+		var m = document.createElement('div');
+		m.classList.add("folium-map");
+		m.id = "MAP";
+		document.body.insertBefore(m, document.body.childNodes[0])
+		if(document.getElementById("mapScript") != null){
+			document.getElementById("mapScript").remove();
+		}
+		$.get(baseURL + "/map.html", {token: Cookies.get("auth")}, function(resp){
+			var s = document.createElement('script');
+			s.innerText = resp
+			s.id = "mapScript"
+			document.head.appendChild(s);
+		});
+	}
+	function date_str(currentdate){
+		var datetime = currentdate.getFullYear() + "-"
+				+ (currentdate.getMonth()+1).toString().padStart(2, '0')  + "-" 
+				+ currentdate.getDate().toString().padStart(2, '0') + "T"  
+				+ currentdate.getHours().toString().padStart(2, '0') + ":"  
+				+ currentdate.getMinutes().toString().padStart(2, '0') + ":" 
+				+ currentdate.getSeconds().toString().padStart(2, '0');
+		return datetime
+	}
+	function updateInfo1(){
+		lastHour = 0
+		today = 0
+		var d = new Date(); d.setHours(d.getHours() - 1);
+		var d2 = new Date();d2.setHours(0);d2.setMinutes(0);d2.setSeconds(0);
 		
-		{field: "time"},
-		{field: "type"},
-		{field: "address"}];
-		var gridOptions = {columnDefs:columnDefs, rowData:resp};
-		console.log(resp)
-		const gridDiv = document.querySelector('#logs');
-    	new agGrid.Grid(gridDiv, gridOptions);
-	})
-</script>
+		$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d)}, function(resp){
+			lastHour = resp["count"]
+			$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d2)}, function(resp){
+				today = resp["count"]
+				document.getElementById("extra-info").innerHTML = "<div style='float: left;'><p>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p></div>" + `
+				<div style='float:right;'>
+					<a href="/config"><button>Config</button></a>
+					<a href="/locaitons"><button>Edit Locations</button></a>
+				</div>
+				`
+				document.getElementById("extra-info-mobile").innerHTML = `
+				<p style='float:left;'>
+					Last Hour: <i>` + lastHour + `</i>
+				</p>
+				<p style='float:right'>
+					Today: <i>` + today + `</i>
+				</p>
+				`
+			});
+		});
+
+	}
+	var lastIncidentCount = 0
+	updateInfo1()
+	updateIncidentLog()
+	updateImportantIncidentLog()
+	updateMap()
+	var updateFrequency = 5000
+	setInterval(() => {
+		var d = new Date()
+		d.setHours(0); d.setMinutes(0); d.setSeconds(0); d.setDate(d.getDate() - 1);
+		d = date_str(d)
+		$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time:d}, function(resp){
+			if(resp['count'] != lastIncidentCount)
+			{
+				lastIncidentCount = resp['count']
+				//update because we have new incidents.
+				updateIncidentLog();
+				updateImportantIncidentLog();
+				updateInfo1();
+				updateMap()
+			}
+			else{
+				updateInfo1();
+			}
+		});
+		
+	}, updateFrequency);
+	
+	</script>

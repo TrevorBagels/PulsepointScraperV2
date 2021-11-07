@@ -27,7 +27,8 @@ class SaveData(Prodict):
 class Events(events.Events):
 	def __init__(self):
 		self.flaskapp = rest_api.FlaskAPI(self)
-		self.recents = [] #list of events, max size = 100
+		self.recents = [] #list of events, max size = 500
+		self.important_incidents = [] #list of [incident, location], max size = 100
 		self.data:SaveData = None
 		self.load_data()
 		self.agency_data = utils.load_json("allagencydata.json")
@@ -53,22 +54,31 @@ class Events(events.Events):
 		offset = datetime.datetime.fromtimestamp(epoch) - datetime.datetime.utcfromtimestamp(epoch)
 		return utc + offset
 
-
-	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
-	def incident_found(self, incident:D.Incident):
+	def simplify_incident(self, incident:D.Incident):
 		a = {
-			"date": incident.CallReceivedDateTime.strftime("%M/%d"),
-			"time": incident.CallReceivedDateTime.strftime("%H:%m"),
-			"epoch": incident.CallReceivedDateTime.timestamp(),
+			"datelocal": utils.local(incident.CallReceivedDateTime).strftime("%m/%d"),
+			"daylocal": utils.local(incident.CallReceivedDateTime).strftime("%a"),
+			"timelocal": utils.local(incident.CallReceivedDateTime).strftime("%H:%M"),
+			"epochlocal": utils.local(incident.CallReceivedDateTime).timestamp(),
+			"date": incident.CallReceivedDateTime.strftime("%m/%d"),
+			"day": incident.CallReceivedDateTime.strftime("%a"),
+			"time": incident.CallReceivedDateTime.strftime("%H:%M"),
+			"epoch": incident.CallReceivedDateTime.replace(tzinfo=None).timestamp(),
 			"agency": incident.agency_name,
 			"type": incident.incident_type,
 			"address": incident.FullDisplayAddress,
 			"coords": incident.coords
 		}
+		return a
+	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
+	def incident_found(self, incident:D.Incident):
+		a = self.simplify_incident(incident)
 		self.recents.append(a)
+		self.recents.sort(key= lambda x : x['epoch'], reverse=True)
+		self.recents = self.recents[:1000]
 		self.data.incident_frequency_table[0].append(incident.CallReceivedDateTime)
 		self.data.incident_frequency_table[1].append(1)
-		self.main.print(f"{incident.incident_type} found at {incident.FullDisplayAddress}.", incident.coords, end='\r')
+		self.main.print(f"[{utils.local(incident.CallReceivedDateTime)}] {incident.incident_type} found at {incident.FullDisplayAddress}.", incident.coords, end='\r')
 		pass
 	
 	#called when an agency is put into the queue.
@@ -80,7 +90,15 @@ class Events(events.Events):
 		pass
 	
 	def important_incident_found(self, incident:D.Incident, location:D.CfgLocation, importance:int):
-		return
+		a = self.simplify_incident(incident)
+		distance = "N/A"
+		if incident.dists != None and location.name in incident.dists: distance = incident.dists[location.name]
+		a["location_name"] = location.name
+		a["distance"] = distance
+		a["monitored_address"] = location.address
+		self.important_incidents.append(a)
+		
+		
 
 
 #custom helper method

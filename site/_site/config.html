@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8'>
+		<title>Home</title>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Epilogue:wght@300&family=Roboto");
+		</style>
+		<link rel='stylesheet' href="/assets/css/styles.css">
+		<script type='text/javascript' src="/assets/js/lib/jquery.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+<script>
+	baseURL = "http://0.0.0.0:5001"
+	console.log("Base API URL: " + baseURL)
+</script>
+
+<script>
+	String.prototype.hashCode = function(){
+		var hash = 0;
+		for (var i = 0; i < this.length; i++) {
+			var character = this.charCodeAt(i);
+			hash = ((hash<<5)-hash)+character;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	}
+	function makehash(object){
+		return JSON.stringify(object).hashCode();
+	}
+</script>
+	</head>
+	<body>
+		<!--div id='content'-->
+			<style>
+</style>
+<a style='position: relative; bottom: 0; left: 0;' href="/"><button>Back</button></a>
+<div id='config'>
+
+</div>
+
+<script>
+	$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
+		//Object.keys()
+		var ignore = ["events", "importance_checks", "incident_filters", "locations", "units", "agencies"];
+		var units = {
+			"scan_interval": "seconds", "radius_default": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
+		}
+		console.log(settings)
+		Object.keys(settings).forEach(function (e){
+			if(!ignore.includes(e))
+			{
+				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "</b> <input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>  </div>"
+			}
+		});
+		config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button>"
+	});
+</script>
+		<!--/div-->
+		<div style='min-height: 100px;'></div>
+	</body>
+
+	<script>
+		document.body.onload = function() {
+			auth = Cookies.get("auth") || "no"
+			$.get("http://0.0.0.0:5001/checkauth", {token: auth}, function(resp){
+			if(resp == "Unauthorized"){
+				window.location = "/login";
+			}
+		});
+		}
+		
+	</script>
+</html>

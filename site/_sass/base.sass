@@ -1,9 +1,8 @@
 
 body
 	margin: 0
-	padding: 0
-	background: $bgc
-	color: $text2
+	background: $bgc !important
+	color: $text2 !important
 
 ::-webkit-scrollbar
 	width: 0px
@@ -55,3 +54,8 @@ button
 	&:active
 		border: $border 3.5px solid
 		filter: brightness(120%)
+
+.leaflet-bottom.leaflet-right
+	display: none
+.leaflet-control-container
+	display: none

@@ -1,0 +1,38 @@
+---
+layout: default_noauth
+title: Home
+permalink: /login
+---
+<div id='content'>
+	<div class='center'>
+		<h3>Please sign in</h3>
+		<input id='password' type='text'>
+		<br>
+		<button style='margin-top: 25px;' onclick='login()'>Sign in</button>
+		<p id='alert' style='color: rgb(255, 74, 74); font-size: .9em;'>
+		</p>
+	</div>
+</div>
+<script>
+	function login()
+	{
+		pwd = document.getElementById("password").value;
+		console.log(pwd);
+		
+		$.get(baseURL + "/gettoken", {password: pwd}, function(resp){
+			if(resp == null){
+				//invallid password
+				document.getElementById('alert').innerHTML = "Error: Invallid password";
+			}
+			else
+			{
+				document.getElementById('alert').innerHTML = "Successfully logged in!";
+				document.getElementById('alert').style.color = "lightgreen";
+				Cookies.set("auth", resp);
+				window.location = "/";
+			}
+		});
+
+	}
+	
+</script>

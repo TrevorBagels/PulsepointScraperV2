@@ -1,0 +1,24 @@
+<script type='text/javascript' src="/assets/js/lib/jquery.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
+
+<script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+<script>
+	baseURL = "{{site.data.config.baseURL }}"
+	console.log("Base API URL: " + baseURL)
+</script>
+
+<script>
+	String.prototype.hashCode = function(){
+		var hash = 0;
+		for (var i = 0; i < this.length; i++) {
+			var character = this.charCodeAt(i);
+			hash = ((hash<<5)-hash)+character;
+			hash = hash & hash; // Convert to 32bit integer
+		}
+		return hash;
+	}
+	function makehash(object){
+		return JSON.stringify(object).hashCode();
+	}
+</script>

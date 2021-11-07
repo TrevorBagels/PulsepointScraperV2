@@ -1,6 +1,6 @@
 {
     "scan_interval": 60,
-    "radius_default": 50,
+    "default_radius": 50,
     "events": [
         "events_default"
     ],
