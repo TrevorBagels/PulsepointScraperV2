@@ -2,658 +2,616 @@
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 45.47217,
-        "Longitude": -122.648427,
+        "Latitude": 45.55504012592249,
+        "Longitude": -122.68218898028395,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636259160000
+            "$date": 1636267620000
         },
         "ClosedDateTime": {
-            "$date": 1636260189000
+            "$date": 1636269909000
         },
-        "FullDisplayAddress": "7200 SE MILWAUKIE AVE, Portland OR",
+        "FullDisplayAddress": "4400 N INTERSTATE AVE, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457206967332597760",
-        "incident_type": "UNWANTED PERSON",
-        "significant_locations": [],
-        "coords": [
-            45.47217,
-            -122.648427
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 5022.119947151692,
-            "Parents": 11311.312138320562,
-            "Grandparents": 12077.710176901708,
-            "Jon Richardson": 6534.553208139432,
-            "03Elanor": 5727.212939498195,
-            "03Elly": 13420.423668133342,
-            "Robert": 13039.34974472557
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.5099603,
-        "Longitude": -122.6827476,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636259340000
-        },
-        "ClosedDateTime": {
-            "$date": 1636260129000
-        },
-        "FullDisplayAddress": "SW 6TH AVE & SW HALL ST [PARKING GARAGE, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457206716584452100",
-        "incident_type": "AREA CHECK",
+        "uid": "1457247737628352513",
+        "incident_type": "ASSAULT - PRIORITY",
         "significant_locations": [
-            "PSU Campus"
+            "Downtown"
         ],
         "coords": [
-            45.5099603,
-            -122.6827476
+            45.55504012592249,
+            -122.68218898028395
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 159.4276765600241,
-            "Parents": 9846.27940771956,
-            "Grandparents": 11995.545963726272,
-            "Jon Richardson": 1564.784943453821,
-            "03Elanor": 4313.290764929724,
-            "03Elly": 9321.863052647717,
-            "Robert": 14286.366789345102
+            "Downtown": 5067.358987174851,
+            "PSU Campus": 5067.358987174851,
+            "Parents": 13061.949174357464,
+            "Grandparents": 15895.114800452375,
+            "Jon Richardson": 3641.3910788375383,
+            "03Elanor": 8690.870923460097,
+            "03Elly": 9430.30816125153,
+            "Robert": 14411.620455368387
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 39.2806512,
-        "Longitude": -76.5496598,
+        "Latitude": 45.58231743050968,
+        "Longitude": -122.69125229097064,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636256100000
+            "$date": 1636267740000
         },
         "ClosedDateTime": {
-            "$date": 1636259888000
+            "$date": 1636269848000
         },
-        "FullDisplayAddress": "1000 N INTERSTATE AVE, Portland OR",
+        "FullDisplayAddress": "2400 N KILPATRICK ST, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457205707271331844",
-        "incident_type": "TRIMET INCIDENT - PRIORITY",
+        "uid": "1457247483021565957",
+        "incident_type": "SHOTS FIRED",
         "significant_locations": [],
         "coords": [
-            39.2806512,
-            -76.5496598
+            45.58231743050968,
+            -122.69125229097064
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 3807191.4200035045,
-            "Parents": 3816121.120528042,
-            "Grandparents": 3816581.2506193607,
-            "Jon Richardson": 3807507.1458156877,
-            "03Elanor": 3810310.4566077814,
-            "03Elly": 3815735.837241513,
-            "Robert": 3792757.4790058024
+            "Downtown": 8111.63413974679,
+            "PSU Campus": 8111.63413974679,
+            "Parents": 15078.72891698576,
+            "Grandparents": 18180.69111942608,
+            "Jon Richardson": 6610.148111294427,
+            "03Elanor": 11422.438878396699,
+            "03Elly": 10087.2954744657,
+            "Robert": 15982.560871893727
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 46.7277345,
-        "Longitude": -117.1670059,
+        "Latitude": 45.476598,
+        "Longitude": -122.531934,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636257720000
+            "$date": 1636268160000
         },
         "ClosedDateTime": {
-            "$date": 1636259709000
+            "$date": 1636269789000
         },
-        "FullDisplayAddress": "10100 SE WASHINGTON ST, Portland OR",
+        "FullDisplayAddress": "12800 SE FOSTER RD, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457204955505303555",
-        "incident_type": "VEHICLE STOLEN - COLD",
-        "significant_locations": [],
-        "coords": [
-            46.7277345,
-            -117.1670059
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 447368.7606167619,
-            "Parents": 456926.3800424631,
-            "Grandparents": 458192.56093356723,
-            "Jon Richardson": 447326.44232154085,
-            "03Elanor": 451045.7477920741,
-            "03Elly": 454932.541633391,
-            "Robert": 433216.39323235414
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.5648694,
-        "Longitude": -122.5776115,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636258320000
-        },
-        "ClosedDateTime": {
-            "$date": 1636259648000
-        },
-        "FullDisplayAddress": "4900 NE 82ND AVE, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457204700890087427",
-        "incident_type": "DISTURBANCE - PRIORITY",
-        "significant_locations": [],
-        "coords": [
-            45.5648694,
-            -122.5776115
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 10383.65258895255,
-            "Parents": 20032.474199000688,
-            "Grandparents": 22186.12600884108,
-            "Jon Richardson": 9999.547916967003,
-            "03Elanor": 14495.890489512338,
-            "03Elly": 17619.239423089162,
-            "Robert": 7204.3646662880765
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 29.148022,
-        "Longitude": -82.127763,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636259100000
-        },
-        "ClosedDateTime": {
-            "$date": 1636259589000
-        },
-        "FullDisplayAddress": "3900 SE 9TH AVE, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457204450511110147",
-        "incident_type": "NOISE DISTURBANCE",
-        "significant_locations": [],
-        "coords": [
-            29.148022,
-            -82.127763
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 3971249.7150176093,
-            "Parents": 3978439.9371907283,
-            "Grandparents": 3977730.148043857,
-            "Jon Richardson": 3972052.2998810606,
-            "03Elanor": 3973279.669566518,
-            "03Elly": 3980432.5862113647,
-            "Robert": 3957792.9381864765
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.49906559999999,
-        "Longitude": -122.6436288,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636258500000
-        },
-        "ClosedDateTime": {
-            "$date": 1636259469000
-        },
-        "FullDisplayAddress": "SE POWELL BLVD & SE 22ND AVE, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457203948100542464",
+        "uid": "1457247233036873729",
         "incident_type": "VANDALISM - PRIORITY",
         "significant_locations": [],
         "coords": [
-            45.49906559999999,
-            -122.6436288
+            45.476598,
+            -122.531934
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 3409.9166838173333,
-            "Parents": 12201.797807332485,
-            "Grandparents": 13704.02472259806,
-            "Jon Richardson": 4537.110250799423,
-            "03Elanor": 6309.607731371727,
-            "03Elly": 12593.0384976938,
-            "Robert": 11546.852972977873
+            "PSU Campus": 12485.828416723612,
+            "Parents": 20433.538232640047,
+            "Grandparents": 20983.528144670454,
+            "Jon Richardson": 13440.229195625809,
+            "03Elanor": 14748.801846541604,
+            "03Elly": 21674.43739918735,
+            "Robert": 6184.305154513241
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 45.505115849999996,
-        "Longitude": -122.47456955658483,
+        "Latitude": 45.4975852,
+        "Longitude": -122.63741773355797,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636257420000
+            "$date": 1636268520000
         },
         "ClosedDateTime": {
-            "$date": 1636259240000
+            "$date": 1636269729000
         },
-        "FullDisplayAddress": "2400 SE 182ND AVE, Gresham OR",
+        "FullDisplayAddress": "2800 SE POWELL BLVD, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457202988439650312",
-        "incident_type": "ACCIDENT - HIT AND RUN - COLD",
-        "significant_locations": [],
-        "coords": [
-            45.505115849999996,
-            -122.47456955658483
-        ],
-        "agency_name": null,
-        "dists": {
-            "Downtown": 16426.080431983435,
-            "PSU Campus": 16426.080431983435,
-            "Parents": 25243.39247364814,
-            "Grandparents": 26132.955913720984,
-            "Jon Richardson": 17012.34524100246,
-            "03Elanor": 19395.297441628103,
-            "03Elly": 25447.571126507435,
-            "Robert": 3313.566845705783
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.4913444,
-        "Longitude": -122.57835544104297,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636257660000
-        },
-        "ClosedDateTime": {
-            "$date": 1636258509000
-        },
-        "FullDisplayAddress": "4300 SE 82ND AVE, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457199921338064902",
+        "uid": "1457246982938841089",
         "incident_type": "UNWANTED PERSON",
         "significant_locations": [],
         "coords": [
-            45.4913444,
-            -122.57835544104297
+            45.4975852,
+            -122.63741773355797
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 8550.253305135499,
-            "Parents": 16990.542634454196,
-            "Grandparents": 17954.49384888998,
-            "Jon Richardson": 9460.813542313712,
-            "03Elanor": 11159.822885832911,
-            "03Elly": 17738.85716057299,
-            "Robert": 7244.957576837277
+            "PSU Campus": 3922.4127396915887,
+            "Parents": 12621.800209615436,
+            "Grandparents": 14040.89774364331,
+            "Jon Richardson": 5029.716084711403,
+            "03Elanor": 6728.0708241611965,
+            "03Elly": 13105.283710950633,
+            "Robert": 11130.614650706324
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 45.4913444,
-        "Longitude": -122.57835544104297,
+        "Latitude": 45.5227452,
+        "Longitude": -122.6413,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636257180000
+            "$date": 1636267200000
         },
         "ClosedDateTime": {
-            "$date": 1636257848000
+            "$date": 1636269669000
         },
-        "FullDisplayAddress": "4300 SE 82ND AVE, Portland OR",
+        "FullDisplayAddress": "2400 E BURNSIDE ST, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457197151260340230",
-        "incident_type": "THEFT - PRIORITY",
+        "uid": "1457246728474615817",
+        "incident_type": "THEFT - COLD",
+        "significant_locations": [
+            "Downtown"
+        ],
+        "coords": [
+            45.5227452,
+            -122.6413
+        ],
+        "agency_name": null,
+        "dists": {
+            "Downtown": 3695.5690917139063,
+            "PSU Campus": 3695.5690917139063,
+            "Parents": 13371.778841326997,
+            "Grandparents": 15368.1480093726,
+            "Jon Richardson": 3869.176647663973,
+            "03Elanor": 7690.984342207254,
+            "03Elly": 12288.340138789395,
+            "Robert": 10920.769684610448
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.543774299999995,
+        "Longitude": -122.62175383207008,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636268400000
+        },
+        "ClosedDateTime": {
+            "$date": 1636269609000
+        },
+        "FullDisplayAddress": "4000 NE WISTARIA DR, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457246477588189199",
+        "incident_type": "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE",
         "significant_locations": [],
         "coords": [
-            45.4913444,
-            -122.57835544104297
+            45.543774299999995,
+            -122.62175383207008
         ],
         "agency_name": null,
         "dists": {
-            "Downtown": 8550.253305135499,
-            "PSU Campus": 8550.253305135499,
-            "Parents": 16990.542634454196,
-            "Grandparents": 17954.49384888998,
-            "Jon Richardson": 9460.813542313712,
-            "03Elanor": 11159.822885832911,
-            "03Elly": 17738.85716057299,
-            "Robert": 7244.957576837277
+            "PSU Campus": 6219.800147794072,
+            "Parents": 15865.434323780117,
+            "Grandparents": 18046.788394344843,
+            "Jon Richardson": 5875.376543450068,
+            "03Elanor": 10353.324886461962,
+            "03Elly": 13845.015293837605,
+            "Robert": 9538.27862239195
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 43.6418316,
-        "Longitude": -116.6452487,
+        "Latitude": 45.534016979797975,
+        "Longitude": -122.59025993939395,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636255560000
+            "$date": 1636268400000
         },
         "ClosedDateTime": {
-            "$date": 1636260800000
+            "$date": 1636269549000
         },
-        "FullDisplayAddress": "WB I84 FWY WO & NE 181ST AVE, Gresham OR",
+        "FullDisplayAddress": "1600 NE 71ST AVE, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457209531377741826",
-        "incident_type": "ACCIDENT - NON INJURY",
+        "uid": "1457246227418943490",
+        "incident_type": "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE",
         "significant_locations": [],
         "coords": [
-            43.6418316,
-            -116.6452487
+            45.534016979797975,
+            -122.59025993939395
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 522485.69101194333,
-            "Parents": 528715.0369886053,
-            "Grandparents": 527570.5268319007,
-            "Jon Richardson": 523473.6359526688,
-            "03Elanor": 523983.53569958394,
-            "03Elly": 531628.572685116,
-            "Robert": 509967.9791561677
+            "PSU Campus": 7864.054522512896,
+            "Parents": 17501.740714944222,
+            "Grandparents": 19314.947145262002,
+            "Jon Richardson": 7953.502689285045,
+            "03Elanor": 11722.171894228497,
+            "03Elly": 16239.714211912225,
+            "Robert": 6948.91905102765
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 45.5227393,
-        "Longitude": -122.6748609,
+        "Latitude": 45.526279,
+        "Longitude": -122.459707,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636255500000
+            "$date": 1636268280000
         },
         "ClosedDateTime": {
-            "$date": 1636260849000
+            "$date": 1636269440000
         },
-        "FullDisplayAddress": "400 W BURNSIDE ST, Portland OR",
+        "FullDisplayAddress": "19700 NE GLISAN ST, Gresham OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457209738052059136",
+        "uid": "1457245770994708484",
+        "incident_type": "THEFT - COLD",
+        "significant_locations": [],
+        "coords": [
+            45.526279,
+            -122.459707
+        ],
+        "agency_name": null,
+        "dists": {
+            "Downtown": 17675.984498959722,
+            "PSU Campus": 17675.984498959722,
+            "Parents": 26863.076974171643,
+            "Grandparents": 27999.848995731252,
+            "Jon Richardson": 18059.85529208852,
+            "03Elanor": 20972.548158870042,
+            "03Elly": 26442.5596894803,
+            "Robert": 3287.1915667658805
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.554388,
+        "Longitude": -122.569438,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636267260000
+        },
+        "ClosedDateTime": {
+            "$date": 1636269309000
+        },
+        "FullDisplayAddress": "4400 NE 90TH AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457245221612179458",
+        "incident_type": "SHOTS FIRED",
+        "significant_locations": [],
+        "coords": [
+            45.554388,
+            -122.569438
+        ],
+        "agency_name": null,
+        "dists": {
+            "Downtown": 10292.409236972353,
+            "PSU Campus": 10292.409236972353,
+            "Parents": 19981.440800712073,
+            "Grandparents": 21957.30361617574,
+            "Jon Richardson": 10108.288774988034,
+            "03Elanor": 14304.287060055567,
+            "03Elly": 18043.211903138294,
+            "Robert": 6046.869532336969
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.49514094689918,
+        "Longitude": -122.40710342104634,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636268700000
+        },
+        "ClosedDateTime": {
+            "$date": 1636269200000
+        },
+        "FullDisplayAddress": "2500 SE BURNSIDE RD, Gresham OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457244764177272837",
         "incident_type": "UNWANTED PERSON",
         "significant_locations": [],
         "coords": [
-            45.5227393,
-            -122.6748609
+            45.49514094689918,
+            -122.40710342104634
         ],
         "agency_name": null,
         "dists": {
-            "PSU Campus": 1661.0587804473494,
-            "Parents": 11113.651361572096,
-            "Grandparents": 13434.82944807363,
-            "Jon Richardson": 1247.21892994613,
-            "03Elanor": 5794.867774136351,
-            "03Elly": 9676.648777095725,
-            "Robert": 13539.620900087244
+            "PSU Campus": 21751.62770930147,
+            "Parents": 30323.93898873559,
+            "Grandparents": 30957.439910790934,
+            "Jon Richardson": 22384.29472862776,
+            "03Elanor": 24540.47717616141,
+            "03Elly": 30817.828965933437,
+            "Robert": 8246.902037846023
         }
     },
     {
         "ID": null,
         "AgencyID": null,
-        "Latitude": 45.5648694,
-        "Longitude": -122.5776115,
+        "Latitude": 45.55516524657534,
+        "Longitude": -122.50011828767123,
         "PublicLocaiton": null,
         "PulsePointIncidentCallType": null,
         "IsShareable": null,
         "AlarmLevel": null,
         "CallReceivedDateTime": {
-            "$date": 1636259280000
+            "$date": 1636269240000
         },
         "ClosedDateTime": {
-            "$date": 1636261149000
+            "$date": 1636270149000
         },
-        "FullDisplayAddress": "4900 NE 82ND AVE, Portland OR",
+        "FullDisplayAddress": "4400 NE 158TH AVE, Portland OR",
         "MedicalEmergencyDisplayAddress": null,
         "AddressTruncated": null,
         "Unit": null,
         "StreetNumber": null,
         "CommonPlaceName": null,
-        "uid": "1457210996238401538",
+        "uid": "1457248743166603268",
+        "incident_type": "UNWANTED PERSON",
+        "significant_locations": [],
+        "coords": [
+            45.55516524657534,
+            -122.50011828767123
+        ],
+        "agency_name": null,
+        "dists": {
+            "PSU Campus": 15284.012675002796,
+            "Parents": 24888.6462672434,
+            "Grandparents": 26528.798848953513,
+            "Jon Richardson": 15321.977822659877,
+            "03Elanor": 19056.393217441142,
+            "03Elly": 23424.163657086545,
+            "Robert": 3019.1987452131743
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 25.781051599999998,
+        "Longitude": -80.21522805000001,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636267320000
+        },
+        "ClosedDateTime": {
+            "$date": 1636270209000
+        },
+        "FullDisplayAddress": "800 NW 12TH AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457248993730203654",
+        "incident_type": "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE",
+        "significant_locations": [],
+        "coords": [
+            25.781051599999998,
+            -80.21522805000001
+        ],
+        "agency_name": null,
+        "dists": {
+            "PSU Campus": 4355704.949732889,
+            "Parents": 4362612.033449146,
+            "Grandparents": 4361756.457994468,
+            "Jon Richardson": 4356563.742490973,
+            "03Elanor": 4357577.8626310835,
+            "03Elly": 4364895.635958008,
+            "Robert": 4342483.374090219
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.5045289,
+        "Longitude": -122.41645659014085,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636259820000
+        },
+        "ClosedDateTime": {
+            "$date": 1636270286000
+        },
+        "FullDisplayAddress": "1500 NE DIVISION ST, Gresham OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457249317220077571",
+        "incident_type": "ASSAULT - PRIORITY",
+        "significant_locations": [],
+        "coords": [
+            45.5045289,
+            -122.41645659014085
+        ],
+        "agency_name": null,
+        "dists": {
+            "Downtown": 20967.65350121109,
+            "PSU Campus": 20967.65350121109,
+            "Parents": 29722.708120366988,
+            "Grandparents": 30486.781625180734,
+            "Jon Richardson": 21535.258938099258,
+            "03Elanor": 23897.34300240106,
+            "03Elly": 29969.323534726118,
+            "Robert": 7154.991519898141
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.53438,
+        "Longitude": -122.495663,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636266600000
+        },
+        "ClosedDateTime": {
+            "$date": 1636270268000
+        },
+        "FullDisplayAddress": "1600 NE 162ND AVE, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457249244436303877",
+        "incident_type": "DISTURBANCE - COLD",
+        "significant_locations": [],
+        "coords": [
+            45.53438,
+            -122.495663
+        ],
+        "agency_name": null,
+        "dists": {
+            "PSU Campus": 15023.767129187394,
+            "Parents": 24407.926523167414,
+            "Grandparents": 25767.373255231927,
+            "Jon Richardson": 15299.518312373384,
+            "03Elanor": 18518.42218493641,
+            "03Elly": 23628.548072157188,
+            "Robert": 849.9675389211546
+        }
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.5190424,
+        "Longitude": -122.3982615,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636268940000
+        },
+        "ClosedDateTime": {
+            "$date": 1636270509000
+        },
+        "FullDisplayAddress": "2800 SE STARK ST, Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457250254428917760",
         "incident_type": "DISTURBANCE - PRIORITY",
-        "significant_locations": [],
-        "coords": [
-            45.5648694,
-            -122.5776115
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 10383.65258895255,
-            "Parents": 20032.474199000688,
-            "Grandparents": 22186.12600884108,
-            "Jon Richardson": 9999.547916967003,
-            "03Elanor": 14495.890489512338,
-            "03Elly": 17619.239423089162,
-            "Robert": 7204.3646662880765
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 26.107466788110575,
-        "Longitude": -80.21205468651668,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636259760000
-        },
-        "ClosedDateTime": {
-            "$date": 1636261281000
-        },
-        "FullDisplayAddress": "4800 SW 11TH ST, Gresham OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457211546958925826",
-        "incident_type": "THREAT - PRIORITY",
-        "significant_locations": [],
-        "coords": [
-            26.107466788110575,
-            -80.21205468651668
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 4332138.26983913,
-            "Parents": 4339091.6147168735,
-            "Grandparents": 4338259.27540487,
-            "Jon Richardson": 4332988.137877976,
-            "03Elanor": 4334036.615219451,
-            "03Elly": 4341328.820236876,
-            "Robert": 4318877.270379814
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.464887,
-        "Longitude": -122.57281,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636256280000
-        },
-        "ClosedDateTime": {
-            "$date": 1636261388000
-        },
-        "FullDisplayAddress": "8700 SE CRYSTAL SPRINGS BLVD, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457211998844817409",
-        "incident_type": "VEHICLE STOLEN - COLD",
-        "significant_locations": [],
-        "coords": [
-            45.464887,
-            -122.57281
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 10051.551585894418,
-            "Parents": 17212.52289283894,
-            "Grandparents": 17590.630217896312,
-            "Jon Richardson": 11251.127134613287,
-            "03Elanor": 11692.195828459298,
-            "03Elly": 19096.11543413263,
-            "Robert": 8951.06599819537
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.5482616,
-        "Longitude": -122.6076002,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636261200000
-        },
-        "ClosedDateTime": {
-            "$date": 1636261509000
-        },
-        "FullDisplayAddress": "NE 54TH AVE & NE FREMONT ST, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457212504115798018",
-        "incident_type": "THREAT - PRIORITY",
-        "significant_locations": [],
-        "coords": [
-            45.5482616,
-            -122.6076002
-        ],
-        "agency_name": null,
-        "dists": {
-            "PSU Campus": 7404.417404555891,
-            "Parents": 17066.55465135166,
-            "Grandparents": 19206.849631815592,
-            "Jon Richardson": 7087.852030523748,
-            "03Elanor": 11515.405250218515,
-            "03Elly": 14999.184681563638,
-            "Robert": 8570.832367390198
-        }
-    },
-    {
-        "ID": null,
-        "AgencyID": null,
-        "Latitude": 45.59644846231156,
-        "Longitude": -122.6691573718593,
-        "PublicLocaiton": null,
-        "PulsePointIncidentCallType": null,
-        "IsShareable": null,
-        "AlarmLevel": null,
-        "CallReceivedDateTime": {
-            "$date": 1636261440000
-        },
-        "ClosedDateTime": {
-            "$date": 1636261749000
-        },
-        "FullDisplayAddress": "10400 N VANCOUVER WAY, Portland OR",
-        "MedicalEmergencyDisplayAddress": null,
-        "AddressTruncated": null,
-        "Unit": null,
-        "StreetNumber": null,
-        "CommonPlaceName": null,
-        "uid": "1457213512170631168",
-        "incident_type": "PREMISE CHECK",
         "significant_locations": null,
         "coords": [
-            45.59644846231156,
-            -122.6691573718593
+            45.5190424,
+            -122.3982615
+        ],
+        "agency_name": null
+    },
+    {
+        "ID": null,
+        "AgencyID": null,
+        "Latitude": 45.515865,
+        "Longitude": -122.681381,
+        "PublicLocaiton": null,
+        "PulsePointIncidentCallType": null,
+        "IsShareable": null,
+        "AlarmLevel": null,
+        "CallReceivedDateTime": {
+            "$date": 1636270080000
+        },
+        "ClosedDateTime": {
+            "$date": 1636270448000
+        },
+        "FullDisplayAddress": "1200 SW BROADWAY , Portland OR",
+        "MedicalEmergencyDisplayAddress": null,
+        "AddressTruncated": null,
+        "Unit": null,
+        "StreetNumber": null,
+        "CommonPlaceName": null,
+        "uid": "1457249999750762496",
+        "incident_type": "NOISE DISTURBANCE",
+        "significant_locations": null,
+        "coords": [
+            45.515865,
+            -122.681381
         ],
         "agency_name": null
     }
