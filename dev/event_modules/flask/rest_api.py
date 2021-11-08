@@ -74,7 +74,7 @@ class Map(Resource):
 					mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
 				except:
 					time.sleep(1)
-					mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
+					return ""
 				
 				html = html.replace(mapID, "MAP")
 				html = html.split("</body>")[1].replace("<script>", "").replace("</script>", "").replace("\n", "")#.replace("<!DOCTYPE html>", "").replace("<head>", "").replace("</head>", "").replace("<body>", "").replace("</body>", "")

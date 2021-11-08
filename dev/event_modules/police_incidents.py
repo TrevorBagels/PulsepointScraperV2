@@ -22,7 +22,7 @@ class Events(events.Events):
 		self.url = ""
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def get_custom_incidents(self) -> list[D.Incident]:
-		MAX_RESULTS = 25#50 #set this to 10 when testing
+		MAX_RESULTS = 100#50 #set this to 10 when testing
 		print("Getting custom incidents...")
 		incidents = []
 		for user in self.accounts:

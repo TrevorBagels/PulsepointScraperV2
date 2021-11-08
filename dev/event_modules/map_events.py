@@ -114,10 +114,11 @@ class Events(events.Events):
 					if dist < closestDist:
 						closest = i
 						closestDist = dist
-			if closestDist > 6000:
+			if closestDist > 15000:
 				return
-			points = [tuple(p1), tuple(self.main.config.locations[closest].coords)]
-			folium.PolyLine(points, color=color, weight=1.5, opacity=.3).add_to(self.markers)
+			if closestDist < 4000:
+				points = [tuple(p1), tuple(self.main.config.locations[closest].coords)]
+				folium.PolyLine(points, color=color, weight=1.5, opacity=.3).add_to(self.markers)
 			mkr = folium.Marker(icon=useIcon, location=incident.coords, 
 				tooltip=incident.incident_type, 
 				popup=f'<p>{utils.local(incident.CallReceivedDateTime).strftime("%a, %H:%M").upper()}<br>{incident.FullDisplayAddress}</p>')
