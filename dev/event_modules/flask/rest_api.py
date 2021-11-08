@@ -38,24 +38,28 @@ class Settings(Resource):
 			return self.events.main.config
 		else:
 			return self.events.main.config[args.parameter] #internal server error will occur if supplied the wrong parameter, and im not gonna do anything about it.
+	
 	def post(self):
 		if self.app.verify() == False:
 			return "Unauthorized"
+		
 		parser = reqparse.RequestParser()
 		parser.add_argument('all_parameters', required=True) #lets us merge new parameters
-		#parser.add_argument('parameter', type=str, required=False) #the parameter we want to set
 		args = parser.parse_args()
 		params =  utils.load_json_s(args.all_parameters)
-		for k, v in params.items():
-			params[k] = utils.tryint(v)
-		new_config = deepcopy(self.events.main.config)
-		new_config.update(params)
+		#! we're gonna remove the whole tryint thing, because it's kinda dumb. instead, if we pass string values into a prodict that wants those strings to be ints,
+		#! it'll convert them to ints automatically. 
+		
+		new_config = deepcopy(self.events.main.config.to_dict()) #copy of the current configuration as a dict
+		new_config.update(params) #updated the copy of our current configuration. this is still a dict, so let's turn it into a prodict
+		#if we can't turn it into a prodict, one of the values is the wrong type/format
 		try:
-			a = D.Cfg.from_dict(new_config.to_dict())
+			new_config_prodict = D.Cfg.from_dict(new_config)
 		except:
 			self.events.main.print("Invallid formatting for new config", t='bad')
 			return "<b style='color:lightred'>INVALLID FORMAT</b>"
-		self.events.main.config = new_config
+		
+		self.events.main.config = new_config_prodict 
 		self.events.save_config()
 		return "<b style='color:lightgreen'>Successfully updated config!</b>"
 

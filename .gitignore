@@ -1,5 +1,7 @@
 myconfig.json
 mykeys.json
+geocoding_results.json
+map.html
 apptest.py
 *.pyc
 */__pycache__

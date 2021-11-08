@@ -52,6 +52,14 @@ button {
     border: #27db86 3.5px solid;
     filter: brightness(120%); }
 
+input {
+  background: #363C4F;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 1%;
+  outline: none;
+  width: 60%; }
+
 .leaflet-bottom.leaflet-right {
   display: none; }
 
@@ -102,7 +110,6 @@ button {
   border-radius: 6px;
   border: 3px solid #27db86;
   border-radius: 8px !important;
-  height: 80%;
   float: right;
   font-size: 0.9em; }
   #important-incidents tr th {
@@ -151,10 +158,25 @@ button {
   border: 3px solid #27db86;
   border-radius: 6px;
   padding: 24px;
-  width: 30%;
+  width: 40%;
   margin: auto; }
   #config .setting {
     height: 25px; }
+
+#locations {
+  display: block;
+  border: 3px solid #27db86;
+  border-radius: 6px;
+  padding: 24px;
+  width: 70%;
+  margin: auto; }
+  #locations .location {
+    display: block;
+    border: 3px solid #27db86;
+    border-radius: 6px;
+    margin: auto;
+    margin-top: 16px;
+    padding: 8px 32px 8px 32px; }
 
 #extra-info-mobile {
   top: 0;
@@ -174,6 +196,50 @@ button {
     padding-left: 24px;
     font-size: 1.7em;
     color: rgba(57, 211, 139, 0.884); }
+
+.border {
+  border: 3px solid #27db86;
+  border-radius: 6px; }
+
+.filters {
+  display: grid;
+  grid-template-columns: auto auto; }
+  .filters div {
+    margin: 10px 15px 5px 15px; }
+    .filters div div {
+      background-color: #131313;
+      height: 90%; }
+      .filters div div div {
+        height: 20px; }
+
+.addnew {
+  margin: auto;
+  display: block;
+  color: #27db86; }
+
+button.negative {
+  color: #db2786 !important;
+  border-color: #db2786 !important; }
+
+button.small {
+  padding: 1px 9px;
+  border-width: 1px; }
+
+.locationedit table, #config table {
+  margin: 5px;
+  width: 100%;
+  margin: auto;
+  cellspacing: 0;
+  border-radius: 6px;
+  border: 3px solid #27db86;
+  border-radius: 8px !important;
+  border-collapse: collapse; }
+  .locationedit table tr, #config table tr {
+    width: 100%; }
+    .locationedit table tr td, #config table tr td {
+      width: auto; }
+      .locationedit table tr td input, #config table tr td input {
+        width: 95% !important; }
 
 nav {
   z-index: 10;

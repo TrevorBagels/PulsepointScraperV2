@@ -84,6 +84,32 @@ class CfgLocation(Prodict):
 		self.match = None
 		self.filters = Filter()
 		self.enabled = True 
+class MapCfg(Prodict):
+	max_cluster_radius:	int
+	tiles:				str
+	zoom_start:			int
+	active_hours:		int #how long ago until this incident on the map turns gray and is considered inactive?
+	max_hours:			int #how long until the incident is no longer displayed on the map?
+	minimum_distance:	int #how close does the incident need to be to a relevant location in order to be displayed on the map?
+	minimum_line_distance:	int #how close does the incident need to be to a relevant location in order to have lines drawn on it?
+	line_opacity:			float
+	thermal_min_opacity:	float
+	thermal_max_zoom:		float
+	thermal_blur:			float
+	thermal_radius:			float
+	def init(self):
+		self.max_cluster_radius = 30
+		self.tiles = "https://{s}.tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=rZdfyevzxIdbsN9w6Vj7F3XIXkLO4IuXeksSMnFb8uByhftsBIHdSlCcpHVr16QR"
+		self.zoom_start = 4
+		self.active_hours = 3
+		self.minimum_distance = 10000
+		self.minimum_line_distance = 2000
+		self.line_opacity = .3
+		self.max_hours = 12
+		self.thermal_min_opacity = .01
+		self.thermal_max_zoom = 12
+		self.thermal_blur = 40
+		self.thermal_radius = 45
 
 
 class Cfg(Prodict):
@@ -97,6 +123,7 @@ class Cfg(Prodict):
 	incident_filters:	Filter #global filters
 	geocoder_timeout:	int #how long to wait before timing out when trying to geocode a location.
 	agency_to_location_distance:	int #how far away an agency can be from a location to be considered needed for scanning (meters). default: 40km
+	map_config:			MapCfg
 	def init(self):
 		self.agency_to_location_distance = 40000
 		self.importance_checks = ["textbased", "locationbased"]
@@ -108,6 +135,8 @@ class Cfg(Prodict):
 		self.locations = []
 		self.units = "m"
 		self.geocoder_timeout = 9
+		self.map_config = MapCfg()
+
 
 
 

@@ -36,9 +36,9 @@ class Events(events.Events):
 	
 	def init_map(self):
 		#tiles = "stamentoner"
-		tiles = "https://{s}.tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=rZdfyevzxIdbsN9w6Vj7F3XIXkLO4IuXeksSMnFb8uByhftsBIHdSlCcpHVr16QR"
-		self.map = folium.Map(location=self.location, zoom_start=4, tiles=tiles, attr="<a>somethin should go here</a>") #"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-		self.markers = MarkerCluster(options={"maxClusterRadius": 30, "animate": True, "spiderfyOnMaxZoom": True, "spiderLegPolylineOptions": {"weight": 3, "color": "#00f", "opacity": 1}}).add_to(self.map)
+		tiles = self.main.config.map_config.tiles
+		self.map = folium.Map(location=self.location, zoom_start=self.main.config.map_config.zoom_start, tiles=tiles, attr="<a>somethin should go here</a>") #"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+		self.markers = MarkerCluster(options={"maxClusterRadius": self.main.config.map_config.max_cluster_radius, "animate": True, "spiderfyOnMaxZoom": True, "spiderLegPolylineOptions": {"weight": 3, "color": "#00f", "opacity": 1}}).add_to(self.map)
 		#these coords are the bottom left and top right points for the viewport
 		self.drawLines = True
 
@@ -99,7 +99,7 @@ class Events(events.Events):
 			color = a[1]
 			icon = a[0]
 		time_ago = ((utils.now() - incident.CallReceivedDateTime).total_seconds() / 60 / 60)
-		if time_ago > 3:
+		if time_ago > self.main.config.map_config.active_hours:
 			color = "gray"
 		useIcon = folium.Icon(color=color, icon=icon, prefix='fa') #the icon to actually use
 		#make a marker of this incident
@@ -114,14 +114,15 @@ class Events(events.Events):
 					if dist < closestDist:
 						closest = i
 						closestDist = dist
-			if closestDist > 15000:
+			if closestDist > self.main.config.map_config.minimum_distance:
 				return
-			if closestDist < 4000:
+			if closestDist <= self.main.config.map_config.minimum_line_distance:
 				points = [tuple(p1), tuple(self.main.config.locations[closest].coords)]
-				folium.PolyLine(points, color=color, weight=1.5, opacity=.3).add_to(self.markers)
+				folium.PolyLine(points, color=color, weight=1.5, opacity=self.main.config.map_config.line_opacity).add_to(self.markers)
 			mkr = folium.Marker(icon=useIcon, location=incident.coords, 
 				tooltip=incident.incident_type, 
 				popup=f'<p>{utils.local(incident.CallReceivedDateTime).strftime("%a, %H:%M").upper()}<br>{incident.FullDisplayAddress}</p>')
+			
 			if "vio" in self.main.incident_type_tags[incident.incident_type] or "theft" in self.main.incident_type_tags[incident.incident_type]:
 				mkr.add_to(self.map)
 			else:
@@ -131,17 +132,24 @@ class Events(events.Events):
 	def main_loop_end(self):#save the latest map
 		remove = []
 		for x in self.incidents:
-			if ((utils.now() - x.CallReceivedDateTime).total_seconds() / 60 / 60) > 12:
+			if ((utils.now() - x.CallReceivedDateTime).total_seconds() / 60 / 60) > self.main.config.map_config.max_hours:
 				remove.append(x)
 		for x in remove: self.incidents.remove(x)
 		self.init_map()
+		
 		heatMapPoints = []
 		for x in self.incidents:
 			self.add_incident_to_map(x)
 			if "vio" in self.main.incident_type_tags[x.incident_type] or "theft" in self.main.incident_type_tags[x.incident_type]:
 				heatMapPoints.append(x.coords)
+		
 		self.map.fit_bounds([self.sw, self.ne])
-		self.map.add_child(HeatMap(heatMapPoints, name="Heat map", radius=45, blur=40, max_zoom=12, min_opacity=0))
+		
+		self.map.add_child(HeatMap(heatMapPoints, name="Heat map",
+			radius=self.main.config.map_config.thermal_radius,
+			blur=self.main.config.map_config.thermal_blur, 
+			max_zoom=self.main.config.map_config.thermal_max_zoom, 
+			min_opacity=self.main.config.map_config.thermal_min_opacity))
 		
 		self.map.save(self.savePath + "map.html")
 		#refresh the uberschit widget. commented out because most people probably don't use uberschit

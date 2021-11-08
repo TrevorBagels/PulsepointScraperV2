@@ -1,0 +1,55 @@
+---
+layout: default
+title: Home
+permalink: /locations___
+---
+<style>
+</style>
+<a style='position: relative; bottom: 0; left: 0;' href="/"><button>Back</button></a>
+<div id='locations'>
+
+</div>
+
+<script>
+
+	function createSetting(name, value, parent, width, units){
+		if(!width) width = "60%";
+		if(!units) units = "";
+		else units = `(${units})`;
+		var html = `
+		<div>
+			<b>${name} ${units} - </b>
+			<input style='width: ${width};' id="input_${parent}_${name}" type='text' value="${value}">
+		</div>
+		`;
+		return html;
+	}
+	function createBool(name, value, parent) {
+		checked = "no";
+		if(value == true) checked="checked";
+		var html = `
+		<div>
+			<b>${name} - </b>
+			<input id="input_${parent}_${name}" type='checkbox' checked="${checked}">
+		</div>
+		`;
+		return html;
+	}
+	function createLocation(l){
+		var html = `
+		<div class='location'>
+			<h4>${l.name}</h4>
+			${createSetting("address", l.address, l.name.replace(" ", ""))}
+			${createSetting("radius", l.radius, l.name.replace(" ", ""), "10%", "meters")}
+			${createBool("enabled", l.enabled, l.name.replace(" ", ""))}
+		</div>
+		`;
+		return html;
+	}
+
+	$.get(baseURL + "/locations", {token: Cookies.get("auth")}, function (locations){
+		locations.forEach(element => {
+			document.getElementById("locations").innerHTML += createLocation(element);
+		});
+	});
+</script>

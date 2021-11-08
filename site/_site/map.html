@@ -12,6 +12,17 @@
 <script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
 
 <script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+
+<script src="/assets/js/node_modules/spacetime/builds/spacetime.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+
 <script>
 	baseURL = "http://0.0.0.0:5001"
 	console.log("Base API URL: " + baseURL)
@@ -31,18 +42,45 @@
 		return JSON.stringify(object).hashCode();
 	}
 </script>
+
+<script>
+	function updateCollapseables(){
+		var collapseables = document.getElementsByClassName("collapsebutton");
+		var i;
+		for (i = 0; i < collapseables.length; i++) {
+			collapseables[i].addEventListener("click", function() {
+				this.classList.toggle("active");
+				var content = this.nextElementSibling;
+				if(content.style.display === "block") content.style.display = "none";
+				else content.style.display = "block";
+			});
+		}
+	}
+</script>
 	</head>
 	<body>
 		<style>
 			#overlayeffect{
 				pointer-events: none;
-				opacity: .15;
+				opacity: .09;
 				position: fixed;
+				top: 0;
 				width: 100%;
 				height: 100%;
 				z-index: 10000;
 				background-image: url("https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif");
 				
+				/*
+				"https://thumbs.gfycat.com/AbandonedSoupyKagu-max-1mb.gif"
+				"
+				http://i.imgur.com/urpyX45.gif
+				https://art.pixilart.com/0928a2aa14e88da.gif
+				https://i.gifer.com/R7cD.gif
+				https://thumbs.gfycat.com/LikableCleverBaboon-max-1mb.gif
+				background-size: contain;
+				
+				
+				*/
 			}
 		</style>
 		<div id='overlayeffect'></div>

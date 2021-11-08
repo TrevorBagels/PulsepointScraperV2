@@ -12,25 +12,54 @@ permalink: /config
 
 <script>
 	var basicSettings = ["scan_interval", "default_radius", "agency_to_location_distance", "geocoder_timeout"]
+	var map_settings = []
 	errorText = ""
+	function createSetting(name, value, width, units) {
+		if (!width) width = "60%";
+		if (!units) units = "";
+		else units = `(${units})`;
+		var html = `
+		<tr>
+			<td>${name} ${units}</td>
+			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
+		</tr>
+		`;
+		return html;
+	}
+
 	function getBasicSettings(){
 		$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
 			
 			var units = {
-				"scan_interval": "seconds", "default_radius": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
+				"scan_interval": "seconds", "default_radius": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds",
+				"max_cluster_radius": "meters", "minimum_distance": "meters", "minimum_line_distance": "meters"
 			}
 			config.innerHTML = "<h3>Basic Settings</h3>"
+			html = ``
 			basicSettings.forEach(function (e){
-				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "<i> (" +units[e] +")</i></b><input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>   </div>"
+				html += createSetting(e, settings[e], null, units[e])
+				//config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "<i> (" +units[e] +")</i></b><input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>   </div>"
 			});
+			map_settings = Object.keys(settings.map_config)
+			map_settings.forEach(function(e){
+				html += createSetting(`map_config.${e}`, settings.map_config[e], null, units[e])
+			});
+			
+			config.innerHTML += `<table>${html}</table>`
+
+
 			config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button><p id='errors'>" + errorText+ "</p>"
 		});
 	}
 	function saveBasicConfig(){
-		settings = {}
+		settings = {"map_config": {}}
 		basicSettings.forEach(function(e){
 			settings[e] = document.getElementById("input_" + e).value;
 		});
+		map_settings.forEach(function(e){
+			settings.map_config[e] = document.getElementById(`input_map_config.${e}`).value
+		});
+		console.log(settings)
 		$.post(baseURL + "/settings", {token: Cookies.get("auth"), all_parameters: JSON.stringify(settings)}, function(resp){
 			errorText = resp
 			document.getElementById("errors").innerHTML = resp

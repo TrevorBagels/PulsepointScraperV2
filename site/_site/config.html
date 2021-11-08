@@ -12,6 +12,17 @@
 <script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
 
 <script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+
+<script src="/assets/js/node_modules/spacetime/builds/spacetime.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+
 <script>
 	baseURL = "http://0.0.0.0:5001"
 	console.log("Base API URL: " + baseURL)
@@ -31,18 +42,45 @@
 		return JSON.stringify(object).hashCode();
 	}
 </script>
+
+<script>
+	function updateCollapseables(){
+		var collapseables = document.getElementsByClassName("collapsebutton");
+		var i;
+		for (i = 0; i < collapseables.length; i++) {
+			collapseables[i].addEventListener("click", function() {
+				this.classList.toggle("active");
+				var content = this.nextElementSibling;
+				if(content.style.display === "block") content.style.display = "none";
+				else content.style.display = "block";
+			});
+		}
+	}
+</script>
 	</head>
 	<body>
 		<style>
 			#overlayeffect{
 				pointer-events: none;
-				opacity: .15;
+				opacity: .09;
 				position: fixed;
+				top: 0;
 				width: 100%;
 				height: 100%;
 				z-index: 10000;
 				background-image: url("https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif");
 				
+				/*
+				"https://thumbs.gfycat.com/AbandonedSoupyKagu-max-1mb.gif"
+				"
+				http://i.imgur.com/urpyX45.gif
+				https://art.pixilart.com/0928a2aa14e88da.gif
+				https://i.gifer.com/R7cD.gif
+				https://thumbs.gfycat.com/LikableCleverBaboon-max-1mb.gif
+				background-size: contain;
+				
+				
+				*/
 			}
 		</style>
 		<div id='overlayeffect'></div>
@@ -55,21 +93,63 @@
 </div>
 
 <script>
-	$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
-		//Object.keys()
-		var ignore = ["events", "importance_checks", "incident_filters", "locations", "units", "agencies"];
-		var units = {
-			"scan_interval": "seconds", "radius_default": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
-		}
-		console.log(settings)
-		Object.keys(settings).forEach(function (e){
-			if(!ignore.includes(e))
-			{
-				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "</b> <input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>  </div>"
+	var basicSettings = ["scan_interval", "default_radius", "agency_to_location_distance", "geocoder_timeout"]
+	var map_settings = []
+	errorText = ""
+	function createSetting(name, value, width, units) {
+		if (!width) width = "60%";
+		if (!units) units = "";
+		else units = `(${units})`;
+		var html = `
+		<tr>
+			<td>${name} ${units}</td>
+			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
+		</tr>
+		`;
+		return html;
+	}
+
+	function getBasicSettings(){
+		$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
+			
+			var units = {
+				"scan_interval": "seconds", "default_radius": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds",
+				"max_cluster_radius": "meters", "minimum_distance": "meters", "minimum_line_distance": "meters"
 			}
+			config.innerHTML = "<h3>Basic Settings</h3>"
+			html = ``
+			basicSettings.forEach(function (e){
+				html += createSetting(e, settings[e], null, units[e])
+				//config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "<i> (" +units[e] +")</i></b><input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>   </div>"
+			});
+			map_settings = Object.keys(settings.map_config)
+			map_settings.forEach(function(e){
+				html += createSetting(`map_config.${e}`, settings.map_config[e], null, units[e])
+			});
+			
+			config.innerHTML += `<table>${html}</table>`
+
+
+			config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button><p id='errors'>" + errorText+ "</p>"
 		});
-		config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button>"
-	});
+	}
+	function saveBasicConfig(){
+		settings = {"map_config": {}}
+		basicSettings.forEach(function(e){
+			settings[e] = document.getElementById("input_" + e).value;
+		});
+		map_settings.forEach(function(e){
+			settings.map_config[e] = document.getElementById(`input_map_config.${e}`).value
+		});
+		console.log(settings)
+		$.post(baseURL + "/settings", {token: Cookies.get("auth"), all_parameters: JSON.stringify(settings)}, function(resp){
+			errorText = resp
+			document.getElementById("errors").innerHTML = resp
+			if(resp.includes("green"))
+				getBasicSettings()
+		});
+	}
+	getBasicSettings()
 </script>
 		<!--/div-->
 		<div style='min-height: 100px;'></div>
