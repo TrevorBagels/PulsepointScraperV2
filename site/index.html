@@ -9,14 +9,12 @@ permalink: /
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@master/folium/templates/leaflet_heat.min.js"></script>
+
 <meta name="viewport" content="width=device-width,
 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 <style>
 #MAP {
 	border-radius: 6px;
@@ -51,6 +49,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	var incidents = [] //list of all the HASHES of incidents we've received. so we know when we get a new one.
 	function updateIncidentLog()
 	{
+		h = document.getElementById("MAP").clientHeight;
 		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 85, page: 0}, function(resp){
 			inTable = `<tr> <td>
 					<table cellspacing="0" cellpadding="1" width="100%">
@@ -61,7 +60,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				</td></tr>
 				<tr>
 					<td>
-						<div style='max-height: 400px; overflow:auto;'>
+						<div style='max-height: ${math.round(.7*h - 100)}px; overflow:auto;'>
 							<table cellspacing="0" cellpadding="1" width="100%">
 				`;
 			newincidentcount = 0
@@ -93,6 +92,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	}
 	function updateImportantIncidentLog()
 	{
+		h = document.getElementById("MAP").clientHeight;
 		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 10, page: 0, importantonly: true }, function(resp){
 			inTable = `<tr> <td>
 					<table cellspacing="0" cellpadding="1" width="100%">
@@ -103,7 +103,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				</td></tr>
 				<tr>
 					<td>
-						<div style='max-height: 400px; overflow:auto;'>
+						<div style='max-height: ${math.round(.3*h)}px; overflow:auto;'>
 							<table cellspacing="0" cellpadding="1" width="100%">
 				`;
 			resp.forEach(element => {
@@ -156,10 +156,13 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			lastHour = resp["count"]
 			$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d2)}, function(resp){
 				today = resp["count"]
-				document.getElementById("extra-info").innerHTML = "<div style='float: left;'><p>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p></div>" + `
+				document.getElementById("extra-info").innerHTML = "<div style='float: left;'>"+
+				"<p style='float:left;'>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p>" +
+				"<p style='float:right; padding-left: 40px;' id='currentTime'>" + timeString +"</p></div>" +
+				`
 				<div style='float:right;'>
 					<a href="/config"><button>Config</button></a>
-					<a href="/locaitons"><button>Edit Locations</button></a>
+					<a href="/locations"><button>Edit Locations</button></a>
 				</div>
 				`
 				document.getElementById("extra-info-mobile").innerHTML = `
@@ -172,13 +175,20 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				`
 			});
 		});
-
+	}
+	var timeString = ""
+	function updateTime(){
+		var s = spacetime.now("America/Los_Angeles");
+		timeString = `<i>${s.unixFmt('MM/dd <br> h:mm:ss a')}</i>`
+		if(document.getElementById("currentTime") != null)
+			document.getElementById("currentTime").innerHTML = timeString
 	}
 	var lastIncidentCount = 0
 	updateInfo1()
 	updateIncidentLog()
 	updateImportantIncidentLog()
 	updateMap()
+	setInterval(updateTime, 10)
 	var updateFrequency = 5000
 	setInterval(() => {
 		var d = new Date()

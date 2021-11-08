@@ -46,9 +46,18 @@ class Settings(Resource):
 		#parser.add_argument('parameter', type=str, required=False) #the parameter we want to set
 		args = parser.parse_args()
 		params =  utils.load_json_s(args.all_parameters)
+		for k, v in params.items():
+			params[k] = utils.tryint(v)
 		new_config = deepcopy(self.events.main.config)
 		new_config.update(params)
-		print(new_config)
+		try:
+			a = D.Cfg.from_dict(new_config.to_dict())
+		except:
+			self.events.main.print("Invallid formatting for new config", t='bad')
+			return "<b style='color:lightred'>INVALLID FORMAT</b>"
+		self.events.main.config = new_config
+		self.events.save_config()
+		return "<b style='color:lightgreen'>Successfully updated config!</b>"
 
 class Map(Resource):
 	def __init__(self, events, app):
@@ -61,7 +70,12 @@ class Map(Resource):
 			html = ""
 			with open("map.html", "r") as f:
 				html = f.read()
-				mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
+				try:
+					mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
+				except:
+					time.sleep(1)
+					mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
+				
 				html = html.replace(mapID, "MAP")
 				html = html.split("</body>")[1].replace("<script>", "").replace("</script>", "").replace("\n", "")#.replace("<!DOCTYPE html>", "").replace("<head>", "").replace("</head>", "").replace("<body>", "").replace("</body>", "")
 			return html
@@ -139,7 +153,29 @@ class IncidentsSince(Resource):
 				break
 		return {"count": incidents_since_time}
 		
+class EditLocation(Resource):
+	def __init__(self, events:E, app):
+		self.events = events
+		self.app:FlaskAPI = app
+	def post(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		parser = reqparse.RequestParser()
+		parser.add_argument("location", type=str, required=True)
+		args = parser.parse_args()
+		location = utils.load_json_s(args.location)
 		
+		for k, v in location.items():
+			location[k] = utils.tryint(v)
+		try:
+			a = D.CfgLocation.from_dict(location)
+		except:
+			self.events.main.print("Invallid formatting for this location", t='bad')
+			return "<b style='color:red'>INVALLID FORMAT</b>"
+		index = self.events.main.config.locations.index(self.events.main.get_location(location['name']))
+		self.events.main.config.locations[index] = a
+		print(self.events.main.get_location(a.name))
+		return "<b style='color:lightgreen'>Successfully updated config!</b>"
 
 class Locations(Resource):
 	def __init__(self, events:E, app):
@@ -150,7 +186,14 @@ class Locations(Resource):
 	def get(self):
 		if self.app.verify() == False:
 			return "Unauthorized"
-		return self.events.main.config.locations
+		parser = reqparse.RequestParser()
+		parser.add_argument('name', type=str, required=False)
+		args = parser.parse_args()
+		if args.name == None:
+			return self.events.main.config.locations
+		else:
+			return self.events.main.get_location(args.name)
+
 	def post(self):
 		if self.app.verify() == False:
 			return "Unauthorized"
@@ -211,6 +254,7 @@ class FlaskAPI:
 		logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 		api.add_resource(Locations, "/locations", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(EditLocation, "/locations/edit", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Map, "/map.html", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Incidents, "/incidents", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(GenerateToken, "/gettoken", resource_class_kwargs={'events': self.events, 'app': self})

@@ -11,19 +11,32 @@ permalink: /config
 </div>
 
 <script>
-	$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
-		//Object.keys()
-		var ignore = ["events", "importance_checks", "incident_filters", "locations", "units", "agencies"];
-		var units = {
-			"scan_interval": "seconds", "radius_default": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
-		}
-		console.log(settings)
-		Object.keys(settings).forEach(function (e){
-			if(!ignore.includes(e))
-			{
-				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "</b> <input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>  </div>"
+	var basicSettings = ["scan_interval", "default_radius", "agency_to_location_distance", "geocoder_timeout"]
+	errorText = ""
+	function getBasicSettings(){
+		$.get(baseURL + "/settings", {token: Cookies.get("auth")}, function (settings){
+			
+			var units = {
+				"scan_interval": "seconds", "default_radius": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds"
 			}
+			config.innerHTML = "<h3>Basic Settings</h3>"
+			basicSettings.forEach(function (e){
+				config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "<i> (" +units[e] +")</i></b><input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>   </div>"
+			});
+			config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button><p id='errors'>" + errorText+ "</p>"
 		});
-		config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button>"
-	});
+	}
+	function saveBasicConfig(){
+		settings = {}
+		basicSettings.forEach(function(e){
+			settings[e] = document.getElementById("input_" + e).value;
+		});
+		$.post(baseURL + "/settings", {token: Cookies.get("auth"), all_parameters: JSON.stringify(settings)}, function(resp){
+			errorText = resp
+			document.getElementById("errors").innerHTML = resp
+			if(resp.includes("green"))
+				getBasicSettings()
+		});
+	}
+	getBasicSettings()
 </script>

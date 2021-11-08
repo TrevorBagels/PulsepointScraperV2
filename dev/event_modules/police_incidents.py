@@ -22,6 +22,7 @@ class Events(events.Events):
 		self.url = ""
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def get_custom_incidents(self) -> list[D.Incident]:
+		MAX_RESULTS = 25#50 #set this to 10 when testing
 		print("Getting custom incidents...")
 		incidents = []
 		for user in self.accounts:
@@ -31,13 +32,16 @@ class Events(events.Events):
 				new_tweet_count = requests.get(f"https://api.twitter.com/2/tweets/counts/recent?query=from:{user}&since_id={self.most_recent[user]}", headers=self.headers).json()['meta']['total_tweet_count']
 			if self.most_recent[user] == None or new_tweet_count > 0:
 				if new_tweet_count != None: self.main.print(f"{new_tweet_count} tweet(s) found for user {user}.", t='good')
-				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at"
+				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at&max_results={MAX_RESULTS}"
 				if self.most_recent[user] != None:
 					tweets_request_url += f"&since_id={self.most_recent[user]}"
 				tweets = requests.get(tweets_request_url, headers=self.headers).json()
 				if "data" not in tweets:
 					self.main.print(tweets, t='bad')
-				print(len(tweets['data']), "tweets recieved")
+				try:
+					print(len(tweets['data']), "tweets recieved")
+				except:
+					print("UH OH ", tweets)
 				for x in tweets['data']:
 					x['id'] = int(x['id'])
 					

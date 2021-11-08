@@ -3,6 +3,17 @@
 <script type='text/javascript' src="/assets/js/lib/math.min.js"></script>
 
 <script type='text/javascript' src="/assets/js/lib/js.cookie-2.2.1.min.js"></script>
+
+<script src="/assets/js/node_modules/spacetime/builds/spacetime.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+
 <script>
 	baseURL = "{{site.data.config.baseURL }}"
 	console.log("Base API URL: " + baseURL)
@@ -20,5 +31,20 @@
 	}
 	function makehash(object){
 		return JSON.stringify(object).hashCode();
+	}
+</script>
+
+<script>
+	function updateCollapseables(){
+		var collapseables = document.getElementsByClassName("collapsebutton");
+		var i;
+		for (i = 0; i < collapseables.length; i++) {
+			collapseables[i].addEventListener("click", function() {
+				this.classList.toggle("active");
+				var content = this.nextElementSibling;
+				if(content.style.display === "block") content.style.display = "none";
+				else content.style.display = "block";
+			});
+		}
 	}
 </script>

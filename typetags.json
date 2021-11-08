@@ -1,0 +1,202 @@
+{
+    "Medical Emergency": [
+        "med",
+        "em"
+    ],
+    "Public Service": [],
+    "Interfacility Transfer": [],
+    "Fire Alarm": [
+        "fire"
+    ],
+    "Traffic Collision": [
+        "traf"
+    ],
+    "Alarm": [],
+    "Investigation": [],
+    "Commercial Fire": [
+        "fire",
+        "em"
+    ],
+    "Lift Assist": [],
+    "Carbon Monoxide": [
+        "haz"
+    ],
+    "Residential Fire": [
+        "fire",
+        "em"
+    ],
+    "Fire": [
+        "fire",
+        "em"
+    ],
+    "Outside Fire": [
+        "fire",
+        "em"
+    ],
+    "Lockout": [],
+    "Vegetation Fire": [
+        "fire",
+        "em"
+    ],
+    "Elevator Rescue": [
+        "em"
+    ],
+    "Odor Investigation": [
+        "haz"
+    ],
+    "Electrical Emergency": [
+        "em"
+    ],
+    "Hazmat Response": [
+        "haz"
+    ],
+    "Illegal Fire": [
+        "fire"
+    ],
+    "Vehicle Fire": [
+        "fire",
+        "traf",
+        "em"
+    ],
+    "Water Emergency": [],
+    "Mutual Aid": [],
+    "Gas Leak": [
+        "haz"
+    ],
+    "Hazardous Condition": [
+        "haz"
+    ],
+    "DISTURBANCE - PRIORITY": [
+        "pol"
+    ],
+    "VEHICLE STOLEN - COLD": [
+        "theft",
+        "pol"
+    ],
+    "THEFT - COLD": [
+        "theft",
+        "pol",
+        "em"
+    ],
+    "BURGLARY - COLD": [
+        "theft",
+        "pol",
+        "em"
+    ],
+    "AREA CHECK": [
+        "pol"
+    ],
+    "ASSAULT - PRIORITY": [
+        "vio",
+        "pol",
+        "em"
+    ],
+    "SUSPICIOUS SUBJ, VEH, OR CIRCUMSTANCE": [
+        "pol",
+        "traf"
+    ],
+    "UNWANTED PERSON": [
+        "pol"
+    ],
+    "ACCIDENT - HIT AND RUN - COLD": [
+        "pol",
+        "traf",
+        "vio",
+        "em"
+    ],
+    "ACCIDENT - NON INJURY": [
+        "pol",
+        "traf"
+    ],
+    "HAZARD - HAZARDOUS CONDITION": [
+        "haz"
+    ],
+    "SUSPICIOUS - PRIORITY": [
+        "pol"
+    ],
+    "THREAT - PRIORITY": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "ACCIDENT - UNKNOWN INJURY": [
+        "pol",
+        "traf"
+    ],
+    "ASSAULT - COLD": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "THEFT - PRIORITY": [
+        "pol",
+        "theft",
+        "em"
+    ],
+    "TRIMET INCIDENT - PRIORITY": [
+        "pol",
+        "traf"
+    ],
+    "ROBBERY - PRIORITY *H": [
+        "pol",
+        "theft",
+        "em"
+    ],
+    "SUSPICIOUS - WITH WEAPON *H": [
+        "pol",
+        "vio"
+    ],
+    "VANDALISM - PRIORITY": [
+        "pol"
+    ],
+    "DISTURBANCE - COLD": [
+        "pol"
+    ],
+    "THREAT - WITH WEAPON *H": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "TRIMET INCIDENT - COLD": [
+        "pol",
+        "traf"
+    ],
+    "ACCIDENT - INJURY": [
+        "pol",
+        "traf",
+        "em"
+    ],
+    "ACCIDENT - HIT AND RUN - PRIORITY": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "THREAT - COLD": [
+        "vio",
+        "pol"
+    ],
+    "Expanded Traffic Collision": [
+        "traf"
+    ],
+    "SHOTS FIRED": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "PREMISE CHECK": [
+        "pol"
+    ],
+    "ANIMAL PROBLEM": [],
+    "SHOOTING - COLD": [
+        "vio",
+        "pol",
+        "em"
+    ],
+    "ROBBERY - WITH WEAPON *H": ["pol", "vio", "theft", "em"],
+    "THEFT - SUBJECT IN CUSTODY": ["pol", "theft"],
+    "VEHICLE STOLEN - PRIORITY": ["pol", "traf", "theft"],
+    "SHOOTING - WITH WEAPON *H": ["pol", "vio", "em"],
+    "DISTURBANCE - WITH WEAPON *H": ["pol", "vio"],
+    "NOISE DISTURBANCE": ["pol"],
+    "VANDALISM - COLD": ["pol"]
+}

@@ -50,7 +50,6 @@
 	border-radius: 6px
 	border: 3px solid $border
 	border-radius: 8px !important
-	height: 80.0%
 	float: right
 	//border-collapse: collapse
 	font-size: .9em
@@ -104,10 +103,24 @@
 	border: 3px solid $border
 	border-radius: 6px
 	padding: 24px
-	width: 30%
+	width: 40%
 	margin: auto
 	.setting
 		height: 25px
+#locations
+	display: block
+	border: 3px solid $border
+	border-radius: 6px
+	padding: 24px
+	width: 70%
+	margin: auto
+	.location
+		display: block
+		border: 3px solid $border
+		border-radius: 6px
+		margin: auto
+		margin-top: 16px
+		padding: 8px 32px 8px 32px
 
 #extra-info-mobile
 	top: 0
@@ -127,3 +140,46 @@
 		padding-left: 24px
 		font-size: 1.7em
 		color: $navlink
+
+.border
+	border: 3px solid $border
+	border-radius: 6px
+
+
+.filters
+	display: grid
+	grid-template-columns: auto auto
+	div
+		margin: 10px 15px 5px 15px
+		div
+			background-color: $bgc2
+			height: 90%
+			div
+				height: 20px
+.addnew
+	margin: auto
+	display: block
+	color: $border
+button.negative
+	color: $negative !important
+	border-color: $negative !important
+button.small
+	padding: 1px 9px
+	border-width: 1px
+
+.locationedit
+	table
+		margin: 5px
+		width: 100%
+		margin: auto
+		cellspacing: 0
+		border-radius: 6px
+		border: 3px solid $border
+		border-radius: 8px !important
+		border-collapse: collapse
+		tr
+			width: 100%
+			td
+				width: auto
+				input
+					width: 95% !important

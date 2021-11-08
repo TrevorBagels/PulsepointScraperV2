@@ -3,3 +3,6 @@ mykeys.json
 apptest.py
 *.pyc
 */__pycache__
+**/__pycache__
+site/.sass-cache/
+site/_site/

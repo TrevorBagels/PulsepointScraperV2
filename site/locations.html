@@ -1,0 +1,266 @@
+---
+layout: default
+title: Home
+permalink: /locations 
+---
+<style>
+
+</style>
+<div id='backbutton' style='position: relative; bottom: 0; left: 0;'>
+	<button onClick='window.open("/", "_self");'>Back</button>
+</div>
+
+<div id='locations'>
+
+</div>
+
+<script>
+	function createSetting(name, value, width, units) {
+		if (!width) width = "60%";
+		if (!units) units = "";
+		else units = `(${units})`;
+		var html = `
+		<tr>
+			<td>${name} ${units}</td>
+			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
+		</tr>
+		`;
+		return html;
+	}
+
+	function createBool(name, value) {
+		checked = "";
+		if (value == true) checked = "checked";
+		var html = `
+		<tr>
+			<td>${name} - </td>
+			<td><input class='checkbox' id="input_${name}" type='checkbox' ${checked}></td>
+		</tr>
+		`;
+		return html;
+	}
+
+	function createCollapsable(name, html) {
+		html2 = `
+			<button style='margin: 15px 0px 15px 0px;' class="collapsebutton">${name}</button>
+				<div class='collapsedcontent border' style='display: none; margin-left: 25px;'>${html}</div>
+		`
+		return html2;
+	}
+
+	function doubleSecurityButton(action, id) {
+		button = document.getElementById(id + "_confirm_buttons")
+		if (action == "attempt") {
+			if (button.style.display == "none")
+				button.style.display = "block";
+			else
+				button.style.display = "none"
+		}
+		if (action == "cancel") {
+			button.style.display = "none";
+		}
+	}
+
+	function createConfirmButton(name, onclick, warning, id) {
+		id = id || name.replaceAll(" ", "_")
+		warning = warning || "Are you sure?"
+		html = `
+			<div class='confirm' style='margin: 15px 0px 15px 0px;'>
+				<button onclick="doubleSecurityButton('attempt', '${id}')">${name}</button>
+				<div id='${id}_confirm_buttons' style='display: none'>
+					<p>${warning}</p>
+					<button onclick="${onclick}">Yes</button> <button onclick="doubleSecurityButton('cancel', '${id}')">No</button>
+				</div>
+			</div>
+		`
+		return html;
+	}
+
+
+	function createLocation(l) {
+		var filterHTML = `
+			Allowed: ${l.filters.allow_list.toString().replaceAll(",", ", ", )}<br>
+			Blocked: ${l.filters.block_list.toString().replaceAll(",", ", ")}
+		`
+		if (l.filters.allow_list.length == 0 && l.filters.block_list.length == 0)
+			filterHTML = "No filters in place"
+		var html = `
+		<div class='location'>
+			<h4>${l.name}</h4>
+			<table style="cellspacing: 0; width: 90%;">
+				<tr>
+					<td width="50%">${l.address}</td> 
+					<td width="50%"><code>${l.coords.toString().replace(",", ", ")}</code></td>
+				</tr>
+			</table>
+			<div>Radius: ${l.radius} meters</div>
+			<div>Enabled: <code>${l.enabled}</code></div>
+			<br>
+			${createCollapsable("View Filters", filterHTML)}
+			<div>
+				<button onclick="editLocation('${l.name}');">Edit Location</button>
+			</div>
+			${createConfirmButton("Remove location", "console.log('REMOVE');", null, l.name.replaceAll(' ', '_'))}
+		</div>
+		`;
+		return html;
+	}
+
+	function filters_remove_field(target, index) {
+		tgt = {
+			"allowed": "allow_list",
+			"blocked": "block_list"
+		};
+		beingEdited.filters[tgt[target]].splice(index, 1);
+		updateEditingFilters();
+	}
+
+	function filters_add_field_html(target, value) //target = "allowed" or "blocked"
+	{
+		value = value || ""
+		document.getElementById(target).innerHTML += `<div><button onclick="filters_remove_field('${target}', ${document.getElementById(target).children.length})" class='negative small'>-</button> <input type='text' value='${value}' style='width: 60%'></div>`
+	}
+
+	function filters_add_field(target) {
+		tgt = {
+			"allowed": "allow_list",
+			"blocked": "block_list"
+		};
+		beingEdited.filters[tgt[target]].push("");
+		filters_add_field_html(target, "");
+	}   
+
+	function updateFilterExplaination(filter) {
+		explaination = "All incident types will pass through the filter. Add <b>*</b> to the allowed list to allow all items other than those blocked, or add a <b>*</b> to the block list to only allow items on the allowed list.";
+		if (filter.block_list.includes("*")) {
+			explaination = "Only items in <i>allowed</i> will pass through the filter. ";
+			if (filter.allow_list.includes("*"))
+				explaination += "Because you have <b>*</b> in the allow list, this means that all items will pass through the filter. ";
+		} else if (filter.allow_list.includes("*")) {
+			explaination = "All items, except for those in <i>blocked</i> will pass through the filter.";
+		}
+		document.getElementById("filterexplain").innerHTML = explaination;
+	}
+	function editLocationReadFilters() { //also read and update everything else because why not
+		allowed = document.getElementById("allowed")
+		for (i = 0; i < allowed.childElementCount; i++) {
+			value = allowed.children[i].children[1].value;
+			beingEdited.filters.allow_list[i] = value;
+		}
+		blocked = document.getElementById("blocked")
+		for (i = 0; i < blocked.childElementCount; i++) {
+			value = blocked.children[i].children[1].value;
+			beingEdited.filters.block_list[i] = value;
+		}
+        beingEdited.enabled = document.getElementById("input_enabled").checked
+        beingEdited.address = document.getElementById("input_address").value;
+        beingEdited.radius =  document.getElementById("input_radius").value;
+        match = document.getElementById("input_match").value;
+        if(match == "" || match == "null")
+            match = null;
+        beingEdited.match = match;
+	}
+	function createFilterElement(filter) {
+		//filter.allow_list = [], filter.block_list = []
+
+		var html = `
+		<div class='border'>
+			<div class='filters'>
+				<div>
+					Allowed
+					<div id='allowed'>
+						
+					</div>
+					<button class='addnew' onclick="filters_add_field('allowed');">+</button>
+				</div>
+				<div>
+					Blocked
+					<div id='blocked'>
+					</div>
+					<button class='addnew' onclick="filters_add_field('blocked');">+</button>
+				</div>
+			</div>
+			<p style='margin: auto; padding-top: 25px; display: block; width: 60%' id='filterexplain'></p>
+		</div>
+		`
+
+		return html
+	}
+
+
+
+	function editLocation(locationName) {
+		document.getElementById("backbutton").innerHTML = `<button onClick='displayLocations()'>Back</button>`;
+		$.get(baseURL + "/locations", {
+			token: Cookies.get("auth"),
+			name: locationName
+		}, function(l) {
+			beingEdited = l
+			html = `
+                <div class='locationedit'>
+			    <h3>${l.name}<button style='font-size: .8em;margin-top: 50px; margin-left: 25%;' onclick="saveEditingLocation()">Save Changes</button></h3>
+                <table>
+			    ${createSetting("address", l.address)}
+			    ${createSetting("radius", l.radius, "10%", "meters")}
+			    ${createSetting("match", l.match || "", "10%", "regex match")}
+			    ${createBool("enabled", l.enabled)}
+                </table>
+			    ${createFilterElement(l.filters)}
+                </div>
+			`;
+			document.getElementById("locations").innerHTML = html;
+			document.getElementsByClassName("filters")[0].addEventListener("click", function(e) {
+				if ($(e.target).is(".filters")) {
+					editLocationReadFilters();
+					updateEditingFilters();
+				}
+			});
+			updateEditingFilters()
+
+		});
+	}
+
+	function updateEditingFilters() {
+		document.getElementById("allowed").innerHTML = ""
+		document.getElementById("blocked").innerHTML = ""
+
+		beingEdited.filters.allow_list.forEach(function(e) {
+			filters_add_field_html("allowed", e);
+		});
+		beingEdited.filters.block_list.forEach(function(e) {
+			filters_add_field_html("blocked", e);
+		});
+
+		updateFilterExplaination(beingEdited.filters);
+	}
+    function saveEditingLocation()
+    {
+        editLocationReadFilters()
+        $.post(baseURL + "/locations/edit", {token: Cookies.get("auth"), location: JSON.stringify(beingEdited)}, function(resp){
+            document.getElementById("locations").children[0].children[0].innerHTML += resp
+        });
+    }
+	function displayLocations() {
+		if (editingUpdate != null) {
+			clearInterval(editingUpdate);
+			editingUpdate = null;
+		}
+		document.getElementById("backbutton").innerHTML = `<button onClick='window.open("/", "_self");'>Back</button>`
+		$.get(baseURL + "/locations", {
+			token: Cookies.get("auth")
+		}, function(locations) {
+			html = ""
+			locations.forEach(element => {
+				html += createLocation(element);
+			});
+			document.getElementById("locations").innerHTML = html
+			updateCollapseables()
+		});
+
+	}
+	var beingEdited = null;
+	var editingUpdate = null
+
+
+	displayLocations()
+</script>

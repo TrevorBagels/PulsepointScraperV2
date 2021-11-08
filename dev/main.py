@@ -28,7 +28,7 @@ class Main:
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
 		self.api_calls = 0 #maybe some day i'll throw in some code that makes this reset every day.
-
+		self.incident_type_tags = utils.load_json("typetags.json") or {}
 		self.config:D.Cfg = None
 		self.keys = None
 		with open(keys_file, "r") as f:
@@ -84,9 +84,14 @@ class Main:
 			self.call_event("incident_analyzed", x) #! EVENT #!
 		self.call_event("main_loop_end") #! EVENT #!
 		utils.save_json("geocoding_results.json", self.geocoding_results)
+		current_type_tags = utils.load_json("typetags.json") or {}
+		self.incident_type_tags.update(current_type_tags) #if we've changed anything while the program was running, be sure to not discard those changes
+		utils.save_json("typetags.json", self.incident_type_tags)
 
 	
 	def analyze(self, incident:D.Incident):
+		if incident.incident_type != None and incident.incident_type not in self.incident_type_tags:
+			self.incident_type_tags[incident.incident_type] = []
 		incident.significant_locations = []
 		if self.config.incident_filters.allowed(incident.incident_type) == False: return #if this incident is blocked or not allowed (global), skip analysis
 

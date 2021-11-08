@@ -4,6 +4,7 @@ This one creates a webmap of all the recent incidents
 Note that this is an example of what you can do with the events class, and this requires changing some things for practical use
 
 '''
+from folium.map import LayerControl
 import numpy as np
 import pandas as pd
 from notifiers import get_notifier
@@ -16,7 +17,7 @@ from geopy.distance import geodesic
 import pandas as pd
 from .. import utils
 
-
+from folium.plugins import HeatMap, MarkerCluster
 
 class Events(events.Events):
 	def __init__(self):
@@ -34,7 +35,10 @@ class Events(events.Events):
 		self.init_map()
 	
 	def init_map(self):
-		self.map = folium.Map(location=self.location, zoom_start=4, tiles="https://{s}.tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=rZdfyevzxIdbsN9w6Vj7F3XIXkLO4IuXeksSMnFb8uByhftsBIHdSlCcpHVr16QR", attr="<a>somethin should go here</a>") #"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+		#tiles = "stamentoner"
+		tiles = "https://{s}.tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=rZdfyevzxIdbsN9w6Vj7F3XIXkLO4IuXeksSMnFb8uByhftsBIHdSlCcpHVr16QR"
+		self.map = folium.Map(location=self.location, zoom_start=4, tiles=tiles, attr="<a>somethin should go here</a>") #"https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+		self.markers = MarkerCluster(options={"maxClusterRadius": 30, "animate": True, "spiderfyOnMaxZoom": True, "spiderLegPolylineOptions": {"weight": 3, "color": "#00f", "opacity": 1}}).add_to(self.map)
 		#these coords are the bottom left and top right points for the viewport
 		self.drawLines = True
 
@@ -54,8 +58,8 @@ class Events(events.Events):
 			"Fire Alarm": " fire-extinguisher|red",
 			"Interfacility Transfer":"bus",
 			"Traffic Collision": "car|orange",
-			"Odor Investigation": "|pink",
-			"Hazardous Condition": "|pink",
+			"Odor Investigation": "sellsy|pink",
+			"Hazardous Condition": "biohazard|pink",
 			"Investigation": "question|darkgreen",
 			"Lockout": "lock|darkblue",
 			"Commercial Fire": "fire|red",
@@ -68,14 +72,27 @@ class Events(events.Events):
 			"Wires Arcing": "bolt|orange",
 			"Rescue": "parachute-box|red",
 			"Gas Leak": "smog|pink",
-			"Explosion": "bomb|pink"
-
+			"Explosion": "bomb|pink",
+			"Violence": "exclamation|red",
+			"Suspicious Activity": "user-secret|darkpurple",
+			"Unwanted Person": "user-times|darkpurple",
+			"Noise Disturbance": "volume-up|darkgreen",
+			"Hazmat Response": "biohazard|pink",
+			"Elevator Rescue": "grip-lines-vertical|blue",
+			"Trimet": "train|cadetblue",
+			"Theft": "mask|darkred"
 		}
 		if incident.incident_type in icons:
 			icon = icons[incident.incident_type]
-		
-		if 'fire' in incident.incident_type.lower():
-			icon = icons["Outside Fire"]
+		itype = incident.incident_type.lower()
+		if 'fire' in itype: icon = icons["Outside Fire"]
+		if "shots" in itype or "shooting" in itype or "threat" in itype or "stabbing" in itype or "vio" in self.main.incident_type_tags[incident.incident_type]:
+			icon = icons["Violence"]
+		if "theft" in itype:
+			icon = icons["Theft"]
+		if "suspicious" in itype: icon = icons["Suspicious Activity"]
+		if "disturbance" in itype: icon = icons["Noise Disturbance"]
+		if "trimet" in itype: icon = icons["Trimet"]
 		color = "lightgreen"
 		if len(icon.split("|")) == 2:
 			a =  icon.split("|")
@@ -87,7 +104,6 @@ class Events(events.Events):
 		useIcon = folium.Icon(color=color, icon=icon, prefix='fa') #the icon to actually use
 		#make a marker of this incident
 		#draws a line to the nearest monitored location. looks pretty cool.
-		cancel_marking = False
 		if self.drawLines:
 			p1 = incident.coords
 			closest = 0
@@ -98,13 +114,17 @@ class Events(events.Events):
 					if dist < closestDist:
 						closest = i
 						closestDist = dist
-			if closestDist > 3000:
+			if closestDist > 6000:
 				return
 			points = [tuple(p1), tuple(self.main.config.locations[closest].coords)]
-			folium.PolyLine(points, color=color, weight=1.5, opacity=.3).add_to(self.map)
-			folium.Marker(icon=useIcon, location=incident.coords, 
+			folium.PolyLine(points, color=color, weight=1.5, opacity=.3).add_to(self.markers)
+			mkr = folium.Marker(icon=useIcon, location=incident.coords, 
 				tooltip=incident.incident_type, 
-				popup=f'<p>{utils.local(incident.CallReceivedDateTime).strftime("%a, %H:%M").upper()}<br>{incident.FullDisplayAddress}</p>').add_to(self.map)
+				popup=f'<p>{utils.local(incident.CallReceivedDateTime).strftime("%a, %H:%M").upper()}<br>{incident.FullDisplayAddress}</p>')
+			if "vio" in self.main.incident_type_tags[incident.incident_type] or "theft" in self.main.incident_type_tags[incident.incident_type]:
+				mkr.add_to(self.map)
+			else:
+				mkr.add_to(self.markers)
 		pass
 
 	def main_loop_end(self):#save the latest map
@@ -114,10 +134,14 @@ class Events(events.Events):
 				remove.append(x)
 		for x in remove: self.incidents.remove(x)
 		self.init_map()
+		heatMapPoints = []
 		for x in self.incidents:
 			self.add_incident_to_map(x)
-		
+			if "vio" in self.main.incident_type_tags[x.incident_type] or "theft" in self.main.incident_type_tags[x.incident_type]:
+				heatMapPoints.append(x.coords)
 		self.map.fit_bounds([self.sw, self.ne])
+		self.map.add_child(HeatMap(heatMapPoints, name="Heat map", radius=45, blur=40, max_zoom=12, min_opacity=0))
+		
 		self.map.save(self.savePath + "map.html")
 		#refresh the uberschit widget. commented out because most people probably don't use uberschit
 		'''

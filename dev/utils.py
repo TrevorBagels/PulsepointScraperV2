@@ -143,3 +143,15 @@ def utc2local(utc) -> datetime:
 	epoch = time.mktime(utc.timetuple())
 	offset = datetime.fromtimestamp(epoch) - datetime.utcfromtimestamp(epoch)
 	return utc + offset
+
+def tryint(value):
+	if type(value) == bool:
+		return value
+	try:
+		value1 = float(value)
+	except:
+		return value
+	if float(value) == float(int(value)):
+		return int(value)
+	else:
+		return float(value)
