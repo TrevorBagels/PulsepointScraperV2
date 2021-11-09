@@ -54,18 +54,20 @@ class Events(events.Events):
 			"Outside Fire": "fire|red",
 			"Residential Fire": "home|red",
 			"Vehicle Fire": "fire|red",
-			"Illegal Fire": "fire|darkred",
+			"Illegal Fire": "dumpster-fire|darkred",
 			"Fire Alarm": " fire-extinguisher|red",
 			"Interfacility Transfer":"bus",
-			"Traffic Collision": "car|orange",
-			"Odor Investigation": "sellsy|pink",
+			"Traffic Collision": "car-crash|orange",
+			"Traffic Condition": "car|orange",
+			"Water Emergency": "droplet|blue",
+			"Odor Investigation": "brands fa-sellsy|pink",
 			"Hazardous Condition": "biohazard|pink",
 			"Investigation": "question|darkgreen",
 			"Lockout": "lock|darkblue",
 			"Commercial Fire": "fire|red",
 			"Carbon Monoxide": "smoke|gray",
 			"Alarm": "alarm|darkblue",
-			"Lift Assist": "plane|darkpurple",
+			"Lift Assist": "accessible-icon|darkpurple",
 			"Water Rescue": "tint|pink",
 			"Public Service": "|cadetblue",
 			"Electrical Emergency": "bolt|red",
@@ -80,16 +82,24 @@ class Events(events.Events):
 			"Hazmat Response": "biohazard|pink",
 			"Elevator Rescue": "grip-lines-vertical|blue",
 			"Trimet": "train|cadetblue",
-			"Theft": "mask|darkred"
+			"Theft": "mask|darkred",
+			"Armed Violence": "gun|darkred",
+			"Assault": "hand-fist|red",
+			"Break In": "lock-open|red",
+			"Premise Check": "warehouse|lightblue"
 		}
-		if incident.incident_type in icons:
-			icon = icons[incident.incident_type]
 		itype = incident.incident_type.lower()
 		if 'fire' in itype: icon = icons["Outside Fire"]
+		if incident.incident_type.title() in icons:
+			icon = icons[incident.incident_type.title()]
 		if "shots" in itype or "shooting" in itype or "threat" in itype or "stabbing" in itype or "vio" in self.main.incident_type_tags[incident.incident_type]:
 			icon = icons["Violence"]
-		if "theft" in itype:
-			icon = icons["Theft"]
+		if "assault" in itype: icon = icons["Assault"]
+		if "shots" in itype or "shooting" in itype: icon = icons["Armed Violence"]
+		if "theft" in itype: icon = icons["Theft"]
+		if "burglary" in itype: icon = icons["Break In"]
+		if "unwanted person" in itype: icon = icons["Unwanted Person"]
+		if "hazard" in itype: icon = icons["Hazmat Response"]
 		if "suspicious" in itype: icon = icons["Suspicious Activity"]
 		if "disturbance" in itype: icon = icons["Noise Disturbance"]
 		if "trimet" in itype: icon = icons["Trimet"]

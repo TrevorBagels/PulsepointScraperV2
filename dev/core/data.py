@@ -123,6 +123,7 @@ class Cfg(Prodict):
 	incident_filters:	Filter #global filters
 	geocoder_timeout:	int #how long to wait before timing out when trying to geocode a location.
 	agency_to_location_distance:	int #how far away an agency can be from a location to be considered needed for scanning (meters). default: 40km
+	police_incident_tweet_count:		int
 	map_config:			MapCfg
 	def init(self):
 		self.agency_to_location_distance = 40000
@@ -135,6 +136,7 @@ class Cfg(Prodict):
 		self.locations = []
 		self.units = "m"
 		self.geocoder_timeout = 9
+		self.police_incident_tweet_count = 15
 		self.map_config = MapCfg()
 
 

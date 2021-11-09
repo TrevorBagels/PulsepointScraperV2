@@ -25,7 +25,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 }
 </style>
 
-<div class="folium-map" id="MAP" ></div>
+<div class="folium-map card" id="MAP" ></div>
 <div>
 	<table id='incidents-log'>
 		<!--.......-->
@@ -45,6 +45,41 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 
 </div>
+
+
+
+
+
+<script>
+	var map_center = {};
+	var map_zoom = 15;
+	var map_bounds = {};
+	function mapEvents()
+	{
+		if(MAP == null || MAP.on == null) return;
+		MAP.on("moveend", function(e){
+			map_bounds = MAP.getBounds() //_northEast: j {lat: 45.66468622022305, lng: -122.57583618164064}, _southWest: j {lat: 45.43170808198972, lng: -122.96722412109376}
+			map_zoom = MAP.getZoom(); //13, 14, 15, etc
+			map_center = MAP.getCenter(); //{lat: 45.548558288409254, lng: -122.83985137939455}
+		});
+		MAP.on("zoomend", function(e){
+			map_bounds = MAP.getBounds()
+			map_zoom = MAP.getZoom();
+			map_center = MAP.getCenter();
+		})
+	}
+	function viewPosition(lat, long, zoom)
+	{
+		zoom = zoom || 15;
+		if(MAP.setView != null)
+			MAP.setView({lat: lat, lng: long}, zoom);
+	}
+	function restoreMapState()
+	{
+		if(MAP.setView != null && map_center.lat != null)
+			MAP.setView(map_center, map_zoom, {"zoomAnimation": false});
+	}
+</script>
 <script>
 	var incidents = [] //list of all the HASHES of incidents we've received. so we know when we get a new one.
 	function updateIncidentLog()
@@ -70,11 +105,12 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 									<div style='max-height: 100px; overflow:auto;color: #22ff97;'>
 										<table cellspacing="0" cellpadding="1" width="100%">`
 			resp.forEach(element => {
-				row = "<tr>" + 
-					"<td>" + element.datelocal + ", " + element.timelocal  + "</td>" +
-					"<td>" + element.type + "</td>" +
-					"<td>" + element.address + "</td>" +
-					"</tr>"
+				row = `<tr>
+							<td>${element.datelocal}, ${element.timelocal}</td>
+							<td>${element.type}</td>
+							<td class='clickable' onClick="viewPosition(${element.coords})">${element.address}</td>
+						</tr>
+					`
 				inTable += row
 				hsh = makehash(element)
 				if(!incidents.includes(hsh)){ //it's a new incident
@@ -107,14 +143,15 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 							<table cellspacing="0" cellpadding="1" width="100%">
 				`;
 			resp.forEach(element => {
-				inTable += "<tr>" + 
-					"<td>" + element.datelocal + ", " + element.timelocal  + "</td>" +
-					"<td>" + element.type + "</td>" +
-					"<td>" + element.location_name + "</td>" +
-					"<td>" + element.address + "</td>" +
-					"<td>" + element.monitored_address + "</td>" +
-					"<td>" + math.round(element.distance) + " meters" + "</td>" +
-					"</tr>"
+				inTable += `
+				<tr>
+					<td>${element.datelocal}, ${element.timelocal}</td>
+					<td>${element.type}</td>
+					<td>${element.location_name}</td>
+					<td class='clickable' onClick="viewPosition(${element.coords})">${element.address}</td>
+					<td>${element.monitored_address}</td>
+					<td>${math.round(element.distance)} meters</td>
+				</tr>`
 			});
 			inTable += "</table></div></td></tr>"
 			document.getElementById('important-incidents').innerHTML = inTable
@@ -136,6 +173,8 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			s.id = "mapScript"
 			document.head.appendChild(s);
 		});
+		restoreMapState();
+		mapEvents();
 	}
 	function date_str(currentdate){
 		var datetime = currentdate.getFullYear() + "-"

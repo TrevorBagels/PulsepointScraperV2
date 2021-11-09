@@ -166,16 +166,20 @@ class EditLocation(Resource):
 			return "Unauthorized"
 		parser = reqparse.RequestParser()
 		parser.add_argument("location", type=str, required=True)
+		parser.add_argument("method", type=str, required=True) #edit, remove
 		args = parser.parse_args()
 		location = utils.load_json_s(args.location)
-		
+		if args.method == "remove":
+			l = self.events.main.get_location(location['name'])
+			self.events.main.config.locations.remove(l)
+			return "<b style='color:lightgreen;' >Location removed!</b>"
 		for k, v in location.items():
 			location[k] = utils.tryint(v)
 		try:
 			a = D.CfgLocation.from_dict(location)
 		except:
 			self.events.main.print("Invallid formatting for this location", t='bad')
-			return "<b style='color:red'>INVALLID FORMAT</b>"
+			return "<b style='color:lightred'>INVALLID FORMAT</b>"
 		index = self.events.main.config.locations.index(self.events.main.get_location(location['name']))
 		self.events.main.config.locations[index] = a
 		print(self.events.main.get_location(a.name))

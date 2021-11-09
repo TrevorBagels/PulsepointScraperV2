@@ -11,26 +11,42 @@
 	</head>
 	<body>
 		<style>
+			@keyframes backgroundmove {
+				0% {
+					transform: translateY(0px);
+					filter: blur(1.5px);
+				}
+				10%{
+					filter: blur(0px);
+				}
+				90%{
+					filter:blur(0px);
+				}
+				100% {
+					transform: translateY(60px);
+					filter: blur(1.5px);
+				}
+			}
 			#overlayeffect{
 				pointer-events: none;
 				opacity: .09;
 				position: fixed;
-				top: 0;
+				top: -20%;
 				width: 100%;
-				height: 100%;
+				height: 120%;
 				z-index: 10000;
 				background-image: url("https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif");
-				
+				background-size: 1000px;
+				animation: backgroundmove 4s infinite linear forwards;
 				/*
 				"https://thumbs.gfycat.com/AbandonedSoupyKagu-max-1mb.gif"
 				"
+				https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif
 				http://i.imgur.com/urpyX45.gif
 				https://art.pixilart.com/0928a2aa14e88da.gif
 				https://i.gifer.com/R7cD.gif
 				https://thumbs.gfycat.com/LikableCleverBaboon-max-1mb.gif
 				background-size: contain;
-				
-				
 				*/
 			}
 		</style>

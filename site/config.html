@@ -11,17 +11,19 @@ permalink: /config
 </div>
 
 <script>
-	var basicSettings = ["scan_interval", "default_radius", "agency_to_location_distance", "geocoder_timeout"]
+	var basicSettings = ["scan_interval", "default_radius", "agency_to_location_distance", "geocoder_timeout", "police_incident_tweet_count"]
 	var map_settings = []
 	errorText = ""
-	function createSetting(name, value, width, units) {
-		if (!width) width = "60%";
+	function createSetting(name, value, units, indent) {
+		indent = indent || 0;
 		if (!units) units = "";
 		else units = `(${units})`;
+		pre = ""
+		for(i=0; i<indent; i++){ pre += "<td></td>"}
 		var html = `
-		<tr>
-			<td>${name} ${units}</td>
-			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
+		<tr >
+			<td style='padding-left: ${indent*12+6}px;'>${name} ${units}</td>
+			<td><input style='' id="input_${name}" type='text' value="${value}"></td>
 		</tr>
 		`;
 		return html;
@@ -32,23 +34,21 @@ permalink: /config
 			
 			var units = {
 				"scan_interval": "seconds", "default_radius": "meters", "agency_to_location_distance": "meters", "geocoder_timeout": "seconds",
-				"max_cluster_radius": "meters", "minimum_distance": "meters", "minimum_line_distance": "meters"
-			}
-			config.innerHTML = "<h3>Basic Settings</h3>"
-			html = ``
+				"max_cluster_radius": "meters", "minimum_distance": "meters", "minimum_line_distance": "meters", "max_hours": "hours", "active_hours": "hours"
+			};
+			config.innerHTML = "<h3>Basic Settings</h3>";
+			html = ``;
 			basicSettings.forEach(function (e){
-				html += createSetting(e, settings[e], null, units[e])
+				html += createSetting(e, settings[e], units[e]);
 				//config.innerHTML += "<div class='setting' id='" + e + "'><b style='float:left; display:block;'>" + e + "<i> (" +units[e] +")</i></b><input value='" + settings[e] + "'id='input_"+e+"' style='float:right; display:block' type='text'>   </div>"
 			});
-			map_settings = Object.keys(settings.map_config)
+			map_settings = Object.keys(settings.map_config);
 			map_settings.forEach(function(e){
-				html += createSetting(`map_config.${e}`, settings.map_config[e], null, units[e])
+				html += createSetting(`map_config.${e}`, settings.map_config[e], units[e], 1);
 			});
 			
-			config.innerHTML += `<table>${html}</table>`
-
-
-			config.innerHTML += "<button onclick='saveBasicConfig()'>Save Changes</button><p id='errors'>" + errorText+ "</p>"
+			config.innerHTML += `<table>${html}</table>`;
+			config.innerHTML += "<button style='margin-top: 25px;' onclick='saveBasicConfig()'>Save Changes</button><p id='errors'>" + errorText+ "</p>";
 		});
 	}
 	function saveBasicConfig(){

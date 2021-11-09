@@ -103,7 +103,7 @@
 	border: 3px solid $border
 	border-radius: 6px
 	padding: 24px
-	width: 40%
+	width: 70%
 	margin: auto
 	.setting
 		height: 25px
@@ -173,13 +173,38 @@ button.small
 		width: 100%
 		margin: auto
 		cellspacing: 0
+		padding: 10px
 		border-radius: 6px
 		border: 3px solid $border
 		border-radius: 8px !important
 		border-collapse: collapse
+		tr:nth-child(odd)
+			background-color: $bgc2
 		tr
 			width: 100%
 			td
 				width: auto
 				input
 					width: 95% !important
+
+.clickable
+	cursor: pointer
+	transition: .2s
+	&:hover
+		color: $linkhov
+
+
+@keyframes slidein
+	0%
+		transform: translateY(-1000px)
+	100%
+@keyframes slidein2
+	0%
+		transform: translateX(1000px)
+	100%
+
+#important-incidents, #incidents-log
+	animation: slidein2 .5s ease
+
+#MAP
+	//animation: slidein 1s ease

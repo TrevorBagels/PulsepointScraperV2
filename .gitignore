@@ -8,4 +8,5 @@ apptest.py
 **/__pycache__
 site/.sass-cache/
 site/_site/
+site/.vscode/
 /dev/event_modules/police_incidents.json

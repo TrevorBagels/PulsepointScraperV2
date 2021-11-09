@@ -100,12 +100,17 @@ permalink: /locations
 			<div>
 				<button onclick="editLocation('${l.name}');">Edit Location</button>
 			</div>
-			${createConfirmButton("Remove location", "console.log('REMOVE');", null, l.name.replaceAll(' ', '_'))}
+			${createConfirmButton("Remove location", `removeLocation('${l.name}')`, null, l.name.replaceAll(' ', '_'))}
 		</div>
 		`;
 		return html;
 	}
-
+    function removeLocation(name)
+    {
+        $.post(baseURL + "/locations/edit", {token: Cookies.get("auth"), method:"remove", location:JSON.stringify({"name": name})}, function(resp){
+            displayLocations();
+        });
+    }
 	function filters_remove_field(target, index) {
 		tgt = {
 			"allowed": "allow_list",
@@ -236,7 +241,7 @@ permalink: /locations
     function saveEditingLocation()
     {
         editLocationReadFilters()
-        $.post(baseURL + "/locations/edit", {token: Cookies.get("auth"), location: JSON.stringify(beingEdited)}, function(resp){
+        $.post(baseURL + "/locations/edit", {token: Cookies.get("auth"), location: JSON.stringify(beingEdited), method:"edit"}, function(resp){
             document.getElementById("locations").children[0].children[0].innerHTML += resp
         });
     }

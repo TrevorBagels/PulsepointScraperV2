@@ -96,6 +96,7 @@ class Main:
 		if self.config.incident_filters.allowed(incident.incident_type) == False: return #if this incident is blocked or not allowed (global), skip analysis
 
 		for x in self.config.locations:
+			if x.enabled == False: continue
 			if x.filters.allowed(incident.incident_type) == False: continue #if this incident is blocked or not allowed (per location), skip analysis for this location.
 			checktotal = 0
 			for c in self.checks:
