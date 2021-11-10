@@ -19,15 +19,15 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 #MAP {
 	border-radius: 6px;
 	border: 3px solid #0c0a0a;
-	width: 50.0%;
+	width: 48.75%;
 	height: 76.0%;
 	float: left;
 }
 </style>
 
 <div class="folium-map" id="MAP" ></div>
-
 <script src="assets/js/map.js"></script>
+
 
 <div>
 	<table id='incidents-log'>
@@ -236,28 +236,34 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		var d = new Date(); d.setHours(d.getHours() - 1);
 		var d2 = new Date();d2.setHours(0);d2.setMinutes(0);d2.setSeconds(0);
 		
-		$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d)}, function(resp){
-			lastHour = resp["count"]
+		$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d)}, function(resp1){
+			lastHour = resp1["count"]
 			$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d2)}, function(resp){
-				today = resp["count"]
-				document.getElementById("extra-info").innerHTML = "<div style='float: left;'>"+
-				"<p style='float:left;'>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p>" +
-				"<p style='float:right; padding-left: 40px;' id='currentTime'>" + timeString +"</p></div>" +
-				`
-				<div style='float:right;'>
-					<a href="/config"><button>Config</button></a>
-					<a href="/locations"><button>Edit Locations</button></a>
-					<button onclick="changeTileLayer();">Map</button>
-				</div>
-				`
-				document.getElementById("extra-info-mobile").innerHTML = `
-				<p style='float:left;'>
-					Last Hour: <i>` + lastHour + `</i>
-				</p>
-				<p style='float:right'>
-					Today: <i>` + today + `</i>
-				</p>
-				`
+
+				$.get(baseURL + "/logs", {token: Cookies.get("auth"), kind: "short", count: 20}, function(logs){
+					//now we can also create a table with logs
+					today = resp["count"]
+					document.getElementById("extra-info").innerHTML = "<div style='float: left;'>"+
+					"<p style='float:left;'>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p>" +
+					"<p style='float:right; padding-left: 40px;' id='currentTime'>" + timeString +"</p></div>" +
+					`
+					<div style='float:right;'>
+						<a href="/config"><button>Config</button></a>
+						<a href="/locations"><button>Edit Locations</button></a>
+						<button onclick="changeTileLayer();">Map</button>
+					</div>
+					`
+					document.getElementById("extra-info-mobile").innerHTML = `
+					<p style='float:left;'>
+						Last Hour: <i>` + lastHour + `</i>
+					</p>
+					<p style='float:right'>
+						Today: <i>` + today + `</i>
+					</p>
+					`
+				});
+
+
 			});
 		});
 	}
@@ -284,7 +290,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	var timeString = ""
 	function updateTime(){
 		var s = spacetime.now("America/Los_Angeles");
-		timeString = `<i>${s.unixFmt('MM/dd <br> h:mm:ss a')}</i>`
+		timeString = `<span style="font-size:.8em;""><i><code>${s.unixFmt('MM/dd')}</code></i><br><i><code>${s.unixFmt('h:mm:ss a')}</code></i></span>`
 		if(document.getElementById("currentTime") != null)
 			document.getElementById("currentTime").innerHTML = timeString
 	}
@@ -294,12 +300,13 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	updateInfo1();
 	updateIncidentLog();
 	updateImportantIncidentLog();
-	setInterval(updateTime, 10)
+	setInterval(updateTime, 20)
 
-	function markLocation(coords, radius, color, opacity){
+	function markLocation(coords, radius, color, opacity, speed){
 		color = color || "white"
 		opacity = opacity || .45
-		var o = {color: null, fillColor: color, fillOpacity: opacity}
+		speed = speed || 25
+		var o = {color: "white", fillColor: color, fillOpacity: opacity, dashSpeed: speed, dashArray: 40, weight: .4}
 		L.circle(coords, radius, o).addTo(MAP)
 	}
 
@@ -326,10 +333,11 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			if(l.radius > 150){
 				opacity = .3 * (1-(l.radius / max_radius)) + .1
 			}
-			markLocation(l.coords, l.radius, color, opacity)
+			speed = (1-(l.radius / max_radius)) * 20 + 10
+			markLocation(l.coords, l.radius, color, opacity, speed)
 			
 		});
-		setInterval(updateAll, 800);
+		setInterval(updateAll, 5000);
 	});
 	
 	</script>

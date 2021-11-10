@@ -1,7 +1,9 @@
 from copy import deepcopy
-from flask import Flask, Response
+from os import getloadavg
+from flask import Flask, Response, request
 from flask_httpauth import HTTPBasicAuth
 from flask_restful import Resource, Api, reqparse
+from geopy import util
 from geopy.distance import geodesic
 
 from dev.events import Events as E
@@ -86,7 +88,7 @@ class MapIcons(Resource):
 class GenerateToken(Resource):
 	def __init__(self, events, app):
 		self.events = events
-		self.app = app
+		self.app:FlaskAPI = app
 		pass
 
 	def get(self): #gets a token
@@ -96,12 +98,19 @@ class GenerateToken(Resource):
 		password = args.password
 		m = hashlib.pbkdf2_hmac('sha256', str(password).encode(), b'aoisfdhaoiS_A_L_T_asfhpasihfdosiahf', 110000)
 		pwd_hash = m.hex()
+		log, ip_ua = self.app.get_log_ip_ua()
+
 		#print(pwd_hash)
 		if self.events.main.keys["authentication"] == pwd_hash:
 			s = Serializer(self.events.flaskapp.app.config["SECRET_KEY"])
-			return s.dumps(None)
+			token = s.dumps(None)
+			log['notes'] += f"Access granted\nToken:{token}\n"
+			self.app.logs["long"].append(log)
+			return token
 		else:
 			print("Unauthorized access attempt")
+			log["notes"] += f"Unauthorized access attempt\nAttemped password: {password}\nHash: {pwd_hash}\n"
+			self.app.logs["long"].append(log)
 			return None
 
 
@@ -242,6 +251,20 @@ class Locations(Resource):
 		self.app.events.save_config()
 		return "<b style='color:lightgreen'>Location sucessfully created!</b>"
 
+class IpLogs(Resource):
+	def __init__(self, events:E, app):
+		self.events = events
+		self.app:FlaskAPI = app
+	def get(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		parser = reqparse.RequestParser()
+		parser.add_argument('count', type=int, required=True)
+		parser.add_argument('kind', type=str, required=True) #long, short, ip_ua
+		args = parser.parse_args()
+		logs = self.app.logs[args.kind][:args.count]
+		return logs
+
 class Authorized(Resource):
 	def __init__(self, events:E, app):
 		self.events = events
@@ -270,6 +293,7 @@ class FlaskAPI:
 		api = Api(self.app)
 		cors = CORS(self.app)
 		self.app.config['CORS_HEADERS'] = 'Content-Type'
+		self.load_logs()
 		logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
 		api.add_resource(Locations, "/locations", resource_class_kwargs={'events': self.events, 'app': self})
@@ -281,12 +305,29 @@ class FlaskAPI:
 		api.add_resource(Settings, "/settings", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Authorized, "/checkauth", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(IncidentsSince, "/incidents/since", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(IpLogs, "/logs", resource_class_kwargs={'events': self.events, 'app': self})
 		kwargs = {"host": HOST, "port": PORT}
 		if AUTO:
 			kwargs = {}
 		print("Starting API...")
 		threading.Thread(target=self.app.run, kwargs=kwargs).start()
+	
+	def load_logs(self):
+		self.logs = utils.load_json("dev/event_modules/flask/logs.json") or {"short": [], "long": [], "ip_ua": []}
+	def save_logs(self):
+		utils.save_json("dev/event_modules/flask/logs.json", self.logs)
+	def get_log_ip_ua(self):
+		log = {"time": utils.local(utils.now()).strftime("%Y-%m-%dT%H:%M:%S.%f"), "port": request.environ["REMOTE_PORT"], "ip": request.environ['REMOTE_ADDR'], "ua": request.environ['HTTP_USER_AGENT'], "method": request.environ['REQUEST_METHOD'], "uri": request.environ["RAW_URI"], "notes": ""}
+		ip_ua = ip_ua = str(log["ip"]) + "__" + str(log["ua"])
+		if ip_ua not in self.logs['ip_ua']:
+			self.logs['ip_ua'].append(ip_ua)
+			self.logs['long'].append(log)
+		self.logs['short'].insert(0, log)
+		return log, ip_ua
 	def verify(self): #verifies a token
+		log, ip_ua = self.get_log_ip_ua()
+		#determine if this should go in the logs or not
+		#actually, it'll go in the logs if the access attempt is bad, it's a new IP, or a new user agent
 		parser = reqparse.RequestParser()
 		parser.add_argument('token', required=True)
 		args = parser.parse_args()
@@ -295,7 +336,10 @@ class FlaskAPI:
 		try:
 			data = s.loads(token)
 		except SignatureExpired:
+			log['notes'] += "Signature Expired\n"
 			return False #token is expired
 		except BadSignature:
+			log['notes'] += "Bad Signature\n"
 			return False #token never existed
+		log['notes'] += "Authorized\n"
 		return True

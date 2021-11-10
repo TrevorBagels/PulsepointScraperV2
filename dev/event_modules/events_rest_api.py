@@ -34,7 +34,7 @@ class Events(events.Events):
 		self.agency_data = utils.load_json("allagencydata.json")
 		super().__init__()
 	
-
+	
 	
 	def save_config(self):
 		utils.save_json(self.main.config_file, self.main.config)
@@ -89,7 +89,8 @@ class Events(events.Events):
 	
 	def analysis_start(self):
 		pass
-	
+	def main_loop_end(self):
+		self.flaskapp.save_logs()
 	def important_incident_found(self, incident:D.Incident, location:D.CfgLocation, importance:int):
 		a = self.simplify_incident(incident)
 		distance = "N/A"

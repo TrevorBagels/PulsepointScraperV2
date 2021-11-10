@@ -10,3 +10,4 @@ site/.sass-cache/
 site/_site/
 site/.vscode/
 /dev/event_modules/police_incidents.json
+/dev/event_modules/flask/logs.json

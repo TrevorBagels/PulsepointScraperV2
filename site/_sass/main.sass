@@ -101,6 +101,7 @@
 	margin-left: 15px
 	margin-top: 5px
 	border-color: $border !important
+	background: $bgc
 
 
 #config
@@ -250,18 +251,24 @@ table
 	60%
 		opacity: 0
 	100%
+@keyframes loadingout
+	0%
+		opacity: 1
+	90%
+		opacity: 1
+	100%
+		opacity: 0
+#incidents-log
+	animation: slidein2 1.5s ease
+#important-incidents
+	animation: slidein2 1.7s ease
 
-// #incidents-log
-// 	animation: slidein2 2s ease
-// #important-incidents
-// 	animation: slidein2 2.2s ease
-
-// #extra-info
-// 	animation: slidein3 2.64s ease
+#extra-info
+//	animation: slidein3 1.14s ease
 
 #MAP
 	font-family: "Aldrich", 'Jura', 'sans-serif' !important
-	animation: slidein 2s ease
+	animation: slidein 1.96s ease
 
 
 #mapoverlay
@@ -288,3 +295,6 @@ table
 	img
 		filter: brightness(.5)
 
+code
+	background: rgba(0, 0, 0, 0) !important
+	box-shadow: inset 0 1px 10px rgba(39, 219, 134, .3), 0 1px 0 rgba(39, 219, 134, .15), 0 -1px 0 #21be7580
