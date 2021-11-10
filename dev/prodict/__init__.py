@@ -157,6 +157,8 @@ class Prodict(dict):
             constructor = int
         elif attr_type1 == list:
             constructor = list
+        elif attr_type1 == bool:
+            constructor = convert_to_bool
         elif isinstance(value, Prodict):
             constructor = attr_type1.from_dict
         elif attr_type1 is Any:
@@ -325,3 +327,15 @@ def dict_of_something(something):
             val[key] = something(value)
         return val # type: dict[str, something]
     return return_type
+
+def convert_to_bool(value):
+    if type(value) == str:
+        v = value.lower() == "t" or value.lower() == "true"
+        if v == False:
+            try:
+                v = bool(int(value))
+            except:
+                pass
+    else:
+        v = bool(value)
+    return v

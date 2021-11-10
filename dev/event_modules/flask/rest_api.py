@@ -65,24 +65,23 @@ class Settings(Resource):
 
 class Map(Resource):
 	def __init__(self, events, app):
-		self.events = events
+		self.events:E = events
 		self.app = app
 	def get(self):
 		if self.app.verify() == False:
 			return "Unauthorized"
 		else:
-			html = ""
-			with open("map.html", "r") as f:
-				html = f.read()
-				try:
-					mapID = "map_" + html.split("id=\"map_")[1].split('"')[0]
-				except:
-					time.sleep(1)
-					return ""
-				
-				html = html.replace(mapID, "MAP")
-				html = html.split("</body>")[1].replace("<script>", "").replace("</script>", "").replace("\n", "")#.replace("<!DOCTYPE html>", "").replace("<head>", "").replace("</head>", "").replace("<body>", "").replace("</body>", "")
-			return html
+			map_events = self.events.main.get_event_module("map_events")
+			return map_events.get_map_data();
+class MapIcons(Resource):
+	def __init__(self, events, app):
+		self.events:E = events
+		self.app = app
+	def get(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		else:
+			return utils.load_json("dev/event_modules/map_icons.json")
 
 class GenerateToken(Resource):
 	def __init__(self, events, app):
@@ -182,6 +181,7 @@ class EditLocation(Resource):
 			return "<b style='color:lightred'>INVALLID FORMAT</b>"
 		index = self.events.main.config.locations.index(self.events.main.get_location(location['name']))
 		self.events.main.config.locations[index] = a
+		self.app.events.save_config()
 		print(self.events.main.get_location(a.name))
 		return "<b style='color:lightgreen'>Successfully updated config!</b>"
 
@@ -207,19 +207,30 @@ class Locations(Resource):
 			return "Unauthorized"
 		parser = reqparse.RequestParser()
 		parser.add_argument('name', type=str, required=True)
-		parser.add_argument('address', type=str, required=True)
+		parser.add_argument('address', type=str, required=False)
 		parser.add_argument('lat', type=float, required=False) 
 		parser.add_argument('long', type=float, required=False) 
 		parser.add_argument('radius', type=float, required=False, default=self.events.main.config.default_radius)
+
 		args = parser.parse_args()
 		new_location = D.CfgLocation()
-		new_location.name = args.name
-		new_location.radius = args.radius
-		new_location.address = args.address
-		if args.lat != None:
-			new_location.coords = [args.lat, args.long] #set coords
-		else:
-			new_location.coords = self.events.main.get_coords(new_location.address) #set coords
+		if self.events.main.get_location(args.name) != None:
+			return "<b style='color:lightred'>A location with this name already exists.</b>"
+		if (args.lat == None or args.long == None) and args.address == None:
+			return "<b style='color:lightred'>You must supply coordinates or an address</b>"
+		try: #convert from strings to proper format, if it doesn't work, respond with an error lookin thing
+			new_location.name = args.name
+			new_location.radius = int(args.radius)
+			new_location.address = args.address
+			if args.lat != None and args.long != None:
+				new_location.coords = [float(args.lat), float(args.long)] #set coords
+			else:
+				new_location.coords = self.events.main.get_coords(new_location.address) #set coords
+		except:
+			return "<b style='color:lightred'>Invallid Format</b>"
+
+		
+		# at this point, the address and/or coords have been set. 
 		if new_location.coords != None: #find nearby agencies and add them
 			for i, a in self.events.agency_data.items():
 				if a == None or a["agency"] == None: continue
@@ -229,7 +240,7 @@ class Locations(Resource):
 						self.events.main.config.agencies.append(a["agency"]["agencyid"])
 		self.events.main.config.locations.append(new_location)
 		self.app.events.save_config()
-		return new_location
+		return "<b style='color:lightgreen'>Location sucessfully created!</b>"
 
 class Authorized(Resource):
 	def __init__(self, events:E, app):
@@ -263,7 +274,8 @@ class FlaskAPI:
 
 		api.add_resource(Locations, "/locations", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(EditLocation, "/locations/edit", resource_class_kwargs={'events': self.events, 'app': self})
-		api.add_resource(Map, "/map.html", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(Map, "/map", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(MapIcons, "/mapicons", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Incidents, "/incidents", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(GenerateToken, "/gettoken", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Settings, "/settings", resource_class_kwargs={'events': self.events, 'app': self})

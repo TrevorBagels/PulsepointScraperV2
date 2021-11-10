@@ -1,16 +1,16 @@
 ---
 layout: default
 title: Home
-permalink: /
+permalink: /indexcopy
 ---
 <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+<style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
 <script src="https://cdn.jsdelivr.net/npm/leaflet@1.6.0/dist/leaflet.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@master/folium/templates/leaflet_heat.min.js"></script>
-<script src="https://ivansanchez.gitlab.io/Leaflet.Path.DashFlow/L.Path.DashFlow.js"></script>
 
 <meta name="viewport" content="width=device-width,
 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -25,10 +25,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 }
 </style>
 
-<div class="folium-map" id="MAP" ></div>
-
-<script src="assets/js/map.js"></script>
-
+<div class="folium-map card" id="MAP" ></div>
 <div>
 	<table id='incidents-log'>
 		<!--.......-->
@@ -54,65 +51,22 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
 
 <script>
-	function createSetting(name, value, width, units) {
-		if (!width) width = "95%";
-		if (!units) units = "";
-		else units = `(${units})`;
-		var html = `
-		<tr>
-			<td>${name} ${units}</td>
-			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
-		</tr>
-		`;
-		return html;
-	}
-
-	function createLocationPrompt(location)
-	{
-		console.log("create location at", location)
-		html = `
-		<table>
-			${createSetting("name", "")}
-			${createSetting("latitude", location[0])}
-			${createSetting("longitude", location[1])}
-			${createSetting("radius", 25, null, "meters")}
-		</table>
-		<button style="margin: auto; display: block; margin-top: 10px;" onclick="confirmLocationCreation()">Create</button>
-		<p id='locationcreateerror'></p>
-		`
-		document.getElementById('mapPopup').innerHTML = html
-	}
-	function confirmLocationCreation()
-	{
-		params = {
-			name: document.getElementById("input_name").value,
-			lat: document.getElementById("input_latitude").value,
-			long: document.getElementById("input_longitude").value,
-			radius: document.getElementById("input_radius").value,
-			token: Cookies.get("auth")
-		}
-		$.post(baseURL + "/locations", params, function(resp){
-			document.getElementById("locationcreateerror").innerHTML = resp;
-			if(resp.includes("lightgreen"))
-				{
-					markLocation([Number(params.lat), Number(params.long)], Number(params.radius));
-				}
-		});
-	}
+	var map_center = {};
+	var map_zoom = 15;
+	var map_bounds = {};
 	function mapEvents()
 	{
-		popup = L.popup()
-		MAP.on('contextmenu', function(e){
-			coords = [math.round(e.latlng.lat, 8), math.round(e.latlng.lng, 8)]
-			popup.setContent(`<div id='mapPopup'><button onclick="createLocationPrompt([${coords}])">Create new location</button></div>`)
-			popup.setLatLng(coords);
-			popup.openOn(MAP);
-		})
+		if(MAP == null || MAP.on == null) return;
 		MAP.on("moveend", function(e){
+			map_bounds = MAP.getBounds() //_northEast: j {lat: 45.66468622022305, lng: -122.57583618164064}, _southWest: j {lat: 45.43170808198972, lng: -122.96722412109376}
+			map_zoom = MAP.getZoom(); //13, 14, 15, etc
+			map_center = MAP.getCenter(); //{lat: 45.548558288409254, lng: -122.83985137939455}
 		});
 		MAP.on("zoomend", function(e){
-			return;
-		});
+			map_bounds = MAP.getBounds()
+			map_zoom = MAP.getZoom();
+			map_center = MAP.getCenter();
+		})
 	}
 	function viewPosition(lat, long, zoom)
 	{
@@ -120,11 +74,14 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		if(MAP.setView != null)
 			MAP.setView({lat: lat, lng: long}, zoom);
 	}
+	function restoreMapState()
+	{
+		if(MAP.setView != null && map_center.lat != null)
+			MAP.setView(map_center, map_zoom, {"zoomAnimation": false});
+	}
 </script>
 <script>
 	var incidents = [] //list of all the HASHES of incidents we've received. so we know when we get a new one.
-	var markers = [] //list of all the HASHES of markers we've received. 
-
 	function updateIncidentLog()
 	{
 		h = document.getElementById("MAP").clientHeight;
@@ -201,25 +158,23 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			
 		});
 	}
-
-	function updateMap(callback){
-		console.log("Updating map")
-		callback = callback || function (){}
-		$.get(baseURL + "/map", {token: Cookies.get("auth")}, function(map_incidents){
-			map_incidents.forEach(function(i){
-				if(i.draw)
-				{
-					hsh = (i.tooltip + i.popup + i.location.toString()).hashCode()
-					if(!markers.includes(hsh))
-					{
-						addMarker(i.location, i.tooltip, i.popup, i.iconname, i.target, i.heat, i.line, i.old);
-						markers.push(hsh);
-						
-					}
-				}
-			});
-			callback(map_incidents);
+	function updateMap(){
+		document.getElementById("MAP").remove();
+		var m = document.createElement('div');
+		m.classList.add("folium-map");
+		m.id = "MAP";
+		document.body.insertBefore(m, document.body.childNodes[0])
+		if(document.getElementById("mapScript") != null){
+			document.getElementById("mapScript").remove();
+		}
+		$.get(baseURL + "/map.html", {token: Cookies.get("auth")}, function(resp){
+			var s = document.createElement('script');
+			s.innerText = resp
+			s.id = "mapScript"
+			document.head.appendChild(s);
 		});
+		restoreMapState();
+		mapEvents();
 	}
 	function date_str(currentdate){
 		var datetime = currentdate.getFullYear() + "-"
@@ -247,7 +202,6 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				<div style='float:right;'>
 					<a href="/config"><button>Config</button></a>
 					<a href="/locations"><button>Edit Locations</button></a>
-					<button onclick="changeTileLayer();">Map</button>
 				</div>
 				`
 				document.getElementById("extra-info-mobile").innerHTML = `
@@ -261,7 +215,21 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			});
 		});
 	}
-	function updateAll(){
+	var timeString = ""
+	function updateTime(){
+		var s = spacetime.now("America/Los_Angeles");
+		timeString = `<i>${s.unixFmt('MM/dd <br> h:mm:ss a')}</i>`
+		if(document.getElementById("currentTime") != null)
+			document.getElementById("currentTime").innerHTML = timeString
+	}
+	var lastIncidentCount = 0
+	updateInfo1()
+	updateIncidentLog()
+	updateImportantIncidentLog()
+	updateMap()
+	setInterval(updateTime, 10)
+	var updateFrequency = 5000
+	setInterval(() => {
 		var d = new Date()
 		d.setHours(0); d.setMinutes(0); d.setSeconds(0); d.setDate(d.getDate() - 1);
 		d = date_str(d)
@@ -279,57 +247,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				updateInfo1();
 			}
 		});
-	}
-
-	var timeString = ""
-	function updateTime(){
-		var s = spacetime.now("America/Los_Angeles");
-		timeString = `<i>${s.unixFmt('MM/dd <br> h:mm:ss a')}</i>`
-		if(document.getElementById("currentTime") != null)
-			document.getElementById("currentTime").innerHTML = timeString
-	}
-
-
-	var lastIncidentCount = 0
-	updateInfo1();
-	updateIncidentLog();
-	updateImportantIncidentLog();
-	setInterval(updateTime, 10)
-
-	function markLocation(coords, radius, color, opacity){
-		color = color || "white"
-		opacity = opacity || .45
-		var o = {color: null, fillColor: color, fillOpacity: opacity}
-		L.circle(coords, radius, o).addTo(MAP)
-	}
-
-	setupMap(function(cfg){
-		mapEvents();
-		updateMap();
-
-
-
-		max_importance = 1;
-		min_importance = 0;
-		max_radius = 100;
-		cfg.locations.forEach(function(l){
-			if(l.radius > max_radius) max_radius = l.radius
-			if(l.importance > max_importance) max_importance = l.importance;
-			if(l.importance < min_importance) min_importance = l.importance;
-		});
-		var rainbow = new Rainbow();
-		rainbow.setNumberRange(min_importance, max_importance);
-		rainbow.setSpectrum("blue", "green", "red");
-		cfg.locations.forEach(function(l){
-			color = "#" + rainbow.colourAt(l.importance);
-			opacity = .4;
-			if(l.radius > 150){
-				opacity = .3 * (1-(l.radius / max_radius)) + .1
-			}
-			markLocation(l.coords, l.radius, color, opacity)
-			
-		});
-		setInterval(updateAll, 800);
-	});
+		
+	}, updateFrequency);
 	
 	</script>

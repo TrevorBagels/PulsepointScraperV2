@@ -78,7 +78,9 @@
 		padding: 2px
 
 #extra-info
+	box-shadow: inset 0px 0px 10px 0px $border !important
 	margin-top: 15px
+	margin-left: 15px
 	border-radius: 6px
 	padding: 20px
 	height: 20%
@@ -86,6 +88,7 @@
 	float: left
 	border: 2px solid $border
 	p
+		font-family: 'Jura', "Helvetica Neue", Helvetica, Arial, sans-serif
 		font-size: 1.6em
 		line-height: 2
 		font-weight: 600
@@ -95,6 +98,8 @@
 			color: $navlink
 
 #MAP
+	margin-left: 15px
+	margin-top: 5px
 	border-color: $border !important
 
 
@@ -108,6 +113,7 @@
 	.setting
 		height: 25px
 #locations
+	box-shadow: inset 0px 0px 5px 0px $border
 	display: block
 	border: 3px solid $border
 	border-radius: 6px
@@ -115,6 +121,7 @@
 	width: 70%
 	margin: auto
 	.location
+		box-shadow: inset 0px 0px 2px 0px $border
 		display: block
 		border: 3px solid $border
 		border-radius: 6px
@@ -149,24 +156,36 @@
 .filters
 	display: grid
 	grid-template-columns: auto auto
+	margin-top: 15px
 	div
+		box-shadow: none
 		margin: 10px 15px 5px 15px
 		div
+			box-shadow: none
 			background-color: $bgc2
 			height: 90%
 			div
+				box-shadow: none
 				height: 20px
 .addnew
 	margin: auto
 	display: block
 	color: $border
+button
+	font-family: "Aldrich", "Helvetica Neue", Helvetica, Arial, sans-serif
+	&:hover
+		box-shadow: inset 0px 0px 2px 0px $border
 button.negative
 	color: $negative !important
 	border-color: $negative !important
+	&:hover
+		box-shadow: inset 0px 0px 4px 1px $negative !important
 button.small
 	padding: 1px 9px
 	border-width: 1px
-
+table
+	font-family: "Jura", "Helvetica Neue", Helvetica, Arial, sans-serif
+	font-weight: 500
 .locationedit, #config
 	table
 		margin: 5px
@@ -184,27 +203,88 @@ button.small
 			width: 100%
 			td
 				width: auto
-				input
+				input[type="text"]
 					width: 95% !important
-
+				div
+					width: 95% !important
+#filterexplain
+	display: block
+	margin: auto
+	width: 60%
+	margin-top: 60px !important
 .clickable
 	cursor: pointer
 	transition: .2s
 	&:hover
 		color: $linkhov
 
+.leaflet-popup-content-wrapper, .leaflet-popup-tip, .leaflet-tooltip
+	text-transform: uppercase
+	background-color: $bgc !important
+	color: $text !important
+	border: 1px solid $border !important
+	box-shadow: inset 1px 1px 5px -2px $border !important
+
 
 @keyframes slidein
 	0%
-		transform: translateY(-1000px)
+		transform: translateY(-10000px)
+	40%
+		transform: translateY(-10000px)
 	100%
 @keyframes slidein2
 	0%
-		transform: translateX(1000px)
+		transform: translateX(10000px)
+	60%
+		transform: translateX(10000px)
+	100%
+@keyframes slidein3
+	0%
+		transform: translateY(1000px)
+	60%
+		transform: translateY(1000px)
+	100%
+@keyframes fadein1
+	0%
+		opacity: 0
+	60%
+		opacity: 0
 	100%
 
-#important-incidents, #incidents-log
-	animation: slidein2 .5s ease
+// #incidents-log
+// 	animation: slidein2 2s ease
+// #important-incidents
+// 	animation: slidein2 2.2s ease
+
+// #extra-info
+// 	animation: slidein3 2.64s ease
 
 #MAP
-	//animation: slidein 1s ease
+	font-family: "Aldrich", 'Jura', 'sans-serif' !important
+	animation: slidein 2s ease
+
+
+#mapoverlay
+	background-image: url("https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif")
+	vertical-align: center
+	opacity: .05
+	mix-blend-mode:overlay
+	margin: auto
+	display: block
+	z-index: 1000
+	width: 100%
+	height: 100%
+	content: ''
+	pointer-events: none
+	position: relative
+	
+
+#mapoverlaycontainer
+	display: flex
+	height: 100%
+	justify-content: center
+
+.leaflet-tile-container 
+	img
+		filter: brightness(.5)
+

@@ -27,7 +27,7 @@ class Main:
 		self.keys_file = keys_file
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
-		self.api_calls = 0 #maybe some day i'll throw in some code that makes this reset every day.
+		self.api_calls = 0 #maybe some day i'll throw in some code that makes this reset every day. edit: sort of doing this now.
 		self.incident_type_tags = utils.load_json("typetags.json") or {}
 		self.config:D.Cfg = None
 		self.keys = None
@@ -43,8 +43,11 @@ class Main:
 
 	def loop_control(self):
 		DEVMODE = True
+		timestarted = utils.now()
 		print(self.config.locations)
 		while True:
+			if (utils.now() - timestarted).total_seconds() / 60 / 60 >= 24:
+				self.GEOCODE_LIMIT = 50
 			if DEVMODE:
 				self.main_loop() #show any errors and crash
 			else:
@@ -117,7 +120,12 @@ class Main:
 		for x in self.config.locations:
 			if x.name == name: return x
 		return None
-
+	
+	def get_event_module(self, scriptname):
+		for x in self.events:
+			if x.__getattribute__("__name__") == scriptname:
+				return x
+		return None
 
 	def call_event(self, event_name, *args):
 		ret = None
@@ -132,6 +140,8 @@ class Main:
 		script = importlib.import_module(f".", f"dev.event_modules.{scriptname}").Events
 		module_instance = script()
 		module_instance.main = self
+		module_instance.__name__ = scriptname
+		
 		self.events.append(module_instance)
 		module_instance.__getattribute__("post_init")()
 		return module_instance

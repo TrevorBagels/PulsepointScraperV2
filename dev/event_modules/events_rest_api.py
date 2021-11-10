@@ -79,6 +79,7 @@ class Events(events.Events):
 		self.data.incident_frequency_table[0].append(incident.CallReceivedDateTime)
 		self.data.incident_frequency_table[1].append(1)
 		#self.main.print(f"[{utils.local(incident.CallReceivedDateTime)}] {incident.incident_type} found at {incident.FullDisplayAddress}.", incident.coords, end='\r')
+		#time.sleep(.15)
 		pass
 	
 	#called when an agency is put into the queue.

@@ -15,26 +15,29 @@ permalink: /locations
 </div>
 
 <script>
-	function createSetting(name, value, width, units) {
+	function createSetting(name, value, width, units, extra, indent) {
 		if (!width) width = "60%";
 		if (!units) units = "";
 		else units = `(${units})`;
+        if (!extra) extra = "";
+        if (!indent) indent = 0;
 		var html = `
 		<tr>
-			<td>${name} ${units}</td>
+			<td style='padding-left: ${indent * 8 + 8}px'>${name} ${units}${extra}</td>
 			<td><input style='width: ${width};' id="input_${name}" type='text' value="${value}"></td>
 		</tr>
 		`;
 		return html;
 	}
 
-	function createBool(name, value) {
+	function createBool(name, value, indent) {
 		checked = "";
+        if (!indent) indent = 0;
 		if (value == true) checked = "checked";
 		var html = `
 		<tr>
-			<td>${name} - </td>
-			<td><input class='checkbox' id="input_${name}" type='checkbox' ${checked}></td>
+			<td style='padding-left: ${indent * 8 + 8}px'>${name}</td>
+			<td><div><input class='checkbox' id="input_${name}" type='checkbox' ${checked}></div></td>
 		</tr>
 		`;
 		return html;
@@ -160,6 +163,8 @@ permalink: /locations
         beingEdited.enabled = document.getElementById("input_enabled").checked
         beingEdited.address = document.getElementById("input_address").value;
         beingEdited.radius =  document.getElementById("input_radius").value;
+        beingEdited.importance =  document.getElementById("input_importance").value;
+        beingEdited.coords =  [Number(document.getElementById("input_latitude").value), Number(document.getElementById("input_longitude").value)]
         match = document.getElementById("input_match").value;
         if(match == "" || match == "null")
             match = null;
@@ -206,7 +211,10 @@ permalink: /locations
 			    <h3>${l.name}<button style='font-size: .8em;margin-top: 50px; margin-left: 25%;' onclick="saveEditingLocation()">Save Changes</button></h3>
                 <table>
 			    ${createSetting("address", l.address)}
+                    ${createSetting("latitude", l.coords[0], "10%", undefined, undefined, 1)}
+                    ${createSetting("longitude", l.coords[1], "10%", undefined, undefined, 1)}
 			    ${createSetting("radius", l.radius, "10%", "meters")}
+			    ${createSetting("importance", l.importance, "10%", "0-10")}
 			    ${createSetting("match", l.match || "", "10%", "regex match")}
 			    ${createBool("enabled", l.enabled)}
                 </table>
