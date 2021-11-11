@@ -130,8 +130,8 @@ class Incidents(Resource):
 		parser.add_argument('page', type=int, required=True)
 		parser.add_argument('filter', type=str, required=False) #filter by incident type
 		args = parser.parse_args()
-		self.events.recents.sort(key= lambda x : x['epoch'], reverse=True)
-		self.events.important_incidents.sort(key= lambda x : x['epoch'], reverse=True)
+		self.events.recents.sort(key= lambda x : x['epoch'], reverse=False)
+		self.events.important_incidents.sort(key= lambda x : x['epoch'], reverse=False)
 
 		items = self.events.recents
 		if args.importantonly: items = self.events.important_incidents
