@@ -11,8 +11,9 @@ import datetime
 from ...core import data as D
 from ... import main as M
 import threading, time
-from itsdangerous import Serializer, TimedJSONWebSignatureSerializer, BadSignature, SignatureExpired
-import hashlib
+from itsdangerous import BadSignature, SignatureExpired
+from itsdangerous import TimedJSONWebSignatureSerializer
+import hashlib, json
 from ... import utils
 from flask_cors import CORS, cross_origin
 
@@ -96,14 +97,14 @@ class GenerateToken(Resource):
 		parser.add_argument('password', required=True)
 		args = parser.parse_args()
 		password = args.password
-		m = hashlib.pbkdf2_hmac('sha256', str(password).encode(), b'aoisfdhaoiS_A_L_T_asfhpasihfdosiahf', 110000)
-		pwd_hash = m.hex()
+		
+		pwd_hash = self.app.get_pwd_hash(password)
 		log, ip_ua = self.app.get_log_ip_ua()
 
 		#print(pwd_hash)
 		if self.events.main.keys["authentication"] == pwd_hash:
-			s = Serializer(self.events.flaskapp.app.config["SECRET_KEY"])
-			token = s.dumps(None)
+			s = TimedJSONWebSignatureSerializer(self.events.flaskapp.app.config["SECRET_KEY"], expires_in=60*60*24)
+			token = s.dumps({}).decode()
 			log['notes'] += f"Access granted\nToken:{token}\n"
 			self.app.logs["long"].append(log)
 			return token
@@ -276,11 +277,35 @@ class Authorized(Resource):
 		else:
 			return "Authorized"
 
-
+class SetPassword(Resource):
+	def __init__(self, events:E, app):
+		self.events = events
+		self.app:FlaskAPI = app
+	def post(self):
+		if self.app.verify() == False:
+			return "Unauthorized"
+		log, ip_ua = self.app.get_log_ip_ua()
+		self.app.logs['long'].append(log)
+		log['notes'] += "Generating password\n"
+		parser = reqparse.RequestParser()
+		parser.add_argument('original', type=str, required=True)
+		parser.add_argument('new', type=str, required=True)
+		args = parser.parse_args()
+		if self.app.get_pwd_hash(args.original) == self.events.main.keys["authentication"]:
+			self.events.main.keys["authentication"] = self.app.get_pwd_hash(args.new)
+			utils.save_json(self.events.main.keys_file, self.events.main.keys)
+			log['notes'] += "Password reset\n"
+			return "<b style='color:lightgreen;'>Password set.</b>"
+		else:
+			log['notes'] += "Password reset attempt failed\n"
+			return "<b style='color:lightred;'>Unauthorized or invallid password</b>"
+		
 
 HOST = "0.0.0.0"
 PORT = "5001"
 AUTO = False
+
+
 
 class FlaskAPI:
 	def __init__(self, events):
@@ -288,11 +313,16 @@ class FlaskAPI:
 		self.events:Events = events
 		print("setting up app")
 		self.app = Flask(__name__)
-		self.app.config["SECRET_KEY"] = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' #they'll never guess this
+		self.app.config["SECRET_KEY"] = self.events.main.config.secret_key
 		print("setting up API")
 		api = Api(self.app)
 		cors = CORS(self.app)
 		self.app.config['CORS_HEADERS'] = 'Content-Type'
+		if "authentication" not in self.events.main.keys: #create default password with whatever salt we have
+			self.events.main.keys["authentication"] = self.get_pwd_hash("this is quite the default password")
+			utils.save_json(self.events.main.keys_file, self.events.main.keys)
+			self.events.save_config() #to save whatever salts we generated
+
 		self.load_logs()
 		logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
@@ -304,6 +334,7 @@ class FlaskAPI:
 		api.add_resource(GenerateToken, "/gettoken", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Settings, "/settings", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(Authorized, "/checkauth", resource_class_kwargs={'events': self.events, 'app': self})
+		api.add_resource(SetPassword, "/setpass", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(IncidentsSince, "/incidents/since", resource_class_kwargs={'events': self.events, 'app': self})
 		api.add_resource(IpLogs, "/logs", resource_class_kwargs={'events': self.events, 'app': self})
 		kwargs = {"host": HOST, "port": PORT}
@@ -312,6 +343,9 @@ class FlaskAPI:
 		print("Starting API...")
 		threading.Thread(target=self.app.run, kwargs=kwargs).start()
 	
+	def get_pwd_hash(self, txt):
+		return hashlib.pbkdf2_hmac('sha256', str(txt).encode(), str(self.events.main.config.password_salt).encode(), 110000).hex()
+
 	def load_logs(self):
 		self.logs = utils.load_json("dev/event_modules/flask/logs.json") or {"short": [], "long": [], "ip_ua": []}
 	def save_logs(self):
@@ -332,9 +366,9 @@ class FlaskAPI:
 		parser.add_argument('token', required=True)
 		args = parser.parse_args()
 		token = args.token
-		s = Serializer(self.events.flaskapp.app.config["SECRET_KEY"])
+		s = TimedJSONWebSignatureSerializer(self.events.flaskapp.app.config["SECRET_KEY"])
 		try:
-			data = s.loads(token)
+			data = s.loads(token.encode())
 		except SignatureExpired:
 			log['notes'] += "Signature Expired\n"
 			return False #token is expired

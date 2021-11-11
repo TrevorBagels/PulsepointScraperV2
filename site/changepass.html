@@ -1,0 +1,33 @@
+---
+layout: default
+title: Change Password
+permalink: /changepass
+---
+<div id='content'>
+	<div class='center'>
+		<h3>Change your password</h3>
+		<input placeholder="current password" id='original' type='text'>
+		<input placeholder="new password" id='new' type='text'>
+		<br>
+		<button style='margin-top: 25px;' onclick='changepass()'>Change password</button>
+		<p id='alert' style='color: rgb(255, 74, 74); font-size: .9em;'>
+		</p>
+	</div>
+</div>
+<script>
+	function changepass()
+	{
+		old = document.getElementById("original").value;
+		pwd = document.getElementById("new").value;
+		
+		
+		$.post(baseURL + "/setpass", {token: Cookies.get("auth"), "new": pwd, original: old}, function(resp){
+			document.getElementById('alert').innerHTML = resp;
+			if(resp.includes("Password set."))
+			{
+				window.location = "/";
+			}
+		});
+	}
+	
+</script>

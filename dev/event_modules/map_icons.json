@@ -44,5 +44,6 @@
     "Premise Check": "warehouse|darkgreen",
     "Vandalism": "spray-can|lightred",
     "Hit and Run": "car|black",
+    "Threat": "exclamation|darkred",
     "default": "map-marker|lightgreen"
 }

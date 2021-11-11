@@ -2,7 +2,7 @@ from calendar import month
 from typing import Union
 from ..prodict import Prodict
 from datetime import datetime
-
+import random
 
 class AgencyData(Prodict):
 	name:				str
@@ -133,6 +133,8 @@ class Cfg(Prodict):
 	agency_to_location_distance:	int #how far away an agency can be from a location to be considered needed for scanning (meters). default: 40km
 	police_incident_tweet_count:		int
 	map_config:			MapCfg
+	password_salt:				str
+	secret_key:					str
 	def init(self):
 		self.agency_to_location_distance = 40000
 		self.importance_checks = ["textbased", "locationbased"]
@@ -146,6 +148,8 @@ class Cfg(Prodict):
 		self.geocoder_timeout = 9
 		self.police_incident_tweet_count = 15
 		self.map_config = MapCfg()
+		self.password_salt = "".join([random.choice("1234567890-qwertyuiopasdfghjklzxcvbnm.,QWERTYUIOPASDFGHJKLZXCVBNM!@#$%^&*()_+|}{[]") for x in range(32)])
+		self.secret_key = "".join([random.choice("1234567890-qwertyuiopasdfghjklzxcvbnm.,QWERTYUIOPASDFGHJKLZXCVBNM!@#$%^&*()_+|}{[]") for x in range(32)])
 
 
 

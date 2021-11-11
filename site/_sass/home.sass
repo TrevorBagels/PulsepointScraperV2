@@ -1,0 +1,167 @@
+$topheight: 74.0%
+$margin: 5px
+$br:	6px
+#MAP
+	background: $bgc
+	//width: 48.75%
+	//height: $topheight
+	margin-left: $margin
+	height: 100%
+	margin-top: $margin
+	border: solid 3px $border
+	font-family: "Aldrich", 'Jura', 'sans-serif' !important
+	border-radius: $br
+	//float: left
+#right-logs
+	margin-top: $margin
+	margin-left: $margin
+	margin-right: $margin
+	//float: right
+	//width: 48.0%
+	//height: $topheight
+	//max-height: $topheight
+
+
+#incidents-log
+	cellspacing: 0
+	border: 3px solid $border
+	border-radius: $br
+	display: block
+	//float: right
+	//border-collapse: collapse
+	font-size: .9em
+	tr
+		th
+			text-align: center
+		td:nth-child(1), th:nth-child(1)
+			width: 10%
+		td:nth-child(2), th:nth-child(2)
+			width: 30%
+		td:nth-child(3), th:nth-child(3)
+			width: 60%
+	
+	tr:nth-child(even)
+		background-color: $bgc2
+	td, th
+		padding: 2px
+
+#important-incidents
+	margin-top: $margin
+	display: block
+	cellspacing: 0
+	border-radius: 6px
+	border: 3px solid $border
+	border-radius: $br
+	//float: right
+	//border-collapse: collapse
+	font-size: .9em
+	tr
+		th
+			text-align: center
+		td:nth-child(1), th:nth-child(1) //time
+			width: 5%
+		td:nth-child(2), th:nth-child(2) //type !LONGISH!
+			width: 20%
+		td:nth-child(2) //type !LONGISH!
+			font-size: .8em
+		td:nth-child(3), th:nth-child(3) //location name
+			width: 10%
+		td:nth-child(4), th:nth-child(4) //address !LONG!
+			width: 25%
+		td:nth-child(5), th:nth-child(5) //address (monitored) !LONG!
+			width: 25%
+		td:nth-child(6), th:nth-child(6) //distance
+			width: 10%
+	tr:nth-child(even)
+		background-color: $bgc2
+	td, th
+		padding: 2px
+
+#top-container
+	width: 100%
+	height: $topheight
+	display: grid
+	grid-template-columns: 50% 50%
+	max-height: $topheight
+	margin-bottom: 6px
+
+#extra-info-container
+	width: 100%
+	//max-height: (98% - $topheight)
+	box-shadow: inset 0px 0px 10px 0px $border !important
+	border: 2px solid $border
+	border-radius: 6px
+
+#extra-info
+	//height: 98%
+	padding: ($margin * 3.5)
+	width: 97%
+	display: grid
+	grid-template-columns: 20% 20% 7% 53%
+	div:nth-child(1)
+		//width: 20%
+		font-family: 'Jura', "Helvetica Neue", Helvetica, Arial, sans-serif
+		line-height: 2
+		font-weight: 600
+		table
+			tr
+				td:nth-child(1)
+					font-size: 1.1em
+					text-align: right
+				td:nth-child(2)
+					padding-left: 1em
+					font-size: 1.35em
+					color: $navlink
+					font-style: italic
+	div:nth-child(2)
+		//width: 20%
+		span
+			i
+				display: block
+				font-size: 2em
+	div:nth-child(3)
+		//width: 10%
+		button
+			width: 90%
+			margin: auto
+			display: block
+			margin-bottom: 8px
+	div:nth-child(4)
+		//width: 50%
+		display: block
+
+
+#logs
+	margin: 5px
+	cellspacing: 0
+	border-radius: 6px
+	width: 100%
+	border: 3px solid $border
+	border-radius: 8px
+	display: block
+	padding: 2px 2px 2px 2px
+	font-size: 1.2em
+	tr
+		width: 100%
+		div
+			width: 100% !important
+		td:nth-child(1), th:nth-child(1)
+			text-align: left !important
+			padding-left: 5px
+			width: 20%
+			font-size: .6em
+		td:nth-child(2), th:nth-child(2)
+			width: 10%
+		td:nth-child(3), th:nth-child(3)
+			font-size: .8em
+			width: 40%
+		td:nth-child(4), th:nth-child(4)
+			font-size: .8em
+			width: 30%
+		th
+			font-size: 1.25em !important
+	tr:nth-child(even)
+		background-color: $bgc2
+
+#overlayeffect, #mapoverlaycontainer
+	//display: none

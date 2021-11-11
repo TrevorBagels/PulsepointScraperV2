@@ -1,0 +1,109 @@
+@keyframes slidein
+	0%
+		transform: translateY(-10000px)
+	40%
+		transform: translateY(-10000px)
+	100%
+@keyframes slidein2
+	0%
+		transform: translateX(10000px)
+	60%
+		transform: translateX(10000px)
+	100%
+@keyframes slidein3
+	0%
+		transform: translateY(1000px)
+	60%
+		transform: translateY(1000px)
+	100%
+@keyframes fadein1
+	0%
+		opacity: 0
+		transform: scale(.1)
+	60%
+		opacity: 0
+		transform: scale(1.15)
+	100%
+		transform: scale(1)
+		opacity: 1
+
+@keyframes logfadein
+	0%
+		font-size: 0em
+		opacity: 0
+		display: table-row
+		transform: scale(0)
+	60%
+		font-size: 1em
+		opacity: 0
+		display: table-row
+		transform: scale(1.15)
+	100%
+		font-size: 1em
+		transform: scale(1)
+		display: table-row
+		opacity: 1
+@keyframes loadingout
+	0%
+		opacity: 1
+	90%
+		opacity: 1
+	100%
+		opacity: 0
+
+
+
+
+#incidents-log
+	animation: slidein2 1.5s ease
+#important-incidents
+	animation: slidein2 1.7s ease
+
+#extra-info
+	animation: slidein3 1.14s ease
+
+#MAP
+	animation: slidein 1.96s ease
+
+table
+	tr:nth-child(2)
+		td
+			div
+				table
+					tr
+						font-size: 0em
+						opacity: 0
+						animation: logfadein linear forwards
+						animation-fill-mode: forwards !important
+						-webkit-animation-fill-mode: forwards !important
+// @for $i from 1 through 40
+// 	table
+// 		tr:nth-child(2)
+// 			td
+// 				div
+// 					table
+// 						tr:nth-child(#{$i}n)
+// 							animation-delay: #{$i * .1 + 2.25}s
+
+[data-tip]:hover:after
+	opacity: 1
+	visibility: visible
+	z-index: 9999999999
+
+[data-tip]:after
+	content: attr(data-tip)
+	visibility: hidden
+	white-space: nowrap
+	opacity: 0
+	border: 2px solid $border
+	border-radius: 3px
+	transform: translateZ(10)
+	color: $text
+	background-color: $bgc2
+	z-index: 9999999999
+	box-shadow: inset 1px 1px 5px -2px $border
+	position: absolute
+	font-family: "Aldrich", 'Jura', 'sans-serif'
+
+[data-tip]
+	position: relative

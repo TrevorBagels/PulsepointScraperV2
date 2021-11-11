@@ -1,0 +1,83 @@
+$img1: "https://i.gifer.com/OUZ2.gif"
+$img2: "https://art.pixilart.com/0928a2aa14e88da.gif"
+$img3: "https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif"
+$img4: "https://camo.envatousercontent.com/52885923a3a0657a37d62096144255986edd88f0/68747470733a2f2f73382e67696679752e636f6d2f696d616765732f5648535f322e6769663f5f633d31363035303232353439"
+@keyframes backgroundmove
+	0%
+		transform: translateY(0px)
+		filter: blur(1.5px)
+	10%
+		filter: blur(0px)
+	90%
+		filter: blur(0px)
+	100%
+		transform: translateY(60px)
+		filter: blur(1.5px)
+
+#overlayeffect
+	pointer-events: none
+	opacity: .09
+	position: fixed
+	top: -20%
+	width: 100%
+	height: 120%
+	z-index: 10000
+	background-image: url("https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif")
+	background-size: 1000px
+	animation: backgroundmove 4s infinite linear forwards
+	// "https://thumbs.gfycat.com/AbandonedSoupyKagu-max-1mb.gif"
+	// "
+	// https://thumbs.gfycat.com/AgileRichEwe-size_restricted.gif
+	// http://i.imgur.com/urpyX45.gif
+	// https://art.pixilart.com/0928a2aa14e88da.gif
+	// https://i.gifer.com/R7cD.gif
+	// https://thumbs.gfycat.com/LikableCleverBaboon-max-1mb.gif
+	// https://i.pinimg.com/originals/2d/3d/cd/2d3dcd6c4a1d79a075c95a55a388e802.gif
+	// https://64.media.tumblr.com/9ec4af3f008fd7bebf424d60013a32c9/967ecc5ff22ebc9f-87/s540x810/c023853f1f824cf68dd1a2754662cb1d435dccfc.gifv
+	// background-size: contain{}
+
+$loading1: "https://i.pinimg.com/originals/c9/e6/13/c9e6136aeb1dd0a7ef1af829cb4523e3.gif"
+$loading2: "https://c.tenor.com/arL-Och6Y7sAAAAC/connecting-loading.gif"
+$loading3: "https://i.pinimg.com/originals/17/7d/47/177d47f10388b2d0e985134914b39875.gif"
+$loading4: "https://i.gifer.com/2BM0.gif"
+$loading5: "https://c.tenor.com/ErspeWfTqiIAAAAC/gamecube-startup.gif" //about 5.4 seconds
+$loading6: "https://venturebeat.com/wp-content/uploads/2014/10/loading_desktop_by_brianmccumber-d41z4h6.gif?fit=400%2C225&strip=all"
+$loading7: "https://i.gifer.com/origin/30/3007ccc53ff90e24b6b224cb64c52bc0.gif"
+$loading8: "https://i.pinimg.com/originals/c4/3b/2d/c43b2d56b4ec611ac450e6782f7143b7.gif"
+$loading: $loading2
+$loadingtime: 2.2s
+@keyframes mapoverlayfadein
+	0%
+		opacity: 1
+		background-image: url($loading)
+	70%
+		opacity: 1
+		background-image: url($loading)
+	95%
+		background-image: url($img4)
+		opacity: 1
+	100%
+		
+
+#mapoverlay
+	animation: mapoverlayfadein $loadingtime ease forwards
+	animation-delay: 1.3s
+	background-size: 100%
+	background-image: url($img2)
+	vertical-align: center
+	opacity: .02
+	mix-blend-mode:overlay
+	margin: auto
+	display: block
+	z-index: 1000
+	width: 100%
+	height: 100%
+	content: ''
+	pointer-events: none
+	position: relative
+	
+
+#mapoverlaycontainer
+	display: flex
+	height: 100%
+	justify-content: center

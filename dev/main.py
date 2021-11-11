@@ -37,8 +37,8 @@ class Main:
 		self.checks:list[function] = []
 		self.events:list[events.Events] = []
 		self.data = Data()
-		self.scraper = scrape.Scraper()
 		self.load_config(self.config_file)
+		self.scraper = scrape.Scraper()
 		self.loop_control()
 
 	def loop_control(self):

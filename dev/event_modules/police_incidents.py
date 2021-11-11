@@ -104,7 +104,7 @@ class Events(events.Events):
 		i.ClosedDateTime = datetime.datetime.strptime(x['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ") #! incident date closed assigned
 		i.uid = str(x["id"]) #! incident UID assigned
 		#? what about coords?
-		coords = self.main.get_coords(addy)
+		coords = self.main.get_coords(i.FullDisplayAddress)
 		if coords == None:
 			self.main.print("ERROR: Could not find coords for incident #" + i.uid)
 			i.coords = [0, 0]

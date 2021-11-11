@@ -26,6 +26,9 @@ class SaveData(Prodict):
 
 class Events(events.Events):
 	def __init__(self):
+		pass
+	
+	def post_init(self):
 		self.flaskapp = rest_api.FlaskAPI(self)
 		self.recents = [] #list of events, max size = 500
 		self.important_incidents = [] #list of [incident, location], max size = 100
@@ -33,8 +36,6 @@ class Events(events.Events):
 		self.load_data()
 		self.agency_data = utils.load_json("allagencydata.json")
 		super().__init__()
-	
-	
 	
 	def save_config(self):
 		utils.save_json(self.main.config_file, self.main.config)

@@ -19,7 +19,12 @@ function changeTileLayer()
 	Cookies.set("mapindex", mapTileLayerIndex)
 	tiles = [mapCfg.tiles, mapCfg.tiles2, mapCfg.tiles3];
 	url = tiles[mapTileLayerIndex];
-	mapTileLayer.setUrl(url);
+	try {
+		mapTileLayer.setUrl(url);
+	}
+	catch{
+		
+	}
 }
 function setMapToCorrectTiles()
 {	
@@ -64,13 +69,14 @@ function setupMap(callback){
 			//initiate the callback
 			MAP.setZoom(12);
 			setMapToCorrectTiles();
+			/*
 			t1 = document.createElement('div')
 			t1.id = 'mapoverlaycontainer'
-			var t = document.createElement('img')
+			var t = document.createElement('span')
 			t.id = "mapoverlay"
-			t.src = "https://art.pixilart.com/0928a2aa14e88da.gif"//https://thumbs.gfycat.com/FittingBowedAnemone-size_restricted.gif"
+			//t.src = "https://art.pixilart.com/0928a2aa14e88da.gif"//https://thumbs.gfycat.com/FittingBowedAnemone-size_restricted.gif"
 			t1.appendChild(t)
-			document.getElementById("MAP").appendChild(t1)
+			document.getElementById("MAP").appendChild(t1)*/
 			callback(config);
 		});
 

@@ -192,11 +192,93 @@
         "pol",
         "em"
     ],
-    "ROBBERY - WITH WEAPON *H": ["pol", "vio", "theft", "em"],
-    "THEFT - SUBJECT IN CUSTODY": ["pol", "theft"],
-    "VEHICLE STOLEN - PRIORITY": ["pol", "traf", "theft"],
-    "SHOOTING - WITH WEAPON *H": ["pol", "vio", "em"],
-    "DISTURBANCE - WITH WEAPON *H": ["pol", "vio"],
-    "NOISE DISTURBANCE": ["pol"],
-    "VANDALISM - COLD": ["pol"]
+    "ROBBERY - WITH WEAPON *H": [
+        "pol",
+        "vio",
+        "theft",
+        "em"
+    ],
+    "THEFT - SUBJECT IN CUSTODY": [
+        "pol",
+        "theft"
+    ],
+    "VEHICLE STOLEN - PRIORITY": [
+        "pol",
+        "traf",
+        "theft"
+    ],
+    "SHOOTING - WITH WEAPON *H": [
+        "pol",
+        "vio",
+        "em"
+    ],
+    "DISTURBANCE - WITH WEAPON *H": [
+        "pol",
+        "vio"
+    ],
+    "NOISE DISTURBANCE": [
+        "pol"
+    ],
+    "VANDALISM - COLD": [
+        "pol"
+    ],
+    "ROBBERY - COLD": [
+        "pol",
+        "theft",
+        "em"
+    ],
+    "FIRE RELATED": [
+        "fire"
+    ],
+    "PARKING PROBLEM": [
+        "traf"
+    ],
+    "BURGLARY - PRIORITY *H": [
+        "theft",
+        "pol",
+        "em"
+    ],
+    "STABBING - WITH WEAPON *H": [
+        "vio",
+        "stab",
+        "pol",
+        "em"
+    ],
+    "Hazmat Investigation": [
+        "haz"
+    ],
+    "PDX - AED ACTIVATION": [
+        "em"
+    ],
+    "Explosion": [
+        "em",
+        "fire"
+    ],
+    "TRIMET INCIDENT - WITH WEAPON *H": [
+        "vio",
+        "pol"
+    ],
+    "HAZARD - WRONG-WAY DRIVER *H": [
+        "haz",
+        "traf"
+    ],
+    "Wires Arcing": [
+        "fire",
+        "em"
+    ],
+    "Wires Down": [],
+    "Rescue": [
+        "em"
+    ],
+    "Chimney Fire": [
+        "fire",
+        "em"
+    ],
+    "Appliance Fire": [
+        "fire",
+        "em"
+    ],
+    "UNWANTED PERSON - WITH WEAPON *H": ["pol", "vio"],
+    "Water Rescue": [],
+    "ANIMAL PROBLEM - PRIORITY": []
 }

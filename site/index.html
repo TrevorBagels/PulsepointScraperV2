@@ -15,40 +15,106 @@ permalink: /
 <meta name="viewport" content="width=device-width,
 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<style>
-#MAP {
-	border-radius: 6px;
-	border: 3px solid #0c0a0a;
-	width: 48.75%;
-	height: 76.0%;
-	float: left;
-}
-</style>
 
-<div class="folium-map" id="MAP" ></div>
-<script src="assets/js/map.js"></script>
+<div id='top-container'>
+	<div class="folium-map" id="MAP" >
+		<div id="mapoverlaycontainer"><span id='mapoverlay'></span></div>
+	</div>
+	<script src="assets/js/map.js"></script>
 
-
-<div>
-	<table id='incidents-log'>
-		<!--.......-->
-	</table>
+	<div id='right-logs'>
+		<table id='incidents-log'>
+			<tr> <td>
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<tr>
+						<th>Time</th><th>Type</th><th>Address</th>
+					</tr>
+				</table>
+			</td></tr>
+			<tr>
+				<td>
+					<div id='incidentsScrollable' style='overflow:auto;'>
+						<table id='incidentsTable' cellspacing="0" cellpadding="1" width="100%">
+				
+						</table>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id='newIncidentsScrollable' style='max-height: 100px; overflow:auto;color: #22ff97;'>
+						<table id='newIncidentsTable' cellspacing="0" cellpadding="1" width="100%">
+							
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table id='important-incidents'>
+			<tr><td>
+				<table cellspacing="0" cellpadding="1" width="100%">
+					<tr>
+						<th>Time</th><th>Type</th><th>Location</th><th>Address</th><th>Monitored Address</th><th>Distance</th>
+					</tr>
+				</table>
+			</td></tr>
+			<tr>
+				<td>
+					<div id="importantIncidentsScrollable" style='overflow:auto;'>
+						<table id='importantIncidentTable' cellspacing="0" cellpadding="1" width="100%">
+						</table>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>
-
-<div>
-	<table id='important-incidents'>
-		<!--.......-->
-	</table>
-</div>
-<div>
-<div id='extra-info' class='no-mobile'>
-
+<div id='extra-info-container'>
+	<div id='extra-info' class='no-mobile'>
+		<div>
+			<table>
+				<tr>
+					<td>Incidents in the last hour:</td>
+					<td id='incidentsLastHour'></td>
+				</tr>
+				<tr>
+					<td>Incidents today:</td>
+					<td id='incidentsToday'></td>
+				</tr>
+			</table>
+		</div>
+		<div id='currentTime'>
+			
+		</div>
+		<div>
+			<a href="/config"><button>Config</button></a>
+			<a href="/locations"><button>Edit Locations</button></a>
+			<button onclick="changeTileLayer();">Map</button>
+		</div>
+		<div>
+			<table id='logs'>
+				<tr><td>
+					<table cellspacing="0" cellpadding="1" width="100%">
+						<tr>
+							<th>Time</th><th>IP</th><th>URI</th><th>Notes</th>
+						</tr>
+					</table>
+				</td></tr>
+				<tr>
+					<td>
+						<div id='logsScrollable' style="overflow:auto;">
+							<table id='logsTable' cellspacing="0" cellpadding="1" width="100%">
+								
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 </div>
 <div id='extra-info-mobile' class='mobile-only'>
-
-
 </div>
-
 
 
 
@@ -124,81 +190,52 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <script>
 	var incidents = [] //list of all the HASHES of incidents we've received. so we know when we get a new one.
 	var markers = [] //list of all the HASHES of markers we've received. 
-
+	var logsHashes = [] //list of all the HASHES of logs we've received 
 	function updateIncidentLog()
 	{
 		h = document.getElementById("MAP").clientHeight;
 		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 85, page: 0}, function(resp){
-			inTable = `<tr> <td>
-					<table cellspacing="0" cellpadding="1" width="100%">
-						<tr>
-							<th>Time</th><th>Type</th><th>Address</th>
-						</tr>
-					</table>
-				</td></tr>
-				<tr>
-					<td>
-						<div style='max-height: ${math.round(.7*h - 100)}px; overflow:auto;'>
-							<table cellspacing="0" cellpadding="1" width="100%">
-				`;
 			newincidentcount = 0
-			newIncidents = `
-							<tr>
-								<td>
-									<div style='max-height: 100px; overflow:auto;color: #22ff97;'>
-										<table cellspacing="0" cellpadding="1" width="100%">`
+			var i = 0
+
 			resp.forEach(element => {
-				row = `<tr>
-							<td>${element.datelocal}, ${element.timelocal}</td>
-							<td>${element.type}</td>
-							<td class='clickable' onClick="viewPosition(${element.coords})">${element.address}</td>
-						</tr>
-					`
-				inTable += row
+				i += .1
+				row = `<td>${element.datelocal}, ${element.timelocal}</td>
+						<td>${element.type}</td>
+						<td class='clickable' onClick="viewPosition(${element.coords})">${element.address}</td>`
+				addLogToTable(row, "incidentsTable", i)
+				
 				hsh = makehash(element)
 				if(!incidents.includes(hsh)){ //it's a new incident
 					incidents.push(hsh)
 					newincidentcount += 1
+					if(newincidentcount == 1) //empty the new incident table before adding new things to it
+						document.getElementById("newIncidentsTable").innerHTML = ""
 					if(newincidentcount < 3)
-						newIncidents += row
+						addLogToTable(row, "newIncidentsTable", i, .1)
 				}
 			});
-			newIncidents += "</table></div></td></tr>"
-			inTable += "</table></div></td></tr>"
-			inTable += newIncidents
-			document.getElementById('incidents-log').innerHTML = inTable
+			document.getElementById('incidentsScrollable').style.maxHeight = `${math.round(.7*h - 100)}px`
 		});
 	}
 	function updateImportantIncidentLog()
 	{
 		h = document.getElementById("MAP").clientHeight;
 		$.get(baseURL + "/incidents", {token: Cookies.get("auth"), count: 10, page: 0, importantonly: true }, function(resp){
-			inTable = `<tr> <td>
-					<table cellspacing="0" cellpadding="1" width="100%">
-						<tr>
-							<th>Time</th><th>Type</th><th>Location</th><th>Address</th><th>Monitored Address</th><th>Distance</th>
-						</tr>
-					</table>
-				</td></tr>
-				<tr>
-					<td>
-						<div style='max-height: ${math.round(.3*h)}px; overflow:auto;'>
-							<table cellspacing="0" cellpadding="1" width="100%">
-				`;
+			var i = 0
 			resp.forEach(element => {
-				inTable += `
-				<tr>
+				i += .2
+				logHtml = `
 					<td>${element.datelocal}, ${element.timelocal}</td>
 					<td>${element.type}</td>
 					<td>${element.location_name}</td>
 					<td class='clickable' onClick="viewPosition(${element.coords})">${element.address}</td>
 					<td>${element.monitored_address}</td>
 					<td>${math.round(element.distance)} meters</td>
-				</tr>`
+				`
+				addLogToTable(logHtml, "importantIncidentTable", i)
 			});
-			inTable += "</table></div></td></tr>"
-			document.getElementById('important-incidents').innerHTML = inTable
-			
+			document.getElementById("importantIncidentsScrollable").style.maxHeight =  `${math.round(.3*h)}px`
 		});
 	}
 
@@ -230,6 +267,26 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				+ currentdate.getSeconds().toString().padStart(2, '0');
 		return datetime
 	}
+	
+	function addLogToTable(logHtml, tableID, delay, speed)
+	{
+		delay = delay || .1
+		speed = speed || .5
+		hsh = makehash(logHtml + tableID)
+		if(!logsHashes.includes(hsh)){ //it's a new log
+			logsHashes.push(hsh);
+			var e = document.createElement("tr");
+			e.innerHTML = logHtml;
+			e.style.animationDelay = `${delay}s`
+			e.style.animationDuration = `${speed}s`
+			lt = document.getElementById(tableID);
+			if(lt.children.length > 0)
+				lt.insertBefore(e, lt.children[0]);
+			else
+				lt.appendChild(e);
+		}
+	}
+	
 	function updateInfo1(){
 		lastHour = 0
 		today = 0
@@ -240,19 +297,32 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 			lastHour = resp1["count"]
 			$.get(baseURL + "/incidents/since", {token: Cookies.get("auth"), time: date_str(d2)}, function(resp){
 
-				$.get(baseURL + "/logs", {token: Cookies.get("auth"), kind: "short", count: 20}, function(logs){
+				$.get(baseURL + "/logs", {token: Cookies.get("auth"), kind: "long", count: 10}, function(logs){
 					//now we can also create a table with logs
 					today = resp["count"]
-					document.getElementById("extra-info").innerHTML = "<div style='float: left;'>"+
-					"<p style='float:left;'>Incidents in the last hour: <i>" + lastHour + "</i><br>Incidents today: <i>" + today + "</i></p>" +
-					"<p style='float:right; padding-left: 40px;' id='currentTime'>" + timeString +"</p></div>" +
-					`
-					<div style='float:right;'>
-						<a href="/config"><button>Config</button></a>
-						<a href="/locations"><button>Edit Locations</button></a>
-						<button onclick="changeTileLayer();">Map</button>
-					</div>
-					`
+					logshtml = []
+					var h = window.innerHeight - document.getElementById("top-container").clientHeight - 75;
+					
+					logs.forEach(function(log){
+						ua_tooltip = log.ua.replaceAll('"', "'") //just some sanitizing
+						logshtml.push( `
+							<td>
+								${log.time}
+							</td>
+							<td class='tip' data-tip="${ua_tooltip}">${log.ip}</td>
+							<td>${log.uri}</td>
+							<td>${log.notes.replace("\n", "<br>")}</td>
+						`);
+					});
+					document.getElementById("incidentsLastHour").innerHTML = lastHour;
+					document.getElementById("incidentsToday").innerHTML = today
+					document.getElementById("logsScrollable").style.maxHeight = `${h}px`
+					i = 0
+					logshtml.forEach(function(loghtml){
+						i += 1
+						addLogToTable(loghtml, "logsTable", i * .1, 0);
+					});
+
 					document.getElementById("extra-info-mobile").innerHTML = `
 					<p style='float:left;'>
 						Last Hour: <i>` + lastHour + `</i>
@@ -287,10 +357,14 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		});
 	}
 
-	var timeString = ""
-	function updateTime(){
+	function getTimeString()
+	{
 		var s = spacetime.now("America/Los_Angeles");
-		timeString = `<span style="font-size:.8em;""><i><code>${s.unixFmt('MM/dd')}</code></i><br><i><code>${s.unixFmt('h:mm:ss a')}</code></i></span>`
+		return `<span style="font-size:.8em;""><i><code>${s.unixFmt('MM/dd')}</code></i><br><i><code>${s.unixFmt('h:mm:ss a')}</code></i></span>`
+	}
+	var timeString = getTimeString()
+	function updateTime(){
+		timeString = getTimeString()
 		if(document.getElementById("currentTime") != null)
 			document.getElementById("currentTime").innerHTML = timeString
 	}
@@ -302,11 +376,14 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	updateImportantIncidentLog();
 	setInterval(updateTime, 20)
 
-	function markLocation(coords, radius, color, opacity, speed){
+	function markLocation(coords, radius, color, opacity, speed, dashArray, lineColor, weight){
 		color = color || "white"
-		opacity = opacity || .45
-		speed = speed || 25
-		var o = {color: "white", fillColor: color, fillOpacity: opacity, dashSpeed: speed, dashArray: 40, weight: .4}
+		if(opacity == null) opacity = .45
+		if(speed == null) speed = 25
+		if(dashArray == null) dashArray = 40
+		if(weight == null) weight = .4
+		lineColor = lineColor || "white"
+		var o = {color: lineColor, fillColor: color, fillOpacity: opacity, weight: weight, dashSpeed: speed, dashArray: dashArray}
 		L.circle(coords, radius, o).addTo(MAP)
 	}
 
@@ -334,8 +411,8 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				opacity = .3 * (1-(l.radius / max_radius)) + .1
 			}
 			speed = (1-(l.radius / max_radius)) * 20 + 10
-			markLocation(l.coords, l.radius, color, opacity, speed)
-			
+			markLocation(l.coords, l.radius, color, opacity, speed);
+			markLocation(l.coords, cfg.map_config.minimum_distance, "blue", 0, -16, 80, "yellow", .3);
 		});
 		setInterval(updateAll, 5000);
 	});

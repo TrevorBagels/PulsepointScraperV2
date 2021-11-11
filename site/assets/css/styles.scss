@@ -7,7 +7,10 @@
 @import "mixins";
 @import "base";
 @import "main";
+@import "home";
+@import "animation";
 
 
 @import "specific/navbar";
+@import "specific/overlays";
 @import "mobile/mobilefix";
