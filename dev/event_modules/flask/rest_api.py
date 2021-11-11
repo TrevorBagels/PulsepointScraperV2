@@ -140,8 +140,9 @@ class Incidents(Resource):
 			for x in items:
 				if x['type'].lower() == args.filter.lower(): newItems.append(x)
 			items = newItems
-		items.sort(key=lambda x : x['epoch'])
-		return items[args.count * args.page:][:args.count]
+		returnitems = items[args.count * args.page:][:args.count]
+		returnitems.sort(key=lambda x : x['epoch'])
+		return returnitems 
 
 
 class IncidentsSince(Resource):
