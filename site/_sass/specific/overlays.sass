@@ -44,7 +44,14 @@ $loading5: "https://c.tenor.com/ErspeWfTqiIAAAAC/gamecube-startup.gif" //about 5
 $loading6: "https://venturebeat.com/wp-content/uploads/2014/10/loading_desktop_by_brianmccumber-d41z4h6.gif?fit=400%2C225&strip=all"
 $loading7: "https://i.gifer.com/origin/30/3007ccc53ff90e24b6b224cb64c52bc0.gif"
 $loading8: "https://i.pinimg.com/originals/c4/3b/2d/c43b2d56b4ec611ac450e6782f7143b7.gif"
+$loading9: "https://i.pinimg.com/originals/3d/80/64/3d8064758e54ec662e076b6ca54aa90e.gif"
+$loading10: "https://64.media.tumblr.com/57c90b51a9cef98b0ca8c2c12ff1d884/tumblr_pkio3gMtJb1w5tjdn_400.gifv"
+$loading11: "https://i.pinimg.com/originals/f9/c2/68/f9c268b83e052ca95d00f509bc5ad4bd.gif"
+$loading12: "https://i.imgur.com/NqtcSDX.gif"
+$loading13: "https://cdn.wallpapersafari.com/24/60/pR8BWz.gif"
+$thing: "https://upload.wikimedia.org/wikipedia/commons/7/71/Black.png"
 $loading: $loading2
+$loadingmobile: $loading1
 $loadingtime: 2.2s
 @keyframes mapoverlayfadein
 	0%
@@ -55,6 +62,27 @@ $loadingtime: 2.2s
 		background-image: url($loading)
 	95%
 		background-image: url($img4)
+		opacity: 1
+	100%
+@keyframes mapoverlayfadeinmobile
+	0%
+		opacity: 1
+		background-image: url($loadingmobile), url($thing)
+		background-repeat: no-repeat, repeat
+		background-position: center, center
+		background-size: 100%, auto
+	70%
+		opacity: 1
+		background-image: url($loadingmobile), url($thing)
+		background-repeat: no-repeat, repeat
+		background-position: center, center
+		background-size: 100%, auto
+	95%
+		background-image: url($img4)
+		background-position: center
+		background-size: 400%
+		background-repeat: repeat
+		-webkit-backdrop-filter: blur(30px)
 		opacity: 1
 	100%
 		

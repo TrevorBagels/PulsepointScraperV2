@@ -4,15 +4,75 @@
 	
 	.mobile-only
 		display: block
-	#MAP
-		width: 100% !important
-		float: none !important
-	#incidents-log
-		width: 100% !important
-		margin: auto !important
-		tr:nth-child(2) td div
-			max-height: 200px !important
-	#important-incidents
-		width: 100% !important
-		margin: auto !important
-	
+
+	#top-container
+		margin-top: 50px
+		display: block
+		width: 100%
+		height: auto
+		max-height: none
+		#MAP
+			height: 80vh
+			width: 100%
+			border: none
+			border-left: 2px dashed $border
+			border-right: 2px dashed $border
+			border-radius: 0px
+			margin-left: 0px
+			#mapoverlay
+				animation: mapoverlayfadeinmobile $loadingtime ease forwards
+				animation-delay: 1.3s
+				background-size: 100%
+				background-image: url($img2)
+		#right-logs
+			margin-left: 0px
+			margin-right: 0px
+			#incidents-log > tbody > tr:nth-child(1)
+				height: 60px
+			
+			#important-incidents
+				margin-top: 10px
+				tr td:nth-child(4), tr td:nth-child(5)
+					font-size: .7em
+	#bottom-mobile
+		border: none
+		display: block
+		margin: auto
+		margin-top: 25px
+		height: 130px
+		width: 100%
+		a
+			display: block
+			margin: auto
+			margin-bottom: 15px
+			button
+				margin: auto
+				display: block
+	#config
+		width: 100%
+		border: none
+		tr:focus-within
+			display: inline-block
+			width: 100%
+			td:nth-child(2)
+				width: 100%
+				font-size: .9em
+			td:nth-child(1)
+				width: 10%
+				font-size: .6em
+				font-style: italic
+	#locations
+		width: 100%
+		.location
+			padding: 8px 2px 8px 2px
+			button
+				margin-left: 6px !important
+	.filters
+		display: block
+		div
+			margin: 5px 2px 5px 2px
+			#allowed, #blocked
+				padding: 4px 2px 8px 8px
+				div
+					input
+						width: 80% !important

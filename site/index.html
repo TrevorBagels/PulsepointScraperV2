@@ -12,9 +12,6 @@ permalink: /
 <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium@master/folium/templates/leaflet_heat.min.js"></script>
 <script src="https://ivansanchez.gitlab.io/Leaflet.Path.DashFlow/L.Path.DashFlow.js"></script>
 
-<meta name="viewport" content="width=device-width,
-initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
 
 <div id='top-container'>
 	<div class="folium-map" id="MAP" >
@@ -94,11 +91,11 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<div>
 			<table id='logs'>
 				<tr><td>
-					<table cellspacing="0" cellpadding="1" width="100%">
+					<!--table cellspacing="0" cellpadding="1" width="100%">
 						<tr>
 							<th>Time</th><th>IP</th><th>URI</th><th>Notes</th>
 						</tr>
-					</table>
+					</table-->
 				</td></tr>
 				<tr>
 					<td>
@@ -115,7 +112,10 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 </div>
 <div id='extra-info-mobile' class='mobile-only'>
 </div>
-
+<div class='mobile-only' id='bottom-mobile'>
+	<a href="/config"><button>Config</button></a>
+	<a href="/locations"><button>Edit Locations</button></a>
+</div>
 
 
 
@@ -235,7 +235,7 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 				`
 				addLogToTable(logHtml, "importantIncidentTable", i)
 			});
-			document.getElementById("importantIncidentsScrollable").style.maxHeight =  `${math.round(.3*h)}px`
+			document.getElementById("importantIncidentsScrollable").style.maxHeight =  `${math.round(.3*h-40)}px`
 		});
 	}
 
@@ -310,8 +310,8 @@ initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 								${log.time}
 							</td>
 							<td class='tip' data-tip="${ua_tooltip}">${log.ip}</td>
-							<td>${log.uri}</td>
-							<td>${log.notes.replace("\n", "<br>")}</td>
+							<td><pre style='margin-left: 5px;'>${log.uri}</pre></td>
+							<td><pre>${log.notes.replace("\n", "<br>")}</pre></td>
 						`);
 					});
 					document.getElementById("incidentsLastHour").innerHTML = lastHour;
