@@ -7,6 +7,7 @@ var heatPoints = [];
 var incidentPoints = []; // a list of incidents
 var mapTileLayer;
 var mapCfg;
+
 var mapTileLayerIndex = Cookies.get("mapindex") || 0;
 function createIcon(icon, color, name){
 	mapIcons[name] = L.AwesomeMarkers.icon({"extraClasses": "fa-rotate-0", "icon": icon, "iconColor": "white", "markerColor": color, "prefix": "fa"});
@@ -85,6 +86,9 @@ function setupMap(callback){
 
 }
 
+
+
+
 function addMarker(location, tooltip, popup, icon_name, target, heat, lineTo, old){
 	o = ""
 	if(old) o = "OLD_"
@@ -116,3 +120,93 @@ function addMarker(location, tooltip, popup, icon_name, target, heat, lineTo, ol
 //addMarker([45.25111, -122.6946], "tooltip", "text for popup", "Traffic Collision", "markercluster", true)
 //addMarker([45.299355, -122.65877], "tooltip", "text for popup", "Traffic Collision", "markercluster", true, [45.251041, -122.694986])
 //updateHeat()
+
+
+
+
+
+L.Control.MousePosition = L.Control.extend({
+	options: {
+	  position: 'bottomleft',
+	  separator: ' : ',
+	  emptyString: 'Unavailable',
+	  lngFirst: false,
+	  numDigits: 5,
+	  lngFormatter: undefined,
+	  latFormatter: undefined,
+	  prefix: ""
+	},
+  
+	onAdd: function (map) {
+	  this._container = L.DomUtil.create('div', 'leaflet-control-mouseposition');
+	  L.DomEvent.disableClickPropagation(this._container);
+	  map.on('mousemove', this._onMouseMove, this);
+	  this._container.innerHTML=this.options.emptyString;
+	  return this._container;
+	},
+  
+	onRemove: function (map) {
+	  map.off('mousemove', this._onMouseMove)
+	},
+  
+	_onMouseMove: function (e) {
+	  var lng = this.options.lngFormatter ? this.options.lngFormatter(e.latlng.lng) : L.Util.formatNum(e.latlng.lng, this.options.numDigits);
+	  var lat = this.options.latFormatter ? this.options.latFormatter(e.latlng.lat) : L.Util.formatNum(e.latlng.lat, this.options.numDigits);
+	  var value = this.options.lngFirst ? lng + this.options.separator + lat : lat + this.options.separator + lng;
+	  var prefixAndValue = this.options.prefix + ' ' + value;
+	  this._container.innerHTML = prefixAndValue;
+	}
+  
+  });
+  
+  L.Map.mergeOptions({
+	  positionControl: false
+  });
+  
+  L.Map.addInitHook(function () {
+	  if (this.options.positionControl) {
+		  this.positionControl = new L.Control.MousePosition();
+		  this.addControl(this.positionControl);
+	  }
+  });
+  
+  L.control.mousePosition = function (options) {
+	  return new L.Control.MousePosition(options);
+  };
+
+/*
+var mapCoords;
+function toggleShowCoords()
+{
+	value = Number(Cookies.get("showcoords"));
+	if(value == undefined){
+		value = 0;
+	}
+	value = !value
+	if(!value) {
+		document.getElementById("coordDisplay").innerHTML = "";
+		MAP.removeEventListener(mapCoords);
+		mapCoords = null;
+	}
+	Cookies.set("showcoords", Number(value));
+	document.getElementsByClassName("leaflet-popup-close-button")[0].click();
+}
+
+function addCoordsToMap(){
+	if(mapCoords != null)
+		return;
+	mapCoords = document.getElementById("MAP").addEventListener("mousemove", e => {
+		var d = document.getElementById("coordDisplay");
+		d.style.top = (e.y + 45) + "px";
+		d.style.left = (e.x - 25) + "px";
+		latlng = MAP.mouseEventToLatLng(e);
+		rnd = 4;
+		d.innerHTML = math.round(latlng.lat, rnd) + " " + math.round(latlng.lng, rnd);
+	});
+}
+
+if(Number(Cookies.get("showcoords")))
+{
+	addCoordsToMap();
+}
+*/

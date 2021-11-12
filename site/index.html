@@ -15,7 +15,7 @@ permalink: /
 
 <div id='top-container'>
 	<div class="folium-map" id="MAP" >
-		<div id="mapoverlaycontainer"><span id='mapoverlay'></span></div>
+		<div id="mapoverlaycontainer"><span id='mapoverlay'></span><span id='coordDisplay'></span></div>
 	</div>
 	<script src="assets/js/map.js"></script>
 
@@ -170,7 +170,13 @@ permalink: /
 		popup = L.popup()
 		MAP.on('contextmenu', function(e){
 			coords = [math.round(e.latlng.lat, 8), math.round(e.latlng.lng, 8)]
-			popup.setContent(`<div id='mapPopup'><button onclick="createLocationPrompt([${coords}])">Create new location</button></div>`)
+			showHide = "Show"; if(Cookies.get("showcoords")) showHide = "Hide";
+			popup.setContent(`
+			<div id='mapPopup'>
+				<button onclick="createLocationPrompt([${coords}])">Create new location</button>
+				<!--button onclick="toggleShowCoords();">${showHide} coordinates</button -->
+			</div>
+			`)
 			popup.setLatLng(coords);
 			popup.openOn(MAP);
 		})
