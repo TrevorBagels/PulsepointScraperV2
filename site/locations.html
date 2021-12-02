@@ -269,7 +269,7 @@ permalink: /locations
 			document.getElementById("locations").innerHTML = html
 			updateCollapseables()
 			if(target != null){
-				document.getElementById(target).scrollIntoView(false);
+				document.getElementById(target).scrollIntoView({block: "center"});
 			}
 		});
 		
