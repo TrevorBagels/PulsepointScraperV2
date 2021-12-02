@@ -88,7 +88,7 @@ permalink: /locations
 		if (l.filters.allow_list.length == 0 && l.filters.block_list.length == 0)
 			filterHTML = "No filters in place"
 		var html = `
-		<div class='location'>
+		<div class='location' id="${l.name.replaceAll(' ', '_')}">
 			<h4>${l.name}</h4>
 			<table style="cellspacing: 0; width: 90%;">
 				<tr>
@@ -200,7 +200,7 @@ permalink: /locations
 
 
 	function editLocation(locationName) {
-		document.getElementById("backbutton").innerHTML = `<button onClick='displayLocations()'>Back</button>`;
+		document.getElementById("backbutton").innerHTML = `<button onClick='displayLocations("${locationName.replaceAll(' ', '_')}")'>Back</button>`;
 		$.get(baseURL + "/locations", {
 			token: Cookies.get("auth"),
 			name: locationName
@@ -253,7 +253,7 @@ permalink: /locations
             document.getElementById("locations").children[0].children[0].innerHTML += resp
         });
     }
-	function displayLocations() {
+	function displayLocations(target) {
 		if (editingUpdate != null) {
 			clearInterval(editingUpdate);
 			editingUpdate = null;
@@ -268,8 +268,11 @@ permalink: /locations
 			});
 			document.getElementById("locations").innerHTML = html
 			updateCollapseables()
+			if(target != null){
+				document.getElementById(target).scrollIntoView(false);
+			}
 		});
-
+		
 	}
 	var beingEdited = null;
 	var editingUpdate = null
