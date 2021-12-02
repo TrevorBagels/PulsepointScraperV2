@@ -365,11 +365,13 @@ permalink: /
 
 	function getTimeString()
 	{
-		var s = spacetime.now("America/Los_Angeles");
-		return `<span style="font-size:.8em;""><i><code>${s.unixFmt('MM/dd')}</code></i><br><i><code>${s.unixFmt('h:mm:ss a')}</code></i></span>`
+		return "";
+		//var s = spacetime.now("America/Los_Angeles");
+		//return `<span style="font-size:.8em;""><i><code>${s.unixFmt('MM/dd')}</code></i><br><i><code>${s.unixFmt('h:mm:ss a')}</code></i></span>`
 	}
 	var timeString = getTimeString()
 	function updateTime(){
+		return
 		timeString = getTimeString()
 		if(document.getElementById("currentTime") != null)
 			document.getElementById("currentTime").innerHTML = timeString
@@ -380,7 +382,7 @@ permalink: /
 	updateInfo1();
 	updateIncidentLog();
 	updateImportantIncidentLog();
-	setInterval(updateTime, 20)
+	//setInterval(updateTime, 20)
 
 	function markLocation(coords, radius, color, opacity, speed, dashArray, lineColor, weight){
 		color = color || "white"

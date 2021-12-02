@@ -8,7 +8,7 @@ from bson import json_util
 import time, datetime
 import pandas as pd
 from .. import utils
-
+import haversine as hs
 from .flask import rest_api
 
 class SaveData(Prodict):
@@ -74,6 +74,7 @@ class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
 		a = self.simplify_incident(incident)
+		if self.incident_in_range(incident) == False: return
 		self.recents.append(a)
 		self.recents.sort(key= lambda x : x['epoch'], reverse=True)
 		self.recents = self.recents[:1000]
@@ -100,6 +101,18 @@ class Events(events.Events):
 		a["distance"] = distance
 		a["monitored_address"] = location.address
 		self.important_incidents.append(a)
+	
+	def incident_in_range(self, incident:D.Incident) -> bool:
+		closest = 0
+		closestDist = 1000000
+		for l in self.main.config.locations:
+			if l.coords != None and incident.coords != None:
+				dist = hs.haversine(l.coords, incident.coords, unit=hs.Unit.METERS)
+				if dist < closestDist:
+					closestDist = dist
+					if closestDist < self.main.config.map_config.minimum_distance: #at some point i should change that to "maximum distance" because that's what it really is.
+						return True
+		return False
 		
 		
 
