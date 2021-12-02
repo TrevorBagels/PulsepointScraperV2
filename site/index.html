@@ -411,7 +411,7 @@ permalink: /
 		});
 		var rainbow = new Rainbow();
 		rainbow.setNumberRange(min_importance, max_importance);
-		rainbow.setSpectrum("green", "purple", "red");
+		rainbow.setSpectrum("white", "green", "blue", "yellow", "orange", "purple", "red");
 		cfg.locations.forEach(function(l){
 			color = "#" + rainbow.colourAt(l.importance);
 			opacity = .4;
