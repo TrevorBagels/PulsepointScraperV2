@@ -32,7 +32,9 @@ class Events(events.Events):
 
 		self.main.print(message, t='important')
 		return
-		p.notify(user=self.main.config.pushover_user, token=self.main.config.pushover_token, message=message)
+		notif = p.notify(user=self.main.config.pushover_user, token=self.main.config.pushover_token, message=message)
+		if notif.ok == False:
+			self.main.print(f"ERROR SENDING NOTIFICATION!\nNotification Status: {notif.status}\nErrors: {' | '.join(notif.errors)}", t='bad')
 		pass
 
 
