@@ -31,7 +31,6 @@ class Events(events.Events):
 	Distance:			{"%03d" % distance} meters""".upper()
 
 		self.main.print(message, t='important')
-		return
 		notif = p.notify(user=self.main.config.pushover_user, token=self.main.config.pushover_token, message=message)
 		if notif.ok == False:
 			self.main.print(f"ERROR SENDING NOTIFICATION!\nNotification Status: {notif.status}\nErrors: {' | '.join(notif.errors)}", t='bad')
