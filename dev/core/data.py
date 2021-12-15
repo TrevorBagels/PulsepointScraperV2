@@ -13,14 +13,14 @@ class Filter(Prodict):
 		self.blocked = []
 	
 	def is_allowed(self, item):
-		if len(self.blocked) == 0 and len(self.allowed) == 0: return True
+		if len(self.blocked) == 0 and len(self.allowed) == 0: return True #no filters in place
 
-		if len(self.blocked) == 0:
-			return item in self.allowed
-		elif len(self.allowed) == 0:
-			return item not in self.blocked
-		else:
-			return item in self.allowed and item not in self.blocked
+		if len(self.blocked) == 0: #nothing in the block-list, but things ARE in the allow-list. 
+			return item in self.allowed or "*" in self.allowed
+		elif len(self.allowed) == 0: #nothing in the allow-list, but things ARE in the block-list
+			return item not in self.blocked and "*" not in self.blocked
+		else: #the allow-list has things, and so does the block-list
+			return (item in self.allowed) and (item not in self.blocked)
 	
 	
 	
