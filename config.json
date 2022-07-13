@@ -1,6 +1,10 @@
 {
     "scan_interval": 60,
     "default_radius": 50,
+    "importance_checks": [
+        "textbased",
+        "locationbased"
+    ],
     "events": [
         "events_default"
     ],
