@@ -1,6 +1,18 @@
 # PulsepointScraperV2
 Scrapes pulsepoint.org for emergency incidents and notifies you if certain conditions are met.
 
+<img src="https://user-images.githubusercontent.com/61929192/178640227-faa5ef1b-12c8-4e05-8895-8d896de9ddfe.png"/>
+
+<img src="https://user-images.githubusercontent.com/61929192/178640290-161d199c-4bc8-405a-a73d-3f823fd9b2f1.png"/>
+
+<div style='width: 100%;'>
+<img style='float:left' src="https://user-images.githubusercontent.com/61929192/178640485-6006b081-4231-4829-857b-87deb702cf45.png" width="600"/>
+
+<img style='float:right; margin-right: 0;' src="https://user-images.githubusercontent.com/61929192/178640525-5284fae7-122a-4fae-bd61-baf35362b755.png" alt="mobile notifications" width="200"/>
+</div>
+<img src="https://user-images.githubusercontent.com/61929192/178641366-da85e47b-ac83-40e0-adcf-d1c94bbe1abf.png"/>
+<img src="https://user-images.githubusercontent.com/61929192/178641277-4948449d-edd8-409c-90c6-793c0bc8b0c4.png"/>
+
 # Setting up Pulsepoint Monitor with web interface
 
 1. Clone the repository (V3 branch) `git clone --branch V3 https://github.com/TrevorBagels/PulsepointScraperV2.git`
@@ -9,7 +21,7 @@ Scrapes pulsepoint.org for emergency incidents and notifies you if certain condi
 4. Run `python3 -m dev`
 
 # Web interface
-To enable the web app, you'll need to use Jekyll. If you have Jekyll installed, you should be able to run the web interface by running `bundle exec jekyll serve -H 0.0.0.0` from the `/site` directory after running `bundle install` in the same directory. 
+To enable the web app, you'll need to use <a href="https://jekyllrb.com/">Jekyll</a>. If you have Jekyll installed, you should be able to run the web interface by running `bundle exec jekyll serve -H 0.0.0.0` from the `/site` directory after running `bundle install` in the same directory. 
 
 Navigate to `0.0.0.0:4000` and your interface will be there. 
 
