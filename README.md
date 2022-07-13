@@ -37,7 +37,7 @@ You can create allow-lists and block-lists for each location to filter by incide
 Incident types can be found under `/dev/core/incident_types.json`.
 
 ## For those in Portland who want to monitor police activity
-Add `"police_incidents"` to `events` in the config file. Police activity in portland will be monitored via scraping twitter. 
+Add `"police_incidents"` to `events` in the config file. Police activity in portland will be monitored via scraping twitter. You'll also need a twitter bearer token, put that into the `keys.json` file under `twitterbearertoken`.
 
 
 # PPDB
