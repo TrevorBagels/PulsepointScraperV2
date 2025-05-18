@@ -12,7 +12,7 @@ from ...core import data as D
 from ... import main as M
 import threading, time
 from itsdangerous import BadSignature, SignatureExpired
-from itsdangerous import URLSafeTimedSerializer as TimedJSONWebSignatureSerializer
+from itsdangerous import TimedJSONWebSignatureSerializer
 import hashlib, json
 from ... import utils
 from flask_cors import CORS, cross_origin
