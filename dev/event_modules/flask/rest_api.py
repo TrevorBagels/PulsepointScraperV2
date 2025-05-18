@@ -105,7 +105,7 @@ class GenerateToken(Resource):
 
 		#print(pwd_hash)
 		if self.events.main.keys["authentication"] == pwd_hash:
-			s = TimedJSONWebSignatureSerializer(self.events.flaskapp.app.config["SECRET_KEY"], expires_in=60*60*24)
+			s = TimedJSONWebSignatureSerializer(self.events.flaskapp.app.config["SECRET_KEY"])
 			token = s.dumps({}).decode()
 			log['notes'] += f"Access granted\nToken:{token}\n"
 			self.app.logs["long"].append(log)
