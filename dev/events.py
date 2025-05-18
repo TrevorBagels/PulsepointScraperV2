@@ -3,6 +3,7 @@
 The functions in the instance class of Events are called by main.py during certain events. 
 If you'd like to change how the notifications work, without falling into the dirty mess of my code, this is the place to do it.
 '''
+#ok so this is the modular part 
 from .core import data as D
 from .main import Main
 from notifiers import get_notifier

@@ -60,13 +60,6 @@ class Filter(Prodict):
 			if len(self.allow_list) <= 0:
 				return True
 
-
-
-
-
-
-
-
 class CfgLocation(Prodict):
 	name:				str
 	address:			str
@@ -118,7 +111,6 @@ class MapCfg(Prodict):
 		self.thermal_blur = 40
 		self.thermal_radius = 45
 		self.line_dash = 0
-
 
 class Cfg(Prodict):
 	importance_checks:	list[str]

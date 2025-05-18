@@ -74,7 +74,9 @@ class Events(events.Events):
 	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
 	def incident_found(self, incident:D.Incident):
 		a = self.simplify_incident(incident)
-		if self.incident_in_range(incident) == False: return
+		if self.incident_in_range(incident) == False: 
+			#print("NOT IN RANGE")
+			return
 		self.recents.append(a)
 		self.recents.sort(key= lambda x : x['epoch'], reverse=True)
 		self.recents = self.recents[:1000]

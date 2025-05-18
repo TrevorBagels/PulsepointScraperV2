@@ -22,6 +22,7 @@ from folium.plugins import HeatMap, MarkerCluster
 class Events(events.Events):
 	def __init__(self):
 		super().__init__()
+		print("MAPS MODULE INITIALIZED")
 
 	def post_init(self):
 		self.savePath = "./"

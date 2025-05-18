@@ -12,7 +12,7 @@ from ...core import data as D
 from ... import main as M
 import threading, time
 from itsdangerous import BadSignature, SignatureExpired
-from itsdangerous import TimedJSONWebSignatureSerializer
+from itsdangerous import URLSafeTimedSerializer as TimedJSONWebSignatureSerializer
 import hashlib, json
 from ... import utils
 from flask_cors import CORS, cross_origin
@@ -32,6 +32,7 @@ class Settings(Resource):
 		pass
 
 	def get(self):
+		print("FLASK GET AAAAAA")
 		if self.app.verify() == False:
 			return "Unauthorized"
 		parser = reqparse.RequestParser()
@@ -43,6 +44,7 @@ class Settings(Resource):
 			return self.events.main.config[args.parameter] #internal server error will occur if supplied the wrong parameter, and im not gonna do anything about it.
 	
 	def post(self):
+		print("FLASK POST AAAAAA")
 		if self.app.verify() == False:
 			return "Unauthorized"
 		

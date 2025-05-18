@@ -9,7 +9,7 @@ from . import utils
 import geopy
 
 class Data(Prodict):
-	agencies:			list[str] #agency names
+	#! REMOVE agencies:			list[str] #agency names
 	last_scanned:		int
 	last_incidents:		list
 	analyzed:			list
@@ -17,13 +17,16 @@ class Data(Prodict):
 		self.agencies = []
 		self.last_incidents = []
 		self.analyzed = []
-		self.last_scanned = 0
+		self.last_scanned = 0 #last TIME a scan was conducted
 
 
 class Main:
 	def __init__(self, config_file="config.json", keys_file="keys.json"):
+		#ok im coming back like 4 years later, it's now 2025, and i did a shit job at commenting everything. 
+		#update: on 05/09/2025, pulsepoint changed their API and fucked my shit up. idk how to scrape them now so I'm gonna convert this to a much more modular 
+		# program that isn't centered around pulsepoint.
 		from . import events
-		self.config_file = config_file
+		self.config_file = config_file 
 		self.keys_file = keys_file
 		colorama.init()
 		self.GEOCODE_LIMIT = 50
@@ -38,7 +41,7 @@ class Main:
 		self.events:list[events.Events] = []
 		self.data = Data()
 		self.load_config(self.config_file)
-		self.scraper = scrape.Scraper()
+		#! REMOVE self.scraper = scrape.Scraper()
 		self.loop_control()
 
 	def loop_control(self):
@@ -65,6 +68,8 @@ class Main:
 		self.data.last_scanned = time.time() 
 		incidents:list[D.Incident] = [] #incidents to analyze
 		
+		'''
+		
 		for a in self.data.agencies:
 			i = self.scraper.get_incidents(a)
 			if i.active == None: i.active = []
@@ -74,8 +79,8 @@ class Main:
 				if x.uid not in self.data.analyzed:
 					self.call_event("incident_found", x) #! EVENT !#
 					incidents.append(x)
-		
-		for x in self.call_event("get_custom_incidents"): #! EVENT !#
+		'''
+		for x in self.call_event("get_custom_incidents"): #! EVENT !# #ok so this goes through every custom module and retreives incidents from them. this is what we want to keep
 			if x.uid not in self.data.analyzed:
 				self.call_event("incident_found", x) #! EVENT !#
 				incidents.append(x)
@@ -92,12 +97,13 @@ class Main:
 		utils.save_json("typetags.json", self.incident_type_tags)
 
 	
-	def analyze(self, incident:D.Incident):
+	def analyze(self, incident:D.Incident): #this is all seperate from the scraper which means it's already modular and we don't need to touch it.
 		if incident.incident_type != None and incident.incident_type not in self.incident_type_tags:
+			print("incident type not in incident type tags ---", incident.incident_type) #! TESTING
 			self.incident_type_tags[incident.incident_type] = []
 		incident.significant_locations = []
 		if self.config.incident_filters.allowed(incident.incident_type) == False: return #if this incident is blocked or not allowed (global), skip analysis
-
+		
 		for x in self.config.locations:
 			if x.enabled == False: continue
 			if x.filters.allowed(incident.incident_type) == False: continue #if this incident is blocked or not allowed (per location), skip analysis for this location.

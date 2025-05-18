@@ -2,3 +2,16 @@ geopy
 googlemaps
 notifiers
 JSON4JSON
+requests
+cryptography
+colorama
+pytz
+pymongo
+flask
+pandas
+haversine
+flask-httpauth
+flask-restful
+itsdangerous
+flask-cors
+folium

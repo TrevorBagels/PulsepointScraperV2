@@ -1,124 +1,91 @@
-
-from typing import NewType
-from .. import events
+from .. import events, utils
 from ..core import data as D
 from notifiers import get_notifier
 from geopy.distance import geodesic
-import os, requests, datetime
+
+from bs4 import BeautifulSoup
+import requests, datetime
 from .. import utils
+
 
 
 class Events(events.Events):
 	def __init__(self):
-		self.data:list[D.Incident] = []
+		print("HIIIIIi")
 		self.analyzed = []
-		self.accounts = ["1365077991252914179"]
-		self.most_recent:dict[str, int] = {}
-		for x in self.accounts:
-			self.most_recent[x] = None
-		pass
-	def post_init(self):
-		self.headers = {"Authorization": f"Bearer {self.main.keys['twitterbearertoken']}"}
-		self.url = ""
-	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
-	def get_custom_incidents(self) -> list[D.Incident]:
-		MAX_RESULTS = self.main.config.police_incident_tweet_count#50 #set this to 10 when testing
-		print("Getting custom incidents...")
-		incidents = []
-		for user in self.accounts:
-			new_tweet_count = None
-			if self.most_recent[user] != None:
-				print("Most Recent:", self.most_recent[user])
-				r = requests.get(f"https://api.twitter.com/2/tweets/counts/recent?query=from:{user}&since_id={self.most_recent[user]}", headers=self.headers).json()
-				try:
-					new_tweet_count = r['meta']['total_tweet_count']
-				except:
-					print("Error with getting tweet count. Response: ", r, t='bad');
-					print(self.headers, t='bad')
-					continue
-			if self.most_recent[user] == None or new_tweet_count > 0:
-				if new_tweet_count != None: self.main.print(f"{new_tweet_count} tweet(s) found for user {user}.", t='good')
-				tweets_request_url = f"https://api.twitter.com/2/users/{user}/tweets?tweet.fields=created_at&max_results={MAX_RESULTS}"
-				if self.most_recent[user] != None:
-					tweets_request_url += f"&since_id={self.most_recent[user]}"
-				tweets = requests.get(tweets_request_url, headers=self.headers).json()
-				if "data" not in tweets:
-					self.main.print(tweets, t='bad')
-				try:
-					print(len(tweets['data']), "tweets recieved")
-				except:
-					print("UH OH ", tweets, self.headers)
-					continue
-				for x in tweets['data']:
-					x['id'] = int(x['id'])
-					
-					if self.most_recent[user] == None or x['id'] > self.most_recent[user]: #assigning the most recent tweets from this user
-						self.most_recent[user] = x['id']
-					
-					if x["id"] in self.analyzed: continue
-					self.analyzed.append(x["id"])
-					i = self.get_incident_from_tweet(x)
-					if i == None: continue
-					incidents.append(i)
-					self.data.append(i)
-				self.save_data()
-				return incidents
-	
-	def get_incident_from_tweet(self, x, dept="Police") -> D.Incident:
-		#dept could also be "Fire", for parsing incidents from @pdxfirelog. pdx fire log includes more data (like when police are requested, or when someone is jumping from a bridge, etc.)
-		i = D.Incident()
-		txt = x['text']
-		cities = {"PORT": "Portland", "GRSM": "Gresham", "BEAV": "Portland", "WASH": "Portland", "MULT": "Portland"} #, PORT [Portland Police #... or GRSM [Gresham Police #...
-		city = None #either "PORT" or "GRSM"
-		for c in cities:
-			if f"{c} [{cities[c]} {dept} #" in txt:
-				city = c
-		if city == None:
-			self.main.print(txt, t='bad')
-			return None
-		
-		i.incident_type = txt.split(" at ")[0] #! incident type assigned
-		addy = txt.split(i.incident_type + " at ")[1].split(f", {city} [")[0] #<- .split(", PORT [") or .split(", GRSM, [")
-		i.FullDisplayAddress = addy.replace(" / ", " & ") + f", {cities[city]} OR" #!incident address assigned
-		try:
-			time = txt.split(addy + f", {city} [")[1].split("]")[1].split("#")[0].strip() #gets the time 00:00 of the incident provided in the tweet text
-			#finding the date and time of the incident (LOCAL TIME)
-			hour = int(time.split(":")[0])
-			minute = int(time.split(":")[1])
-			#date can be found because we know the time was BEFORE the current time
-			dp = utils.local(datetime.datetime.strptime(x['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ")) #date posted (IN PDT/LOCAL, NOT UTC)
-			#if the time is say... 21:00, and the day the thing was posted was one day later at 00:00, then we know that it was one day before...
-			date = datetime.datetime(dp.year, dp.month, dp.day, hour, minute)
-			#so if the hour of day posted is LESS than the hour of the incident time, then the incident took place 1 day earlier. otherwise, the date is accurate.
-			if dp.hour < hour: #date posted is one day ahead than the actual incident, subtract a day
-				date = date - datetime.timedelta(days=1)
-			#date = local time in which the incident occured.
-			#we should convert the date back to UTC because all the other incidents use UTC for their timestamps
-			date = utils.local_to_utc(date).replace(tzinfo=None) #because the other pulsepoint incidents don't have TZINFO.
-		except:
-			self.main.print("No timestamp found", t='warn')
-			date = datetime.datetime.strptime(x['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=None)
-		
-		i.CallReceivedDateTime = date #! incident date received assigned
-		#we'll assume the time it was closed is the same as the time the thing was posted 
-		i.ClosedDateTime = datetime.datetime.strptime(x['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ") #! incident date closed assigned
-		i.uid = str(x["id"]) #! incident UID assigned
-		#? what about coords?
-		coords = self.main.get_coords(i.FullDisplayAddress)
-		if coords == None:
-			self.main.print("ERROR: Could not find coords for incident #" + i.uid)
-			i.coords = [0, 0]
-		else:
-			i.coords = coords #! incident coords assigned
-			i.Latitude = coords[0] #! incident latitude assigned
-			i.Longitude = coords[1] #! incident longitude assigned
-		if i.coords == None: print(i)
-		return i
+		self.previouslyCollected = []
 
-	def save_data(self):
-		utils.save_json("./dev/event_modules/police_incidents.json", self.data)
-	def load_data(self):
-		self.data = utils.load_json("./dev/event_modules/police_incidents.json")
+	def get_custom_incidents(self) -> list[D.Incident]:			
+		soup = BeautifulSoup(requests.get("https://www.pdxpolicelog.com").text, features="html.parser")
+		unparsed = soup.find_all("div", {"class": "rt-BaseCard"})
+
+		incidents = []
+		for x in unparsed:
+			#each of these has incident data
+			x1 = x.find("div")
+			title = x1.find('h2').text.split("at")
+			incident_type = title[0].strip()
+			locationDesc = title[1].strip()
+			t = x1.find("span").text.split(" ") #time May 18, 2025, 10:31:30 AM
+			months = {"January": 1, "Feburary": 2, "March": 3, "April": 4, "May": 5, "June": 6, "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
+			month = months[t[0]]
+			day = int(t[1].split(",")[0])
+			year = int(t[2].split(",")[0])
+			tt = t[3].split(":")
+			h = int(tt[0])
+			if t[4] == "PM": h += 12
+			if h == 24: h = 0
+			m = int(tt[1])
+			date = datetime.datetime(year, month, day, h, m)
+			#date = utils.local_to_utc(date).replace(tzinfo=None) #convert to UTC
+			coordsUnparsed = x1.find("a").get("href").split("query=")[1].split(",")
+			coords = [float(coordsUnparsed[0].strip()), float(coordsUnparsed[1].strip())]
+
+			i = D.Incident()
+			i.incident_type = incident_type
+			i.CallReceivedDateTime = date
+			i.Latitude = coords[0]
+			i.Longitude = coords[1]
+			i.coords = coords
+			i.FullDisplayAddress = locationDesc
+			i.uid = hash(i.incident_type + i.CallReceivedDateTime.strftime("MM/DD/YYYY:hh:mm") + str(coords))
+			if i.uid not in self.previouslyCollected:
+				self.previouslyCollected.append(i.uid)
+				incidents.append(i)
+		
+		return incidents
+
+
+	#called the moment a new incident is found. this is before any analysis is done, so there won't be a 'coords' property in it
+	def incident_found(self, incident:D.Incident):
+		self.main.print(f"{incident.incident_type} found at {incident.FullDisplayAddress}.", incident.coords, end='\r')
+		pass
+	#called when an agency is put into the queue.
+	def agency_queue_enter(self, agency:str):
+		self.main.print(f"Added agency {agency} to the queue.", t='good', end='\r')
+		pass
+	def analysis_start(self):
+		pass
+	def analysis_end(self):
+		pass
+	
+	def important_incident_found(self, incident:D.Incident, location:D.CfgLocation, importance:int):
+		p = get_notifier("pushover")
+		address = ""
+		if location.address != None: address = location.address
+		distance = "N/A"
+		if incident.dists != None and location.name in incident.dists: distance = incident.dists[location.name]
+		message = f"""{incident.incident_type.upper()} AT {location.name.upper()}
+	Time:				{utils.local(incident.CallReceivedDateTime).strftime("%a, AT %H:%M")}
+	Incident Address:		{incident.FullDisplayAddress.upper()}
+	Monitored address:		{address.upper()}
+	Incident coords:		{incident.coords}
+	Distance:			{"%03d" % distance} meters""".upper()
+
+		self.main.print(message, t='important')
+		p.notify(user=self.main.keys["pushover_user"], token=self.main.keys["pushover_token"], message=message)
+		pass
+
 
 #custom helper method
 def GetLocationByName(main, name):
